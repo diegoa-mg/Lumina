@@ -27,7 +27,7 @@ body {
     font-family: "Libre Baskerville", serif;
 }
 
-/* Navegación principal */
+/* Barra Navegación */
 .nav-bg {
     background-color: var(--blanco);
     padding: 1.5rem;
@@ -45,8 +45,10 @@ body {
 /* Logo en nav */
 .logo {
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 2rem;
+    margin-bottom: 1rem;
+    gap: 2.5rem;
 }
 
 .logo img {
@@ -56,28 +58,49 @@ body {
 
 .logo p {
     font-weight: 700;
-    font-size: 1.7rem;
-    margin: 0;
-    padding: 1rem;
+    font-size: 1.5rem;
+    margin: 0;  
 }
 
 @media (min-width: 768px) {
     .logo {
         display: flex;
         align-items: center;
+        justify-content: center;
+        margin-bottom: 0;
     }
 }
 
+/* Barra de busqueda */
+.barra-bus {
+    display: flex;
+    align-items: center;
+    height: 4rem;
+    width: auto;
+    background-color: var(--gris-claro);
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .barra-bus {
+        width: 50rem;
+    }
+}
+
+/* Navegación */
 .nav-principal {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 1rem;
 }
 
 @media (min-width: 768px) {
     .nav-principal {
         flex-direction: row;
         justify-content: flex-end;
+        margin-top: 0;
     }
 }
 
@@ -87,13 +110,14 @@ body {
     color: var(--azul-logo);
     text-decoration: none;
     font-weight: 700;
-    font-size: 2rem;
+    font-size: 1.5rem;
     padding: 1.2rem;
 }
 
 .nav-principal a:hover {
     background-color:var(--azul-logo);
     color: var(--blanco);
+    border-radius: 1.5rem;
 }
 
 /* Uni - Inicio */
