@@ -119,8 +119,6 @@ body {
 @media (min-width: 768px) {
     .nav-principal {
         flex-direction: row;
-        justify-content: flex-end;
-        align-items: center;
         margin-top: 0;
     }
 }
@@ -136,7 +134,13 @@ body {
 }
 
 .nav-principal a:hover {
-    background-color:var(--azul-logo);
+    background-color:var(--gris-claro);
+    color: var(--azul-logo);
+    border-radius: 1.5rem;
+}
+
+.nav-principal .pag-actual {
+    background-color: var(--azul-logo);
     color: var(--blanco);
     border-radius: 1.5rem;
 }
@@ -173,4 +177,20 @@ body {
     margin: 1rem;
     display: block;
     align-items: center;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--azul-logo);
+    height: 40rem;
+}
+
+.footer h1 {
+    color: var(--blanco);
+    font-family: "Libre Baskerville", serif;
+    font-weight: 400;
+}
+
+.footer p {
+    color: var(--blanco);
 }
