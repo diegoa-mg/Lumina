@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="icon" type="image/png" href="img/logo/LogoPrincipal(fondo negro).png">
+    <title>UAT Online</title>
+
+    <link rel="preload" href="css/normalize.css" as="style">
+    <link rel="stylesheet" href="css/nomalize.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search" />
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <header>
+        <div class="nav-bg">
+
+            <!-- Logo -->
+            <div class="logo">
+                <img src="img/logo/LogoPrincipalTexto(fondo blanco).png" alt="Logo de la empresa">
+                <p>UAT Online</p>
+            </div>
+            <nav class="nav-principal">
+                <a href="index.html">Inicio</a>
+            </nav>
+
+        </div>
+    </header>
+    <div class="flex items-center justify-center min-h-screen bg-gray-100">
+      <div class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
+        <!-- left side -->
+        <div class="flex flex-col justify-center p-8 md:p-14">
+          <span class="mb-3 text-4xl font-bold">Iniciar Sesion</span>
+          <span class="font-light text-gray-400 mb-8"> Bienvenido de vuelta! porfavor ingresa tus datos</span>
+          <div class="py-4">
+            <span class="mb-2 text-md">Email</span>
+            <input type="text" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="email" id="email"/>
+          </div>
+          <div class="py-4">
+            <span class="mb-2 text-md">Password</span>
+            <input type="password" name="pass" id="pass" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
+          </div>
+          <div class="flex justify-between w-full py-4">
+            <div class="mr-24">
+              <input type="checkbox" name="ch" id="ch" class="mr-2" />
+              <span class="text-md">Recordar contraseña</span>
+            </div>
+            <span class="font-bold text-md"></span>
+          </div>
+          <button class="w-full bg-black text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300">
+            Entrar
+          </button>
+          <button class="w-full border border-gray-300 text-md p-2 rounded-lg mb-6 hover:bg-black hover:text-white">
+            <svg class="w-6 h-6 inline mr-2" >
+              <use href="./assets.svg#google"></use>
+            </svg>
+            Iniciar sesion con google
+          </button>
+          <div class="text-center text-gray-400">
+            No tienes cuenta?
+            <span class="font-bold text-black">Registrate aqui</span>
+          </div>
+        </div>
+        <!-- {/* right side */} -->
+        <div class="relative">
+          <img src="img/logo/Alternativa(fondo negro).png" alt="img" class="w-[400px] h-full hidden rounded-r-2xl md:block object-cover"/>
+          <!-- text on image  -->
+          <div class="absolute hidden bottom-10 right-20 p-20 bg-white bg-opacity-30 backdrop-blur-sm rounded drop-shadow-lg md:block">
+            <span class="text-black text-xl">We've been uesing Untitle to kick"<br />start every new project and can't <br />imagine working without it."
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

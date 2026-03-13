@@ -1,0 +1,145 @@
+:root {
+    --blanco: #ffffff;
+    --gris-claro: #e9e9f1;
+    --negro: #000000;
+    --azul-logo: #8bb7f4;
+    --celeste-bri: #00e3f8;
+    --celeste: #0dc8f3;
+    --principal: #19a2d9;
+    --secundario: #0f3ab5;
+    --boton-azul: #2643d4;
+    --grisetiqueta:  #10dfc0;
+}
+
+
+
+/* Corrección a tu tarjeta principal */
+.tarjeta-aviso {
+    background-color: rgb(250, 251, 253); /* Usamos el gris clarito */
+    border-radius: 1rem;
+    padding: 1.5rem 2rem;
+    width: 100%;
+    max-width: 80rem;
+    margin-bottom: 1.5rem; /* Separación si agregas más tarjetas */
+    font-family: 'Inter', sans-serif;
+}
+
+/* Estilos para el título principal de la página */
+.encabezado-pagina {
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 2rem;
+}
+.encabezado-pagina h1 {
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+.encabezado-pagina p {
+    color: #888;
+    margin-top: 0;
+}
+
+/* Estilos internos de la tarjeta */
+.tarjeta-header {
+    display: flex;
+    align-items: center; /* Centra todo verticalmente */
+    gap: 1.5rem; /* Espacio exacto entre el círculo rojo y el texto */
+    width: 100%;
+}
+
+.icono-principal {
+    min-width: 60px; /* Usar min-width evita que el círculo se aplaste como un óvalo */
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+.icono-principal .material-symbols-outlined {
+    font-size: 32px;
+}
+.bg-rojo {
+    background-color: #f75555; /* Color del círculo rojo */
+}
+
+.bg-rojo2{
+    background-color: #0f3ab5;
+}
+
+
+.titulos {
+    flex-grow: 1; /* Esto es la magia: empuja el botón "Urgente" todo hacia la derecha */
+    display: flex;
+    flex-direction: column;
+}
+.titulos h2 {
+    margin: 0;
+    color: var(--azul-logo);
+    font-weight: 500;
+    font-size: 1.4rem;
+}
+.titulos .fecha {
+    margin: 0;
+    color: #777;
+    font-size: 0.85rem;
+}
+
+.badge-urgente {
+    background-color: #ff474c;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px; /* Ligeramente redondeado */
+    font-size: 1.1rem;
+}
+
+.tarjeta-body {
+    margin-left: calc(60px + 1.5rem); /* Se salta el ancho del círculo rojo + el gap */
+    margin-top: 1rem;
+    color: #333;
+}
+
+
+.tarjeta-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: calc(60px + 1.5rem); /* Misma alineación que el cuerpo */
+    margin-top: 1.5rem;
+
+}
+
+.linea-negra {
+    flex-grow: 1; /* Hace que la línea se estire todo lo posible */
+    height: 2px;
+    background-color: black;
+}
+
+.icono-etiqueta {
+    color: var(--celeste);
+    display: flex;
+    align-items: center;
+}
+
+
+/* Esto fuerza a los íconos a mantener un tamaño normal */
+.material-symbols-outlined {
+    font-size: 28px !important; /* Tamaño fijo */
+    line-height: 1;
+    overflow: hidden;
+}
+
+.material-simbolo-linea {
+    font-size:28 !important;
+    line-height: 1;
+    overflow: hidden;
+}
+
+.contenedor-principal {
+    width: 100%;
+    max-width: 900px; /* Ajustamos el ancho para que se vea como en tu imagen */
+    margin: 0 auto !important; /* El !important fuerza el centrado por si otra cosa interfiere */
+    padding: 2rem 1rem;
+    box-sizing: border-box; /* Asegura que el padding no expanda el tamaño total */
+}
+
