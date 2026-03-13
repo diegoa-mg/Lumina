@@ -12,9 +12,10 @@
 }
 
 
+
 /* Corrección a tu tarjeta principal */
 .tarjeta-aviso {
-    background-color: var(--gris-claro); /* Usamos el gris clarito */
+    background-color: rgb(250, 251, 253); /* Usamos el gris clarito */
     border-radius: 1rem;
     padding: 1.5rem 2rem;
     width: 100%;
@@ -61,6 +62,11 @@
 .bg-rojo {
     background-color: #f75555; /* Color del círculo rojo */
 }
+
+.bg-rojo2{
+    background-color: #0f3ab5;
+}
+
 
 .titulos {
     flex-grow: 1; /* Esto es la magia: empuja el botón "Urgente" todo hacia la derecha */
@@ -119,6 +125,12 @@
 /* Esto fuerza a los íconos a mantener un tamaño normal */
 .material-symbols-outlined {
     font-size: 28px !important; /* Tamaño fijo */
+    line-height: 1;
+    overflow: hidden;
+}
+
+.material-simbolo-linea {
+    font-size:28 !important;
     line-height: 1;
     overflow: hidden;
 }
