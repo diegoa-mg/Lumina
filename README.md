@@ -1,4 +1,4 @@
-# proyectopi
+# UAT Online
 Plataforma web digital enfocada en la educación de calidad  cuyo objetivo es difundir contenidos educativos como artículos, noticias, recursos de aprendizaje y avisos académicos dentro de una institución
 
 Idea: Una ap enfocada en las universidades para agilizar la distribución de la información y de materiales didácticos de clases
