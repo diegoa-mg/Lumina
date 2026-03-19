@@ -67,6 +67,9 @@
     background-color: #0f3ab5;
 }
 
+.bg-rojo3{
+    background-color: #e9b141;
+}
 
 .titulos {
     flex-grow: 1; /* Esto es la magia: empuja el botón "Urgente" todo hacia la derecha */
@@ -106,7 +109,6 @@
     gap: 0.5rem;
     margin-left: calc(60px + 1.5rem); /* Misma alineación que el cuerpo */
     margin-top: 1.5rem;
-
 }
 
 .linea-negra {
@@ -119,6 +121,20 @@
     color: var(--celeste);
     display: flex;
     align-items: center;
+}
+
+/* Pastilla SOLO para el texto "Académico" */
+.etiqueta-blanca {
+    display: inline-flex;
+    align-items: center;
+    background-color: #e5e7eb;
+    color: var(--negro);
+    padding: 0.35rem 1.0rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 1.2rem;
+    line-height: 1;
+    white-space: nowrap;
 }
 
 
@@ -142,4 +158,143 @@
     padding: 2rem 1rem;
     box-sizing: border-box; /* Asegura que el padding no expanda el tamaño total */
 }
+.search-container {
+    display: flex;
+    align-items: center;
+    background: var(--gris-claro);
+    border-radius: 1.5rem;
+    padding: 1.2rem;
+    height: 4rem;
+}
 
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-size: 16px;
+    background-color: var(--gris-claro); /* Usando el gris del index */
+    font-family: var(--fuente-principal);
+    color: var(--texto-oscuro);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- SECCIÓN DE NAVEGACIÓN (ESTILO INDEX) --- */
+
+header {
+    background-color: var(--blanco);
+    border-bottom: 1px solid var(--gris-suave);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+}
+
+.nav-bg {
+    background-color: var(--blanco);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+    .nav-bg {
+        flex-direction: row;
+        align-items: center;
+        max-width: 1280px; /* Alineación con el contenedor de recursos */
+        margin: 0 auto;
+    }
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.logo img {
+    height: 6rem;
+    width: auto;
+}
+
+.logo p {
+    font-family: "Libre Baskerville", serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin: 0;  
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background: var(--gris-claro);
+    border-radius: 1.5rem;
+    padding: 1.2rem;
+    height: 4rem;
+}
+
+@media (min-width: 768px) {
+    .search-container {
+        width: 35%;
+        margin: 0 1.5rem;
+    }
+}
+
+.search {
+    font-size: 1.5rem;
+    font-family: "Inter", sans-serif;
+    margin-left: 1.2rem;
+    outline: none;
+    border: none;
+    background: transparent;
+    color: var(--negro);
+    width: 100%;
+}
+
+.search::placeholder,
+.search-icon {
+    color: rgba(0, 0, 0, 0.75);
+}
+
+.nav-principal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .nav-principal {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.nav-principal a {
+    display: block;
+    color: var(--negro);
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 1.8rem;
+    font-family: "Inter", sans-serif;
+    padding: 1.2rem;
+    transition: all 0.2s;
+}
+
+.nav-principal a:hover {
+    background-color: transparent;
+    color: var(--negro);
+    border-radius: 1.5rem;
+}
+
+.nav-principal a:visited {
+    color: var(--negro);
+}
+
+/* Clase especial para el botón cuenta para que mantenga el icono alineado */
+.btn-cuenta {
+    display: flex !important;
+    align-items: center;
+    gap: 0.5rem;
+}
