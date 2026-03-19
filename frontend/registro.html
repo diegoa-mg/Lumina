@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <link rel="icon" type="image/png" href="img/logo/LogoPrincipal(fondo negro).png">
-    <title>UAT Online - Iniciar sesión</title>
+    <title>UAT Online</title>
 
     <link rel="preload" href="css/normalize.css" as="style">
     <link rel="stylesheet" href="css/nomalize.css">
@@ -24,17 +24,10 @@
         <div class="nav-bg">
 
             <!-- Logo -->
-            <div class="logo" href="index.html">
+            <div class="logo">
                 <img src="img/logo/LogoPrincipalTexto(fondo blanco).png" alt="Logo de la empresa">
                 <p>UAT Online</p>
             </div>
-            
-            <!-- Barra de búsqueda -->
-            <div class="search-container">
-                <span class="search-icon material-symbols-outlined">search</span>
-                <input class="search" type="search" placeholder="Buscar...">
-            </div>
-
             <nav class="nav-principal">
                 <a href="index.html">Inicio</a>
             </nav>
@@ -45,11 +38,19 @@
       <div class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
         <!-- left side -->
         <div class="flex flex-col justify-center p-8 md:p-14">
-          <span class="mb-3 text-4xl font-bold">Iniciar Sesion</span>
-          <span class="font-light text-gray-400 mb-8"> Bienvenido de vuelta! porfavor ingresa tus datos</span>
+          <span class="mb-3 text-4xl font-bold">Registrarse</span>
+          <span class="font-light text-gray-400 mb-8"> Bienvenido! porfavor ingresa tus datos</span>
+          <div class="py-4">
+            <span class="mb-2 text-md">Name</span>
+            <input type="text" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="name" id="name"/>
+          </div>
+          <div class="py-4">
+            <span class="mb-2 text-md">Username</span>
+            <input type="text" name="username" id="username" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
+          </div>
           <div class="py-4">
             <span class="mb-2 text-md">Email</span>
-            <input type="text" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="email" id="email"/>
+            <input type="text" name="email" id="email" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
           </div>
           <div class="py-4">
             <span class="mb-2 text-md">Password</span>
@@ -63,7 +64,7 @@
             <span class="font-bold text-md"></span>
           </div>
           <button class="w-full bg-black text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300">
-            Entrar
+            Register
           </button>
           <button class="w-full border border-gray-300 text-md p-2 rounded-lg mb-6 hover:bg-black hover:text-white">
             <svg class="w-6 h-6 inline mr-2" >
@@ -72,13 +73,12 @@
             Iniciar sesion con google
           </button>
           <div class="text-center text-gray-400">
-            No tienes cuenta?
-            <span class="font-bold text-black"> <a href="registro.html">Registrate aqui</a></span>
+            <span class="font-bold text-black"></span>
           </div>
         </div>
         <!-- {/* right side */} -->
         <div class="relative">
-          <img src="img/logo/LogoPrincipal(fondo blanco).png" alt="img" class="w-[400px] h-full hidden rounded-r-2xl md:block object-cover"/>
+          <img src="img/logo/Alternativa(fondo negro).png" alt="img" class="w-[400px] h-full hidden rounded-r-2xl md:block object-cover"/>
           <!-- text on image  -->
           <div class="absolute hidden bottom-10 right-20 p-20 bg-white bg-opacity-30 backdrop-blur-sm rounded drop-shadow-lg md:block">
             <span class="text-black text-xl">We've been uesing Untitle to kick"<br />start every new project and can't <br />imagine working without it."
