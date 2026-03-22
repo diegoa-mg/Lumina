@@ -128,11 +128,11 @@
 
 
 /* Esto fuerza a los íconos a mantener un tamaño normal */
-.material-symbols-outlined {
-    font-size: 28px !important; /* Tamaño fijo */
+/*.material-symbols-outlined {
+    font-size: 28px !important; /* Tamaño fijo
     line-height: 1;
     overflow: hidden;
-}
+} */
 
 .material-simbolo-linea {
     font-size:28 !important;
