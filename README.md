@@ -1,8 +1,8 @@
-# UAT Online 🎓
-Plataforma de difusión digital académica alineada con el ODS 4.
+# Lumina 🎓
+Claridad a la información académica.
 
 ## 📝 Descripción
-**UAT Online** es una plataforma web desarrollada para la **Universidad Autónoma de Tecnologías (UAT)**. El proyecto centraliza noticias educativas, recursos académicos y convocatorias de becas en un solo lugar, combatiendo la fragmentación de la información.
+**Lumina** es una plataforma web desarrollada para las universidades. El proyecto centraliza noticias educativas, recursos académicos y convocatorias de becas en un solo lugar, combatiendo la fragmentación de la información.
 
 Este sistema está diseñado bajo los principios del **Objetivo de Desarrollo Sostenible 4 (Educación de Calidad)** de la ONU, buscando reducir la brecha informativa en la comunidad estudiantil y docente.
 
