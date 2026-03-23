@@ -1,0 +1,14 @@
+# Ignorar carpetas pesadas en cualquier subdirectorio
+**/node_modules/
+**/dist/
+
+# Ignorar archivos temporales
+.DS_Store
+Thumbs.db
+
+# Ignorar configuraciones locales de VS Code
+.vscode/
+
+# Ignorar logs de error de PHP
+error_log
+php_errors.log

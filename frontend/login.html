@@ -9,7 +9,7 @@
     <title>UAT Online - Iniciar sesión</title>
 
     <link rel="preload" href="css/normalize.css" as="style">
-    <link rel="stylesheet" href="css/nomalize.css">
+    <link rel="stylesheet" href="css/normalize.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">  
@@ -43,41 +43,46 @@
       <div class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
         <!-- left side -->
         <div class="flex flex-col justify-center p-8 md:p-14">
-          <span class="mb-3 text-4xl font-bold">Iniciar Sesion</span>
-          <span class="font-light text-gray-400 mb-8"> Bienvenido de vuelta! Por favor ingresa tus datos</span>
+          <span class="mb-3 text-4xl font-bold">Iniciar Sesión</span>
+          <span class="font-light text-gray-400 mb-8"> ¡Bienvenido de vuelta! Por favor ingresa tus datos</span>
           
-          <div class="py-4">
-            <span class="mb-2 text-md">Correo</span>
-            <input type="text" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="email" id="email"/>
-          </div>
-          
-          <div class="py-4">
-            <span class="mb-2 text-md">Contraseña</span>
-            <input type="password" name="pass" id="pass" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
-          </div>
-          
-          <div class="flex justify-between w-full py-4">
-            <div class="mr-24">
-              <input type="checkbox" name="ch" id="ch" class="mr-2" />
-              <span class="text-md">Recordar contraseña</span>
+          <!-- Formulario Login -->
+          <form action="../backend/login_usuario_be.php" method="POST">
+
+            <div class="py-4">
+              <span class="mb-2 text-md">Correo</span>
+              <input type="text" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="email" id="email" required/>
             </div>
-            <span class="font-bold text-md"></span>
-          </div>
-          
-          <button class="w-full bg-black text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300">
-            Entrar
-          </button>
-          
+            
+            <div class="py-4">
+              <span class="mb-2 text-md">Contraseña</span>
+              <input type="password" name="pass" id="pass" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" required/>
+            </div>
+            
+            <div class="flex justify-between w-full py-4">
+              <div class="mr-24">
+                <input type="checkbox" name="ch" id="ch" class="mr-2" />
+                <span class="text-md">Recordar contraseña</span>
+              </div>
+              <span class="font-bold text-md"></span>
+            </div>
+            
+            <button type="submit" class="w-full bg-black text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300">
+              Entrar
+            </button>
+
+          </form>
+
           <button class="w-full border border-gray-300 text-md p-2 rounded-lg mb-6 hover:bg-black hover:text-white">
             <svg class="w-6 h-6 inline mr-2" >
               <use href="./assets.svg#google"></use>
             </svg>
-            Iniciar sesion con google
+            Iniciar sesión con Google
           </button>
-          
+
           <div class="text-center text-gray-400">
-            No tienes cuenta?
-            <span class="font-bold text-black"> <a href="registro.html">Registrate aqui</a></span>
+            ¿No tienes cuenta?
+            <span class="font-bold text-black"> <a href="registro.html">Regístrate aquí</a></span>
           </div>
         
         </div>

@@ -73,6 +73,37 @@
     </main>
 
 </body>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.querySelector('.nav-principal'); // Seleccionamos tu nav actual
+    const estaLogueado = localStorage.getItem('sesion_activa');
+
+    if (estaLogueado === 'true') {
+        // Si el usuario ya entró, mostramos todo
+        nav.innerHTML = `
+            <a href="index.html">Inicio</a>
+            <a href="avisos.html">Avisos</a>
+            <a href="recursos.html">Recursos</a>
+            <a href="#" id="btn-salir" style="color: #ff474c; font-weight: bold;">Cerrar Sesión</a>
+        `;
+
+        // Lógica para el botón de salir
+        document.getElementById('btn-salir').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('sesion_activa');
+            window.location.reload(); // Recarga para volver al menú de invitado
+        });
+    } else {
+        // Si es un invitado, solo ve Inicio e Iniciar Sesión
+        nav.innerHTML = `
+            <a href="index.html">Inicio</a>
+            <a href="login.html">Iniciar Sesión</a>
+        `;
+    }
+});
+</script>
+
 <footer class="footer">
     <section class="contenido-footer">
         <h1>UAT Online</h1>
