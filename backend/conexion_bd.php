@@ -22,7 +22,7 @@ VALUES ('$usuario', '$correo', '$password_segura', '$rol_id')";
 
 if ($conexion->query($sql) === TRUE) {
     echo "<h2>¡Registro exitoso!</h2>";
-    echo "<a href='index.html'>Volver al inicio</a>";
+    echo "<a href='../frontend/login.html'>Volver al inicio</a>";
 } else {
     echo "Error: " . $conexion->error;
 }
