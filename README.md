@@ -1,12 +1,21 @@
-# Lumina 🎓
-Claridad a la información académica.
+<br />
+<div align="center">
+  <a href="https://github.com/tu-usuario/Lumina">
+    <img src="frontend/img/logo/Logo%20Lumina%20(Fondo%20Blanco)%20Horizontal.png" alt="Logo Lumina" width="300" style="border-radius: 15px; border: 1px solid #ddd;">
+  </a>
 
-## 📝 Descripción
-**Lumina** es una plataforma web desarrollada para instituciones académicas. El proyecto centraliza noticias educativas, recursos académicos y convocatorias de becas en un solo lugar, combatiendo la fragmentación de la información.
+  <h1 align="center">Lumina 🎓</h1>
 
-Este sistema está diseñado bajo los principios del **Objetivo de Desarrollo Sostenible 4 (Educación de Calidad)** de la ONU, buscando reducir la brecha informativa en la comunidad estudiantil y docente.
+  <p align="center">
+    <strong>Claridad a la información académica</strong>
+    <br />
+    <a href="https://github.com/tu-usuario/Lumina">Explorar Documentación »</a>
+    <br />
+    <br />
+  </p>
+</div>
 
----
+<br />
 
 ## 🛠️ Tecnologías Utilizadas
 | Tecnología | Uso |
