@@ -1,4 +1,3 @@
-<img width="2000" height="2000" alt="Logo Lumina (Fondo Blanco) Horizontal" src="https://github.com/user-attachments/assets/0a2106a1-00b1-42b1-8cd0-5c6f484f0042" />
 # Lumina 🎓
 Claridad a la información académica.
 
