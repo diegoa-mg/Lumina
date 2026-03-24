@@ -4,7 +4,11 @@
     <img src="frontend/img/logo/Logo%20Lumina%20(Fondo%20Blanco)%20Horizontal.png" alt="Logo Lumina" width="800" style="border-radius: 15px; border: 1px solid #ddd;">
   </a>
 
-  <h1 align="center">Lumina 🎓</h1>
+  <div id="user-content-toc">
+    <ul align="center">
+      <summary><h1 style="display: inline-block"><b>Lumina 🎓</b></h1></summary>
+    </ul>
+  </div>
 
   <p align="center">
     <strong>Claridad a la información académica</strong>
