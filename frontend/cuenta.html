@@ -200,25 +200,28 @@
         <p class="copy">2026 Universidad Autónoma de Tecnologías</p>
     </footer>
 
-    <script>
-    localStorage.setItem("sesionactiva", "true");
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const btnCerrar = document.getElementById("btn-cerrar-cuenta");
-
-        if (btnCerrar) {
-            btnCerrar.addEventListener("click", (e) => {
-                e.preventDefault();
-                localStorage.removeItem("sesionactiva");
-                window.location.href = "index.html";
-            });
-        }
-
-        const estaLogueado = localStorage.getItem("sesionactiva");
-        if (estaLogueado !== "true") {
-            window.location.href = "login.html";
-        }
-    });
-</script>
 </body>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const btnCerrar = document.getElementById('btn-cerrar-cuenta');
+
+    if (btnCerrar) {
+        btnCerrar.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // 1. Borramos la sesión del navegador
+            localStorage.removeItem('sesion_activa');
+            
+            // 2. Redirigimos al inicio
+            window.location.href = 'index.html';
+        });
+    }
+
+    // OPCIONAL: Si alguien intenta entrar a cuenta.html sin estar logueado, lo regresamos
+    const estaLogueado = localStorage.getItem('sesion_activa');
+    if (estaLogueado !== 'true') {
+        window.location.href = 'login.html';
+    }
+});
+</script>
 </html>
