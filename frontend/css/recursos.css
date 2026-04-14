@@ -148,3 +148,42 @@ body {
     color: #ef4444;
     font-weight: bold;
 }
+
+/* Ajuste para que el marcador se vaya a la derecha */
+.meta-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+}
+
+/* Estilo para los botones */
+.btn-invisible, .btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: inherit;
+    transition: transform 0.2s ease;
+}
+
+.btn-invisible:hover, .btn-icon:hover {
+    transform: scale(1.15);
+    color: var(--azul-primario);
+}
+
+.footer-card {
+    border-top: 0.1rem solid #f3f4f6;
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1.5rem; /* Espacio entre Like y Guardar */
+    color: #ef4444; /* Color rojo para el corazón */
+    font-weight: bold;
+}

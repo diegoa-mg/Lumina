@@ -11,8 +11,10 @@ if(mysqli_num_rows($validar_login) > 0){
     $usuario = mysqli_fetch_assoc($validar_login);
     
     if(password_verify($password, $usuario['password'])){
+        // CLAVE: Guardamos el ID para las reacciones
+        $_SESSION['usuario_id'] = $usuario['id']; 
         $_SESSION['usuario'] = $usuario['usuarios'];
-        // Usamos JS para asegurar que el navegador guarde la sesión
+        
         echo '<script>
             localStorage.setItem("sesion_activa", "true");
             window.location.href = "../frontend/index.html";
