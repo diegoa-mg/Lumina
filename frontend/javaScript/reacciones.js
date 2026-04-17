@@ -1,4 +1,18 @@
-function reaccionar(id, seccion, tipo) {
+function reaccionar(boton, id, seccion, tipo) {
+
+    boton.classList.add('animar-click'); // Hace que el botón "salte"
+    // 2. Aplicar color según el TIPO
+    if (tipo === 'like') {
+        boton.classList.toggle('like-activo');
+    } else if (tipo === 'guardado') {
+        boton.classList.toggle('save-activo');
+    }
+
+    // Quitamos la clase de salto después de 300ms para que se pueda repetir
+    setTimeout(() => {
+        boton.classList.remove('animar-click');
+    }, 300);
+
     const datos = new FormData();
     datos.append('elemento_id', id);
     datos.append('seccion', seccion);
@@ -24,4 +38,6 @@ function reaccionar(id, seccion, tipo) {
     .catch(error => {
         console.error('Error en la comunicación:', error);
     });
+
+
 }
