@@ -1,0 +1,30 @@
+:root {
+    --blanco: #ffffff;
+    --gris-claro: #e9e9f1;
+    --fondo: #f4f4f4;
+    --negro: #000000;
+    --azul-logo: #001430;
+    --celeste-bri: #00e3f8;
+    --celeste: #0dc8f3;
+    --principal: #19a2d9;
+    --secundario: #0f3ab5;
+    --boton-azul: #2643d4;
+    --fuente-principal: 'Inter', sans-serif;
+}
+
+/* Globales */
+html {
+    font-size: 62.5%;
+    box-sizing: border-box; /* Hack para Box Model */
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+    font-size: 16px; /* 1rem = 10px */
+    background-color: var(--gris-claro);
+    margin: 0;
+    font-family: var(--fuente-principal);
+}
