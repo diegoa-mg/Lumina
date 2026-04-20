@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="icon" type="image/png" href="img/logo/Logo Lumina - Sin texto.png">
-    <title>Lumina - Inicio</title>
+    <title>Lumina - Calendario</title>
 
     <link rel="preload" href="css/normalize.css" as="style">
     <link rel="stylesheet" href="css/normalize.css">
@@ -38,36 +38,25 @@
 
             <nav class="nav-principal">
                 <a href="index.html">Inicio</a>
-                <a href="login.html">Iniciar Sesión</a>
+                <a href="avisos.html">Avisos</a>
+                <a href="recursos.html">Recursos</a>
+                <a href="calendario.html">Calendario</a>
+                <a href="cuenta.html" class="btn-cuenta-estilo active-link">Cuenta</a>
             </nav>
 
         </div>
     </header>
     
-    <!-- Heading --> 
-    <section class="uni">
-        <section class="contenido-uni">
-            <div class="ubicacion">
-                <h2>Bienvenido a<br>Lumina: <br><span>Claridad a la información académica.</span></h2>
-                <p>Plataforma de publicación digital para<br>instituciones académicas.</p>
-            </div> 
-        </section>
-    </section>
-    
     <!-- Contenido Principal -->
     <main>
-        <section class="ultimas-publi">
-
+        <section class="encabezado">
+            <h1>Calendario Académico</h1>
+            <p>Aquí encontrarás las fechas importantes del calendario académico, incluyendo inscripciones, exámenes y eventos.</p>
         </section>
 
-        <section class="material-clases">
-
-        </section>
-
-        <section class="salon-fama">
-
-        </section>
-
+        <div class="calendario-container">
+            
+        </div> 
     </main>
 
 </body>
@@ -80,34 +69,4 @@
     <p class="copy">© 2026 Lumina: Claridad a la información</p>
 </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const nav = document.querySelector('.nav-principal'); // Seleccionamos tu nav actual
-    const estaLogueado = localStorage.getItem('sesion_activa');
-
-    if (estaLogueado === 'true') {
-        // Si el usuario ya entró, mostramos todo
-        nav.innerHTML = `
-            <a href="index.html">Inicio</a>
-            <a href="avisos.html">Avisos</a>
-            <a href="recursos.html">Recursos</a>
-            <a href="calendario.html">Calendario</a>
-            <a href="cuenta.html">Cuenta</a>
-        `;
-
-        // Lógica para el botón de salir
-        document.getElementById('btn-salir').addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('sesion_activa');
-            window.location.reload(); // Recarga para volver al menú de invitado
-        });
-    } else {
-        // Si es un invitado, solo ve Inicio e Iniciar Sesión
-        nav.innerHTML = `
-            <a href="index.html">Inicio</a>
-            <a href="login.html">Iniciar Sesión</a>
-        `;
-    }
-});
-</script>
 </html>
