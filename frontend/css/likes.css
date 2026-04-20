@@ -1,0 +1,115 @@
+/* 1. Centrar el título de la página como en el mockup */
+.recursos-main h1 {
+    text-align: center;
+    margin-bottom: 4rem;
+    font-size: 3.5rem;
+    padding-bottom: 2rem;
+}
+
+.contenedor-principal-likes {
+    width: 100%;
+    max-width: 850px; 
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tarjeta-horizontal {
+    background-color: #fafbfd; 
+    border-radius: 1.2rem;
+    border: 1px solid #e5e7eb;
+    display: flex; 
+    align-items: center; 
+    padding: 1.5rem; 
+    gap: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.tarjeta-horizontal:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.imagen-lateral {
+    flex: 0 0 200px; 
+    height: 120px;
+}
+
+.imagen-lateral img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.8rem;
+}
+
+.contenido-derecha {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.contenido-derecha h4 {
+    font-size: 1.7rem;
+    margin: 0;
+    color: #111827;
+}
+
+/* 2. Ajuste de imágenes de perfil (No más estiradas) */
+.autor-info {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+.autor-info img {
+    width: 3.5rem;  /* Tamaño fijo */
+    height: 3.5rem; /* Tamaño fijo */
+    border-radius: 50%; /* Círculo perfecto */
+    object-fit: cover;  /* Mantiene proporción sin estirar */
+    flex-shrink: 0;     /* Evita que se aplaste */
+}
+
+.nombre-autor {
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.fecha-autor {
+    font-size: 1.1rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.extracto {
+    font-size: 1.3rem;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.footer-card {
+    border-top: 1px solid #f3f4f6;
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-invisible {
+    color: #ef4444; 
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
