@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="icon" type="image/png" href="img/logo/Logo Lumina - Sin texto.png">
-    <title>Lumina - Me gusta</title>
+    <title>Lumina - Favoritos</title>
 
     <link rel="preload" href="css/normalize.css" as="style">
     <link rel="stylesheet" href="css/normalize.css">
@@ -13,9 +13,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">  
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search" />
-    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
     <link rel="preload" href="css/styles.css" as="style">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/likes.css  ">
+    <link rel="stylesheet" href="css/recursos.css">
+
 
 </head>
 <body>
@@ -47,8 +51,99 @@
     </header>
     
     <!-- Contenido Principal -->
-    <main>
+    <main class="recursos-main">
+        <h1>Favoritos</h1>
 
+        <div class="contenedor-principal-likes">
+            <article class="tarjeta-horizontal">
+                <div class="imagen-lateral">
+                    <img src="img/clases/clase2.png" alt="C++">
+                </div>
+                
+                <div class="contenido-derecha">
+                    <div class="meta-info">
+                        <span class="etiqueta-gris">Aviso</span>
+                        <button class="btn-icon">
+                            <span class="material-symbols-outlined">bookmark</span>
+                        </button>
+                    </div>
+
+                    <h4>Concurso de programación en c++</h4>
+
+                    <div class="autor-info">
+                        <img src="img/usuarios/usuarios2.png" alt="Autor">
+                        <div>
+                            <p class="nombre-autor">Mauricio Alvarado</p>
+                            <p class="fecha-autor">12/Febrero/2026</p>
+                        </div>
+                    </div>
+
+                    <p class="extracto">Demuestra tus habilidades en el lenguaje C++ y compite por grandes premios en el evento anual de Lumina.</p>
+
+                    <div class="footer-card">
+                        <button class="btn-invisible">
+                            <span class="material-symbols-outlined">favorite</span> Me gusta
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="tarjeta-horizontal">
+                <div class="imagen-lateral">
+                    <img src="img/clases/clase2.png" alt="Estructuras">
+                </div>
+                <div class="contenido-derecha">
+                    <div class="meta-info">
+                        <span class="etiqueta-gris">Aviso</span>
+                        <button class="btn-icon">
+                            <span class="material-symbols-outlined">bookmark</span>
+                        </button>
+                    </div>
+                    <h4>Taller de Estructuras de Datos</h4>
+                    <div class="autor-info">
+                        <img src="img/usuarios/usuarios3.png" alt="Autor">
+                        <div>
+                            <p class="nombre-autor">Hannah Zúñiga</p>
+                            <p class="fecha-autor">15/Marzo/2026</p>
+                        </div>
+                    </div>
+                    <p class="extracto">Domina pilas, colas y árboles binarios en este taller práctico diseñado para estudiantes de ingeniería.</p>
+                    <div class="footer-card">
+                        <button class="btn-invisible">
+                            <span class="material-symbols-outlined">favorite</span> Me gusta
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="tarjeta-horizontal">
+                <div class="imagen-lateral">
+                    <img src="img/clases/clase2.png" alt="Python">
+                </div>
+                <div class="contenido-derecha">
+                    <div class="meta-info">
+                        <span class="etiqueta-gris">Aviso</span>
+                        <button class="btn-icon">
+                            <span class="material-symbols-outlined">bookmark</span>
+                        </button>
+                    </div>
+                    <h4>Introducción a Python</h4>
+                    <div class="autor-info">
+                        <img src="img/usuarios/usuarios4.png" alt="Autor">
+                        <div>
+                            <p class="nombre-autor">Maria Pedrera</p>
+                            <p class="fecha-autor">12/Febrero/2026</p>
+                        </div>
+                    </div>
+                    <p class="extracto">¿Nuevo en la programación? Comienza con Python, el lenguaje más versátil y demandado del mercado actual.</p>
+                    <div class="footer-card">
+                        <button class="btn-invisible">
+                            <span class="material-symbols-outlined">favorite</span> Me gusta
+                        </button>
+                    </div>
+                </div>
+            </article>
+        </div>
     </main>
 
 </body>
