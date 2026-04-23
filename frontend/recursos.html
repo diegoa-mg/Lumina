@@ -13,10 +13,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preload" href="css/recursos.css" as="style">
     <link rel="stylesheet" href="css/recursos.css">
+    <link rel="preload" href="css/navbar.css" as="style">
+    <link rel="stylesheet" href="css/navbar.css">
     <link rel="preload" href="css/styles.css" as="style">
     <link rel="stylesheet" href="css/styles.css">
 
@@ -38,9 +40,21 @@
             <nav class="nav-principal">
                 <a href="index.html">Inicio</a>
                 <a href="avisos.html">Avisos</a>
-                <a href="recursos.html">Recursos</a>
+                <a href="recursos.html" class="active-link">Recursos</a>
                 <a href="calendario.html">Calendario</a>
-                <a href="cuenta.html" class="btn-cuenta-estilo">Cuenta</a>
+                <div class="dropdown-container">
+                    <button id="btn-cuenta" class="btn-cuenta-estilo">
+                        <span>Cuenta</span>
+                        <span class="material-symbols-outlined">expand_more</span>
+                    </button>
+                    <div id="menu-dropdown" class="dropdown-content">
+                        <a href="cuenta.html">Ajustes</a>
+                        <a href="autor.html" class="autor-opt">Panel Autor</a>
+                        <a href="admin.html" class="admin-opt">Panel Admin</a> 
+                        <hr>
+                        <a href="#" id="cerrar-sesion" class="logout">Cerrar Sesión</a>
+                    </div>
+                </div>
             </nav>
         </div>
     </header>
@@ -294,7 +308,9 @@
         <p class="copy">© 2026 Lumina: Claridad a la información</p>
     </footer>
 
-    <script src="javaScript/reacciones.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/menu_ui.js"></script>
+    <script src="js/reacciones.js"></script>
 
 </body>
 </html>

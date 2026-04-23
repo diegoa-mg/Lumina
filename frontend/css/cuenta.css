@@ -285,11 +285,6 @@ a {
     opacity: 0.96;
 }
 
-.active-link {
-    background-color: var(--gris-claro);
-    border-radius: 1.5rem;
-}
-
 @media (max-width: 900px) {
     .cuenta-grid {
         grid-template-columns: 1fr;
