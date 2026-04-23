@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3-1.fc43
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 24-03-2026 a las 04:18:49
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Servidor: localhost
+-- Tiempo de generación: 23-04-2026 a las 15:22:41
+-- Versión del servidor: 10.11.16-MariaDB
+-- Versión de PHP: 8.4.20
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,8 +18,34 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `login_bd`
+-- Base de datos: `lumina_bd`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categorias`
+--
+
+CREATE TABLE `categorias` (
+  `id` int(11) NOT NULL,
+  `nombre_categoria` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `reacciones`
+--
+
+CREATE TABLE `reacciones` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `elemento_id` int(11) NOT NULL,
+  `seccion` varchar(50) NOT NULL,
+  `tipo_reaccion` varchar(20) NOT NULL,
+  `fecha` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -69,6 +95,20 @@ INSERT INTO `usuarios` (`id`, `nombre`, `usuarios`, `correo`, `password`, `rol_i
 --
 
 --
+-- Indices de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre_categoria` (`nombre_categoria`);
+
+--
+-- Indices de la tabla `reacciones`
+--
+ALTER TABLE `reacciones`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_usuario_reaccion` (`usuario_id`);
+
+--
 -- Indices de la tabla `roles`
 --
 ALTER TABLE `roles`
@@ -87,6 +127,18 @@ ALTER TABLE `usuarios`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `reacciones`
+--
+ALTER TABLE `reacciones`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
@@ -101,6 +153,12 @@ ALTER TABLE `usuarios`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `reacciones`
+--
+ALTER TABLE `reacciones`
+  ADD CONSTRAINT `fk_usuario_reaccion` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `usuarios`
