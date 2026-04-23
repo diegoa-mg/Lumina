@@ -14,9 +14,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">  
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search" />
     
+    <link rel="preload" href="css/calendario.css" as="style">
+    <link rel="stylesheet" href="css/calendario.css">
     <link rel="preload" href="css/styles.css" as="style">
     <link rel="stylesheet" href="css/styles.css">
-
+    
 </head>
 <body>
     <!-- Menú de Navegación -->
@@ -49,14 +51,17 @@
     
     <!-- Contenido Principal -->
     <main>
-        <section class="encabezado">
-            <h1>Calendario Académico</h1>
-            <p>Aquí encontrarás las fechas importantes del calendario académico, incluyendo inscripciones, exámenes y eventos.</p>
-        </section>
+        <div class="contenedor-principal">
+            <section class="encabezado">
+                <h1>Calendario Académico</h1>
+                <p>Aquí encontrarás las fechas importantes del calendario académico, incluyendo inscripciones, exámenes y eventos.</p>
+            </section>
+        </div>
 
         <div class="calendario-container">
-            
-        </div> 
+            <img class="cal-desktop" src="img/calendar/Calendario_Lumina_Horizontal.webp" alt="Calendario académico Lumina">
+            <img class="cal-mobile"  src="img/calendar/Calendario_Lumina_Vertical.webp"   alt="Calendario académico Lumina">
+        </div>
     </main>
 
 </body>

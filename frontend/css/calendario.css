@@ -28,3 +28,49 @@ body {
     margin: 0;
     font-family: var(--fuente-principal);
 }
+
+.contenedor-principal {
+    width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+}
+
+.encabezado {
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 2rem;
+}
+
+.encabezado h1 {
+    font-size: 3.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.encabezado p {
+    color: #888;
+    margin-top: 0;
+}
+
+.calendario-container {
+    width: 100%;
+    margin: 2rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.calendario-container img {
+    max-width: 75%;
+    height: auto;
+    border-radius: 1.2rem;
+}
+
+.cal-mobile { 
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .cal-desktop { display: none; }
+    .cal-mobile  { display: block; }
+}
