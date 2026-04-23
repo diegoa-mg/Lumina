@@ -113,3 +113,36 @@
     border: none;
     cursor: pointer;
 }
+.contenedor-volver {
+    max-width: 1500px; /* Ajusta esto al ancho de tu diseño */
+    margin: 20px auto 0 auto;
+    padding: 0 20px;
+}
+
+.btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    /* Aplicamos la transición a todo el botón */
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.btn-volver .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.btn-volver:hover {
+    color: #000;
+    /* Ahora movemos todo el bloque: flecha + texto */
+    transform: translateX(-5px);
+}
+
+/* Efecto opcional: la flecha se mueve un poco a la izquierda al pasar el mouse */
+.btn-volver:hover .material-symbols-outlined {
+    transform: translateX(-4px);
+}
