@@ -1,5 +1,5 @@
 -- Asegúrate de estar en la base de datos login_bd
-USE `login_bd`;
+USE `lumina_bd`;
 
 CREATE TABLE `reacciones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
