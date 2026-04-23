@@ -31,7 +31,7 @@ body {
 
 .contenedor-principal {
     width: 100%;
-    max-width: 1450px;
+    max-width: 100rem;
     margin: 0 auto;
     padding: 2rem 1rem;
     box-sizing: border-box;
