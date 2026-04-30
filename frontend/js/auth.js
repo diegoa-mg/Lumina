@@ -18,8 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 </button>
                 <div id="menu-dropdown" class="dropdown-content">
                     <a href="cuenta.html">Ajustes</a>
-                    <a href="autor.html" class="autor-opt">Panel Autor</a>
-                    <a href="admin.html" class="admin-opt">Panel Admin</a> 
+                    <a href="dashboard_autor.html" class="autor-opt">Panel Autor</a>
+                    <a href="dashboard_editor.html" class="autor-opt">Panel Editor</a>
+                    <a href="dashboard_admin.html" class="admin-opt">Panel Admin</a> 
                     <hr>
                     <a href="#" id="cerrar-sesion" class="logout">Cerrar Sesión</a>
                 </div>
