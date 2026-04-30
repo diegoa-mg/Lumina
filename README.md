@@ -50,6 +50,6 @@ Este sistema está diseñado bajo los principios del **Objetivo de Desarrollo So
 ---
 
 ## 💻 Instalación Local
-1. Clona el repositorio: `git clone https://github.com/tu-usuario/Lumina.git`
+1. Clona el repositorio: `git clone https://github.com/diegoa-mg/Lumina.git`
 2. Sube los archivos a un servidor local (como XAMPP) para ejecutar PHP.
 3. Abre `index.html` en tu navegador.
