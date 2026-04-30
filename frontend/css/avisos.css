@@ -1,15 +1,3 @@
-:root {
-    --blanco: #ffffff;
-    --gris-claro: #e9e9f1;
-    --negro: #000000;
-    --azul-logo: #001430;
-    --gris-suave: #e5e7eb;
-    --texto-oscuro: #111827;
-    --texto-gris: #6b7280;
-    --fuente-principal: 'Inter', sans-serif;
-    --azul-primario: #1d4ed8; 
-}
-
 /* Corrección a tu tarjeta principal */
 .tarjeta-aviso {
     background-color: rgb(250, 251, 253); /* Usamos el gris clarito */
@@ -133,14 +121,6 @@
     line-height: 1;
     white-space: nowrap;
 }
-
-
-/* Esto fuerza a los íconos a mantener un tamaño normal */
-/*.material-symbols-outlined {
-    font-size: 28px !important; /* Tamaño fijo
-    line-height: 1;
-    overflow: hidden;
-} */
 
 .material-simbolo-linea {
     font-size:28 !important;
