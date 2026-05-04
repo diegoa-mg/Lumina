@@ -75,7 +75,7 @@
             
             <div class="group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer">
                 <img src="img/materias/POO1.webp" alt="POO" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-blue-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <a href="materia1.html" class="absolute inset-0 flex flex-col items-center justify-center bg-blue-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                         <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
                         Programación Orientada a Objetos
                         </h3>
@@ -84,7 +84,7 @@
                                 <p class="text-blue-200 text-xs mt-3 font-semibold uppercase tracking-widest">
                                 Ver Contenido
                                 </p>
-                    </div>
+                    </a>
             </div>
 
             <div class="group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer">
@@ -186,7 +186,7 @@
             </div>
         </div>
 
-        <section class="w-full bg-gray-100 rounded-3xl p-8 relative overflow-hidden">
+        <section class="w-full rounded-3xl p-8 relative overflow-hidden">
     <h2 class="text-4xl font-bold text-slate-900 mb-6">
         Últimas Publicaciones
     </h2>
@@ -406,9 +406,9 @@
                 </article>
 
 
+
             </div>
         </div>
-
         <!-- Flecha derecha -->
         <button onclick="moveCarousel(1)"
             class="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-white shadow-xl rounded-full w-12 h-12 flex items-center justify-center hover:scale-110 transition">
@@ -417,6 +417,97 @@
     </div>
 </section>
 
+<!-- Contador con movimiento -->
+<section class=" py-20 flex justify-center items-center px-4">
+  <div id="counter-section" 
+       class="bg-[#7d8fe3] text-white rounded-xl shadow-xl w-full md:w-3/4 mx-auto flex flex-row items-stretch  overflow-hidden">
+        <div class="flex-1 text-center py-20 px-2 md:px-4 flex flex-col justify-center">
+            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
+            +<span class="count" data-target="100">0</span>
+            </h3>
+            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
+            Casos de éxito
+            </p>
+        </div>
+
+            <div class="flex items-center">
+                <div class="w-[1px] h-24 bg-black/100"></div>
+            </div>
+
+        <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
+            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
+            +<span class="count" data-target="200">0</span>
+            </h3>
+            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
+             Recursos disponibles
+            </p>
+        </div>
+        
+            <div class="flex items-center">
+                <div class="w-[1px] h-24 bg-black/100"></div>
+            </div>
+
+    <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
+            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
+            +<span class="count" data-target="100">0</span>
+            </h3>
+            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
+            Concursos semestrales
+            </p>
+    </div>
+
+            <div class="flex items-center">
+                <div class="w-[1px] h-24 bg-black/100"></div>
+            </div>
+
+    <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
+            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
+            +<span class="count" data-target="100">0</span>
+            </h3>
+            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
+            Casos de éxito
+            </p>
+    </div>
+    
+  </div>
+</section>
+
+<script>
+  // Función para animar el conteo
+  const animateCount = (el) => {
+    const target = +el.getAttribute('data-target');
+    const count = +el.innerText;
+    const speed = 200; // A menor número, más rápido
+    const inc = target / speed;
+
+    if (count < target) {
+      el.innerText = Math.ceil(count + inc);
+      setTimeout(() => animateCount(el), 15);
+    } else {
+      el.innerText = target;
+    }
+  };
+
+  // Configuración del Observador
+  const observerOptions = {
+    threshold: 0.5 // Se activa cuando el 50% de la sección es visible
+  };
+
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Seleccionamos todos los números y los animamos
+        const counters = entry.target.querySelectorAll('.count');
+        counters.forEach(counter => animateCount(counter));
+        // Dejamos de observar para que no se repita la animación cada vez que subas/bajes
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  // Empezar a observar la sección
+  observer.observe(document.getElementById('counter-section'));
+</script>
 <script>
 let currentSlide = 0;
 
@@ -447,6 +538,8 @@ function moveCarousel(direction) {
 
     <script src="js/auth.js"></script>
     <script src="js/menu_ui.js"></script>
+
+
 </body>
 
 </html>
