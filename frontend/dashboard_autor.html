@@ -37,7 +37,7 @@
                   <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
                 </a>
             </div>
-            
+    
             <!-- Barra de búsqueda -->
             <div class="search-container">
                 <span class="search-icon material-symbols-outlined">search</span>
@@ -54,6 +54,109 @@
     </header>
 
     <main>
+        <div class="contenedor-principal">
+            <div class="encabezado-pagina">
+                <h1>Panel Admin</h1>
+                <p>Crea nuevos post y mándalos a revisión.</p>
+            </div>
+            <!-- Termina encabezado -->
+            <a class="boton-crear" id="btnAbrirModal">Crear</a>
+
+            <!-- SECCIÓN DE BORRADORES -->
+            <section class="bloque-cuenta">
+                <div class="bloque-header">
+                    <h2 style="color: var(--principal);">Borradores</h2>
+                    <p>Tus borradores se mostrarán en este apartado.</p>
+                </div>
+                <div class="contenedor-tarjetas" id="listaBorradores">
+                    <!-- Aquí es donde JavaScript "dibujará" las tarjetas -->
+                </div>
+            </section>
+
+            <!-- SECCIÓN EN REVISIÓN -->
+            <section class="bloque-cuenta">
+                <div class="bloque-header">
+                    <h2 style="color: #e9b141;">En revisión</h2>
+                    <p>Tu contenido está siendo evaluado por un editor.</p>
+                </div>
+                <div class="contenedor-tarjetas" id="listaRevision">
+                    <!-- Las tarjetas aquí se verán igual pero en esta sección -->
+                </div>
+            </section>
+
+            <!-- SECCIÓN DE PUBLICADOS -->
+            <section class="bloque-cuenta">
+                <div class="bloque-header">
+                    <h2 style="color: #49e941;">Publicados</h2>
+                    <p>Tu contenido está publicado.</p>
+                </div>
+                <div class="contenedor-tarjetas" id="listaRevision">
+                    <!-- Las tarjetas aquí se verán igual pero en esta sección -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Empieza la ventana modal -->
+        <div class="modal-overlay" id="modalAdmin">
+            <!-- PANTALLA 1: SUBIR -->
+            <div class="modal-content" id="pantalla1">
+                <span class="close-modal" id="btnCerrar">&times;</span>
+                <h1 class="modal-title">Crear</h1>
+                
+                <div class="upload-box" id="dropZone">
+                    <div class="cloud-icon">
+                        <span class="material-symbols-outlined main-cloud">cloud_upload</span>
+                    </div>
+                    <p class="text-main">Arrastra y suelta archivos para subirlos</p>
+                    <p class="text-sub">Tus publicaciones serán privadas hasta que el editor las apruebe.</p>
+                    
+                    <input type="file" id="fileInput" hidden accept="image/*">
+                    <button class="btn-select" onclick="document.getElementById('fileInput').click()">
+                        Seleccionar Archivos
+                    </button>
+                </div>
+            </div>
+            
+            <!-- PANTALLA 2: DETALLES -->
+            <div class="modal-content d-none" id="pantalla2">
+
+                <a class="btnVolver">
+                    <span class="material-symbols-outlined icono">arrow_back_ios</span>
+                    <span>Volver</span>
+                </a>
+
+                <h1 class="modal-title">Crear</h1>
+                <div class="admin-grid">
+                    <!-- Formulario -->
+                    <div class="form-side">
+                        <h2>Detalles</h2>
+                        <div class="field">
+                            <label>Título</label>
+                            <input type="text" id="postTitle" required>
+                        </div>
+                        <div class="field">
+                            <label class="field-titulo">Descripción</label>
+                            <textarea id="postDesc" required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="preview-side">
+                        <div class="preview-card">
+                            <img id="imgPreview" src="" alt="Preview">
+                            <div class="file-info">
+                                <p class="label">Nombre del archivo</p>
+                                <p class="filename" id="fileNameDisplay">highlights.mp4</p>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn-save" id="btnGuardarBorrador">Guardar</button>
+                            <button class="btn-revision" id="btnEnviarRevision">Enviar a revisión</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </main>
 
@@ -67,5 +170,7 @@
 
     <script src="js/auth.js"></script>
     <script src="js/menu_ui.js"></script>
+    <script src="js/crear.js"></script>
+    <script src="js/subir_post.js"></script>
 </body>
 </html>

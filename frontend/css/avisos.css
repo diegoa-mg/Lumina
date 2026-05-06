@@ -9,21 +9,6 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* Estilos para el título principal de la página */
-.encabezado-pagina {
-    font-family: 'Inter', sans-serif;
-    margin-bottom: 2rem;
-}
-.encabezado-pagina h1 {
-    font-size: 3.5rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-}
-.encabezado-pagina p {
-    color: #888;
-    margin-top: 0;
-}
-
 /* Estilos internos de la tarjeta */
 .tarjeta-header {
     display: flex;
@@ -65,12 +50,13 @@
     margin: 0;
     color: var(--azul-logo);
     font-weight: 500;
-    font-size: 1.4rem;
+    font-size: 2rem;
 }
 .titulos .fecha {
     margin: 0;
     color: #777;
-    font-size: 0.85rem;
+    font-size: 1rem;
+    margin-top: .2rem;
 }
 
 .badge-urgente {
@@ -126,33 +112,4 @@
     font-size:28 !important;
     line-height: 1;
     overflow: hidden;
-}
-
-.contenedor-principal {
-    width: 100%;
-    max-width: 900px; /* Ajustamos el ancho para que se vea como en tu imagen */
-    margin: 0 auto !important; /* El !important fuerza el centrado por si otra cosa interfiere */
-    padding: 2rem 1rem;
-    box-sizing: border-box; /* Asegura que el padding no expanda el tamaño total */
-}
-.search-container {
-    display: flex;
-    align-items: center;
-    background: var(--gris-claro);
-    border-radius: 1.5rem;
-    padding: 1.2rem;
-    height: 4rem;
-}
-
-html {
-    font-size: 62.5%;
-}
-
-body {
-    font-size: 16px;
-    background-color: var(--gris-claro); /* Usando el gris del index */
-    font-family: var(--fuente-principal);
-    color: var(--texto-oscuro);
-    margin: 0;
-    -webkit-font-smoothing: antialiased;
 }

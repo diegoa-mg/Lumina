@@ -97,7 +97,7 @@
         flex-direction: row;
         justify-content: space-between;
         margin-top: 0;
-        gap: 2rem;
+        gap: .7rem;
         align-items: center;
     }
 }
