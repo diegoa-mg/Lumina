@@ -68,26 +68,200 @@
             </div>
 
     <!-- GRID -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 py-4">
+            <!-- SIDEBAR -->
+                <div class="content-box bg-white rounded-xl border p-5 shadow-sm" data-type="articulo">
+                <!-- Etiqueta sobre que es -->
+                    <span class="text-xs font-bold bg-green-100 text-green-600 px-2 py-1 rounded">ARTÍCULO</span>
+                    <!-- Título -->
+                      <h3 class="text-xl font-bold mt-3 mb-2">
+                        Avanzando en el Polimorfismo en POO
+                      </h3>
+                        <!-- Descripción corta -->
+                        <p class="text-sm text-gray-600 mb-4">
+                        El polimorfismo permite que diferentes objetos respondan de manera distinta al mismo método...
+                        </p>
 
-      <!-- IZQUIERDA -->
-            <section class="lg:col-span-2 space-y-6 px-4 py-4">
+                          <!-- Imagen -->
+                          <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4" class="w-full h-48 object-cover rounded-lg mb-4">
+                          <!-- CONTENIDO OCULTO -->
+                          <div class="contenido-completo hidden">
 
-            <div class="content-box bg-white rounded-xl border min-h-[150px] p-4" data-type="video"></div>
-            <div class="content-box bg-white rounded-xl border min-h-[150px] p-4" data-type="articulo"></div>
-            <div class="content-box bg-white rounded-xl border min-h-[150px] p-4" data-type="noticia"></div>
-            <div class="content-box bg-white rounded-xl border min-h-[150px] p-4" data-type="recurso"></div>
-            
-            </section>
+  <!-- Etiqueta -->
+  <span class="text-xs font-bold bg-green-100 text-green-600 px-2 py-1 rounded">
+    ARTÍCULO
+  </span>
 
-      <!-- SIDEBAR -->
-            <aside class="space-y-6 px-4 py-4">
+  <!-- Título -->
+  <h2 class="text-2xl md:text-3xl font-bold mt-3 leading-tight">
+    Avanzando en el Polimorfismo en POO
+  </h2>
 
-                <div class="content-box bg-white rounded-xl border min-h-[120px] p-4" data-type="articulo"></div>
+  <!-- Autor + fecha -->
+  <p class="text-sm text-gray-500 mb-4">
+    Por Mtro. Fulanito • 12 Sep 2025
+  </p>
+
+  <!-- Imagen principal -->
+  <img 
+    src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4"
+    class="w-full h-60 md:h-72 object-cover rounded-xl mb-6"
+  >
+
+  <!-- Contenido -->
+  <div class="space-y-4 text-gray-700 text-[15px] leading-relaxed">
+
+    <p>
+      El polimorfismo es uno de los pilares fundamentales de la Programación Orientada a Objetos.
+      Permite que diferentes objetos respondan de manera distinta a un mismo método, haciendo el código más flexible.
+    </p>
+
+    <p>
+      Existen diferentes tipos de polimorfismo, como el polimorfismo por sobrecarga y el polimorfismo por herencia.
+      Ambos permiten reutilizar estructuras y mejorar la organización del software.
+    </p>
+
+    <p>
+      En sistemas grandes, el uso correcto del polimorfismo reduce la duplicación de código y facilita el mantenimiento.
+      Es clave en frameworks modernos y arquitecturas escalables.
+    </p>
+
+    <!-- Bloque destacado -->
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+      <p class="text-sm text-blue-800">
+        💡 Tip: Usa polimorfismo cuando tengas múltiples comportamientos similares con distintas implementaciones.
+      </p>
+    </div>
+
+    <p>
+      Dominar este concepto te permitirá escribir código más limpio, reutilizable y profesional.
+    </p>
+
+  </div>
+
+</div>
+
+                        <!-- Footer -->
+                        <div class="flex justify-between items-center text-sm mt-4">
+                          <button class="abrir-modal text-blue-600 font-bold hover:underline">
+                            Leer más →
+                          </button>
+                        </div>
+                </div>
+
+                <div class="content-box bg-white rounded-xl border p-5 shadow-sm" data-type="articulo">
+                <!-- Etiqueta sobre que es -->
+                    <span class="text-xs font-bold bg-green-100 text-green-600 px-2 py-1 rounded">ARTÍCULO</span>
+                    <!-- Título -->
+                      <h3 class="text-xl font-bold mt-3 mb-2">
+                        Avanzando en el Polimorfismo en POO
+                      </h3>
+                        <!-- Descripción corta -->
+                        <p class="text-sm text-gray-600 mb-4">
+                        El polimorfismo permite que diferentes objetos respondan de manera distinta al mismo método...
+                        </p>
+
+                          <!-- Imagen -->
+                          <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4" class="w-full h-48 object-cover rounded-lg mb-4">
+                          <!-- CONTENIDO OCULTO -->
+                          <div class="contenido-completo hidden text-sm text-gray-700 space-y-3 mt-4">
+                            <p>
+                              El polimorfismo es uno de los pilares fundamentales de la Programación Orientada a Objetos.
+                              Permite reutilizar código y mejorar la escalabilidad de los sistemas.
+                            </p>
+                            <p>
+                              Existen diferentes tipos de polimorfismo, como el polimorfismo por sobrecarga y por herencia.
+                              Ambos permiten que una misma interfaz tenga múltiples comportamientos.
+                            </p>
+                            <p>
+                            En aplicaciones reales, esto facilita el mantenimiento del código y reduce la duplicación.
+                            </p>
+                          </div>
+
+                        <!-- Footer -->
+                        <div class="flex justify-between items-center text-sm mt-4">
+                          <button class="leer-mas text-blue-600 font-bold hover:underline">
+                            Leer más →
+                          </button>
+                        </div>
+                </div>
+
+                <div class="content-box bg-white rounded-xl border p-5 shadow-sm" data-type="articulo">
+                <!-- Etiqueta sobre que es -->
+                    <span class="text-xs font-bold bg-green-100 text-green-600 px-2 py-1 rounded">ARTÍCULO</span>
+                    <!-- Título -->
+                      <h3 class="text-xl font-bold mt-3 mb-2">
+                        Avanzando en el Polimorfismo en POO
+                      </h3>
+                        <!-- Descripción corta -->
+                        <p class="text-sm text-gray-600 mb-4">
+                        El polimorfismo permite que diferentes objetos respondan de manera distinta al mismo método...
+                        </p>
+
+                          <!-- Imagen -->
+                          <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4" class="w-full h-48 object-cover rounded-lg mb-4">
+                          <!-- CONTENIDO OCULTO -->
+                          <div class="contenido-completo hidden text-sm text-gray-700 space-y-3 mt-4">
+                            <p>
+                              El polimorfismo es uno de los pilares fundamentales de la Programación Orientada a Objetos.
+                              Permite reutilizar código y mejorar la escalabilidad de los sistemas.
+                            </p>
+                            <p>
+                              Existen diferentes tipos de polimorfismo, como el polimorfismo por sobrecarga y por herencia.
+                              Ambos permiten que una misma interfaz tenga múltiples comportamientos.
+                            </p>
+                            <p>
+                            En aplicaciones reales, esto facilita el mantenimiento del código y reduce la duplicación.
+                            </p>
+                          </div>
+
+                        <!-- Footer -->
+                        <div class="flex justify-between items-center text-sm mt-4">
+                          <button class="leer-mas text-blue-600 font-bold hover:underline">
+                            Leer más →
+                          </button>
+                        </div>
+                </div>
+
+                <div class="content-box bg-white rounded-xl border p-5 shadow-sm" data-type="articulo">
+                <!-- Etiqueta sobre que es -->
+                    <span class="text-xs font-bold bg-green-100 text-green-600 px-2 py-1 rounded">ARTÍCULO</span>
+                    <!-- Título -->
+                      <h3 class="text-xl font-bold mt-3 mb-2">
+                        Avanzando en el Polimorfismo en POO
+                      </h3>
+                        <!-- Descripción corta -->
+                        <p class="text-sm text-gray-600 mb-4">
+                        El polimorfismo permite que diferentes objetos respondan de manera distinta al mismo método...
+                        </p>
+
+                          <!-- Imagen -->
+                          <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4" class="w-full h-48 object-cover rounded-lg mb-4">
+                          <!-- CONTENIDO OCULTO -->
+                          <div class="contenido-completo hidden text-sm text-gray-700 space-y-3 mt-4">
+                            <p>
+                              El polimorfismo es uno de los pilares fundamentales de la Programación Orientada a Objetos.
+                              Permite reutilizar código y mejorar la escalabilidad de los sistemas.
+                            </p>
+                            <p>
+                              Existen diferentes tipos de polimorfismo, como el polimorfismo por sobrecarga y por herencia.
+                              Ambos permiten que una misma interfaz tenga múltiples comportamientos.
+                            </p>
+                            <p>
+                            En aplicaciones reales, esto facilita el mantenimiento del código y reduce la duplicación.
+                            </p>
+                          </div>
+
+                        <!-- Footer -->
+                        <div class="flex justify-between items-center text-sm mt-4">
+                          <button class="leer-mas text-blue-600 font-bold hover:underline">
+                            Leer más →
+                          </button>
+                        </div>
+                </div>                               
+
                 <div class="content-box bg-white rounded-xl border min-h-[120px] p-4" data-type="video"></div>
                 <div class="content-box bg-white rounded-xl border min-h-[120px] p-4" data-type="noticia"></div>
-
-            </aside>
         </div>
     </div>
 
@@ -131,6 +305,21 @@
     </section>
     <p class="copy">© 2026 Lumina</p>
 </footer>
+<div id="modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50">
+
+  <div id="modalBox"
+       class="bg-white w-[95%] max-w-3xl rounded-2xl p-6 relative max-h-[85vh] overflow-y-auto transform scale-95 opacity-0 transition-all duration-300">
+
+    <button id="cerrarModal"
+            class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl">
+      ✕
+    </button>
+
+    <div id="modalContenido" class="space-y-4"></div>
+
+  </div>
+
+</div>
 
 <!-- ================= JS ================= -->
 <script>
@@ -160,6 +349,56 @@ buttons.forEach(btn => {
     });
 
   });
+});
+
+
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const botones = document.querySelectorAll(".abrir-modal");
+  const modal = document.getElementById("modal");
+  const modalBox = document.getElementById("modalBox");
+  const modalContenido = document.getElementById("modalContenido");
+  const cerrar = document.getElementById("cerrarModal");
+
+  botones.forEach(btn => {
+    btn.addEventListener("click", () => {
+
+      const card = btn.closest(".content-box");
+      const contenido = card.querySelector(".contenido-completo").innerHTML;
+
+      modalContenido.innerHTML = contenido;
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+
+      // animación entrada
+      setTimeout(() => {
+        modalBox.classList.remove("scale-95", "opacity-0");
+        modalBox.classList.add("scale-100", "opacity-100");
+      }, 10);
+
+    });
+  });
+
+  function cerrarModal() {
+    modalBox.classList.remove("scale-100", "opacity-100");
+    modalBox.classList.add("scale-95", "opacity-0");
+
+    setTimeout(() => {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }, 200);
+  }
+
+  cerrar.addEventListener("click", cerrarModal);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) cerrarModal();
+  });
+
 });
 </script>
 
