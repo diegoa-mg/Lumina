@@ -1,48 +1,4 @@
-async function manejarPublicacion(estado) {
-    const titulo = document.getElementById('postTitle').value;
-    const desc = document.getElementById('postDesc').value;
-    const img = document.getElementById('imgPreview').src; // Esto envía la imagen en Base64
-
-    if (!titulo || !desc) return alert("Por favor, completa el título y la descripción.");
-
-    // 1. Preparamos el objeto para el servidor
-    const datosPost = {
-        titulo: titulo,
-        descripcion: desc,
-        imagen: img,
-        status: estado
-    };
-
-    try {
-        // 2. Enviamos la petición al backend PHP
-        const respuesta = await fetch('backend/publicar_post.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datosPost)
-        });
-
-        const resultado = await respuesta.json();
-
-        // 3. Solo si el servidor confirma el guardado, mostramos la tarjeta
-        if (resultado.success) {
-            renderizarTarjetaEnPanel(datosPost); // Llamamos a la función visual
-            
-            // Limpiamos y cerramos
-            document.getElementById('modalAdmin').style.display = 'none';
-            document.getElementById('postTitle').value = "";
-            document.getElementById('postDesc').value = "";
-            
-            alert(estado === 'borrador' ? "Guardado en Borradores" : "Enviado a revisión");
-        } else {
-            alert("Error al guardar: " + resultado.error);
-        }
-    } catch (error) {
-        console.error("Error de conexión:", error);
-        alert("No se pudo conectar con el servidor.");
-    }
-}
-
-// 4. Función dedicada exclusivamente al diseño visual
+// Función dedicada exclusivamente al diseño visual
 function renderizarTarjetaEnPanel(post) {
     const contenedor = post.status === 'borrador' 
         ? document.getElementById('listaBorradores') 
@@ -82,3 +38,31 @@ function renderizarTarjetaEnPanel(post) {
 
     contenedor.insertAdjacentHTML('afterbegin', nuevaTarjeta);
 }
+
+// Función para cargar posts desde la DB al iniciar el Panel
+async function cargarPostsDelAutor() {
+    try {
+        const respuesta = await fetch('backend/obtener_posts.php'); // Necesitarás crear este pequeño PHP
+        const posts = await respuesta.json();
+        
+        // Limpiar contenedores antes de cargar
+        document.getElementById('listaBorradores').innerHTML = '';
+        document.getElementById('listaRevision').innerHTML = '';
+        document.getElementById('listaPublicados').innerHTML = '';
+
+        posts.forEach(post => {
+            // Reutilizamos tu función de diseño
+            renderizarTarjetaEnPanel({
+                titulo: post.titulo,
+                descripcion: post.descripcion,
+                imagen: post.imagen_url, // Usar el nombre de la nueva columna
+                status: post.status
+            });
+        });
+    } catch (error) {
+        console.error("Error al cargar posts:", error);
+    }
+}
+
+// Ejecutar al cargar la página
+window.onload = cargarPostsDelAutor;
