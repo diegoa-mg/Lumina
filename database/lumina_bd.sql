@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 23-04-2026 a las 15:22:41
+-- Tiempo de generación: 06-05-2026 a las 18:15:48
 -- Versión del servidor: 10.11.16-MariaDB
 -- Versión de PHP: 8.4.20
 
@@ -32,6 +32,37 @@ CREATE TABLE `categorias` (
   `nombre_categoria` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `categorias`
+--
+
+INSERT INTO `categorias` (`id`, `nombre_categoria`) VALUES
+(9, 'Avisos Generales'),
+(3, 'Ciclo de Vida del Software'),
+(5, 'Desarrollo Emprendedor'),
+(7, 'Inglés'),
+(4, 'Métodos Numéricos'),
+(8, 'Orientación y Tutoría'),
+(1, 'Programación Orientada a Objetos'),
+(2, 'Servicios de Internet'),
+(6, 'Sistemas Digitales');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `publicaciones`
+--
+
+CREATE TABLE `publicaciones` (
+  `id` int(11) NOT NULL,
+  `titulo` varchar(255) NOT NULL,
+  `descripcion` text NOT NULL,
+  `imagen` longtext NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `autor_id` int(11) NOT NULL,
+  `fecha_creacion` timestamp NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -46,6 +77,21 @@ CREATE TABLE `reacciones` (
   `tipo_reaccion` varchar(20) NOT NULL,
   `fecha` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `reacciones`
+--
+
+INSERT INTO `reacciones` (`id`, `usuario_id`, `elemento_id`, `seccion`, `tipo_reaccion`, `fecha`) VALUES
+(1, 1, 1, 'recursos', 'guardado', '2026-04-23 17:43:59'),
+(2, 1, 1, 'recursos', 'guardado', '2026-04-23 17:44:02'),
+(3, 1, 1, 'recursos', 'guardado', '2026-04-23 17:44:02'),
+(4, 1, 1, 'recursos', 'like', '2026-04-30 19:35:06'),
+(5, 1, 1, 'recursos', 'guardado', '2026-04-30 19:35:08'),
+(6, 1, 1, 'recursos', 'like', '2026-04-30 19:35:14'),
+(7, 1, 1, 'recursos', 'like', '2026-04-30 19:35:14'),
+(8, 1, 1, 'recursos', 'guardado', '2026-04-30 19:35:15'),
+(9, 1, 1, 'recursos', 'guardado', '2026-04-30 19:35:16');
 
 -- --------------------------------------------------------
 
@@ -88,7 +134,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `usuarios`, `correo`, `password`, `rol_id`) VALUES
-(1, 'Diego Morales', 'diegoa.mg', 'ddiegoa.mg@gmail.com', '$2y$10$cJnOP7UJxdJAAlUFAE9ZFe2L5CWeKhw.Y6OwgY/OkkIs3bYZxkAUu', 1);
+(1, 'Diego Morales', 'diegoa.mg', 'ddiegoa.mg@gmail.com', '$2y$10$cJnOP7UJxdJAAlUFAE9ZFe2L5CWeKhw.Y6OwgY/OkkIs3bYZxkAUu', 4);
 
 --
 -- Índices para tablas volcadas
@@ -100,6 +146,13 @@ INSERT INTO `usuarios` (`id`, `nombre`, `usuarios`, `correo`, `password`, `rol_i
 ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nombre_categoria` (`nombre_categoria`);
+
+--
+-- Indices de la tabla `publicaciones`
+--
+ALTER TABLE `publicaciones`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_publicaciones_usuarios` (`autor_id`);
 
 --
 -- Indices de la tabla `reacciones`
@@ -130,13 +183,19 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de la tabla `publicaciones`
+--
+ALTER TABLE `publicaciones`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `reacciones`
 --
 ALTER TABLE `reacciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -153,6 +212,12 @@ ALTER TABLE `usuarios`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `publicaciones`
+--
+ALTER TABLE `publicaciones`
+  ADD CONSTRAINT `fk_publicaciones_usuarios` FOREIGN KEY (`autor_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `reacciones`
