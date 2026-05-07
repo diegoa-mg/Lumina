@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 06-05-2026 a las 18:15:48
+-- Tiempo de generación: 07-05-2026 a las 14:30:24
 -- Versión del servidor: 10.11.16-MariaDB
 -- Versión de PHP: 8.4.20
 
@@ -57,11 +57,14 @@ CREATE TABLE `publicaciones` (
   `id` int(11) NOT NULL,
   `titulo` varchar(255) NOT NULL,
   `descripcion` text NOT NULL,
-  `imagen` longtext NOT NULL,
-  `status` varchar(50) NOT NULL,
+  `imagen_url` varchar(500) DEFAULT NULL,
+  `categoria_id` int(11) DEFAULT NULL,
+  `status` enum('borrador','revision','publicado','rechazado') DEFAULT 'borrador',
   `autor_id` int(11) NOT NULL,
-  `fecha_creacion` timestamp NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `fecha_publicacion` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -152,7 +155,10 @@ ALTER TABLE `categorias`
 --
 ALTER TABLE `publicaciones`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_publicaciones_usuarios` (`autor_id`);
+  ADD KEY `fk_publicaciones_usuarios` (`autor_id`),
+  ADD KEY `fk_publicaciones_categorias` (`categoria_id`),
+  ADD KEY `idx_status` (`status`),
+  ADD KEY `idx_autor_status` (`autor_id`,`status`);
 
 --
 -- Indices de la tabla `reacciones`
@@ -217,6 +223,7 @@ ALTER TABLE `usuarios`
 -- Filtros para la tabla `publicaciones`
 --
 ALTER TABLE `publicaciones`
+  ADD CONSTRAINT `fk_publicaciones_categorias` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `fk_publicaciones_usuarios` FOREIGN KEY (`autor_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --

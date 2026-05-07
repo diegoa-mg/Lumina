@@ -5,7 +5,7 @@ function renderizarTarjetaEnPanel(post) {
         : document.getElementById('listaRevision');
 
     const nuevaTarjeta = `
-        <article class="tarjeta-horizontal">
+        <article class="tarjeta-horizontal" data-post-id="${post.id}">
             <div class="imagen-lateral">
                 <img src="${post.imagen}" alt="Preview">
             </div>
@@ -24,7 +24,7 @@ function renderizarTarjetaEnPanel(post) {
                 <p class="extracto">${post.descripcion}</p>
             </div>
             <div class="footer-card-autor">
-                <button class="btn-accion-autor btn-editar-post">
+                <button class="btn-accion-autor btn-editar-post" onclick="abrirEditarPost(${post.id})">
                     <span class="material-symbols-outlined">edit</span> Editar
                 </button>
                 ${post.status === 'borrador' ? `
@@ -42,7 +42,7 @@ function renderizarTarjetaEnPanel(post) {
 // Función para cargar posts desde la DB al iniciar el Panel
 async function cargarPostsDelAutor() {
     try {
-        const respuesta = await fetch('backend/obtener_posts.php'); // Necesitarás crear este pequeño PHP
+        const respuesta = await fetch('../backend/obtener_posts.php'); // Necesitarás crear este pequeño PHP
         const posts = await respuesta.json();
         
         // Limpiar contenedores antes de cargar
@@ -51,7 +51,6 @@ async function cargarPostsDelAutor() {
         document.getElementById('listaPublicados').innerHTML = '';
 
         posts.forEach(post => {
-            // Reutilizamos tu función de diseño
             renderizarTarjetaEnPanel({
                 titulo: post.titulo,
                 descripcion: post.descripcion,
@@ -65,4 +64,8 @@ async function cargarPostsDelAutor() {
 }
 
 // Ejecutar al cargar la página
-window.onload = cargarPostsDelAutor;
+window.onload = function() {
+    if (typeof cargarPostsDelAutor === 'function') {
+        cargarPostsDelAutor();
+    }
+};
