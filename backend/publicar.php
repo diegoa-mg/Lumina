@@ -48,41 +48,34 @@ $imagen_url = null;
 // ============================================
 // 3. PROCESAR IMAGEN (si viene)
 // ============================================
+// SECCIÓN 3: PROCESAR IMAGEN
 if (!empty($data['imagen']) && strpos($data['imagen'], 'data:image') === 0) {
-    // Extraer formato y datos Base64
     if (preg_match('/data:image\/(\w+);base64,(.*)/', $data['imagen'], $matches)) {
-        $formato = $matches[1];  // jpeg, png, webp, etc
-        $base64 = $data['imagen_url'] ?? null;
+        $formato = $matches[1];
+        $base64_puro = $matches[2]; // Contenido real
         
-        // Validar tamaño
-        if (strlen($base64) / 1024 > 5120) { // 5MB
-            echo json_encode(['success' => false, 'error' => 'Imagen no debe superar 5MB']);
+        // Calcular tamaño real aproximado
+        $tamanio_kb = (strlen($base64_puro) * 0.75) / 1024;
+        if ($tamanio_kb > 5120) {
+            echo json_encode(['success' => false, 'error' => 'La imagen es demasiado pesada']);
             exit;
         }
-        
-        // Validar formato
-        $formatos_permitidos = ['jpeg', 'jpg', 'png', 'webp'];
-        if (!in_array($formato, $formatos_permitidos)) {
-            echo json_encode(['success' => false, 'error' => 'Formato no permitido (JPG, PNG, WebP)']);
-            exit;
-        }
-        
-        // Guardar archivo en servidor
-        $nombre_archivo = 'post_' . $autor_id . '_' . time() . '.' . $formato;
-        $ruta_directorio = __DIR__ . '/../uploads/posts/';
+
+        $nombre_archivo = 'post_1_' . time() . '.' . $formato;
+        $ruta_directorio = __DIR__ . '/../frontend/uploads/posts/'; // Ruta absoluta desde backend
         $ruta_archivo = $ruta_directorio . $nombre_archivo;
-        
-        // Crear directorio si no existe
+
         if (!is_dir($ruta_directorio)) {
-            mkdir($ruta_directorio, 0755, true);
+            mkdir($ruta_directorio, 0775, true);
         }
-        
-        // Decodificar y guardar
-        if (!file_put_contents($ruta_archivo, base64_decode($base64))) {
-            echo json_encode(['success' => false, 'error' => 'Error al guardar imagen']);
+
+        // DECODIFICAR Y GUARDAR
+        if (file_put_contents($ruta_archivo, base64_decode($base64_puro)) === false) {
+            echo json_encode(['success' => false, 'error' => 'Error de escritura. Revisa permisos en Fedora.']);
             exit;
         }
-        $imagen_url = 'uploads/posts/' . $nombre_archivo;
+        
+        $imagen_url = 'uploads/posts/' . $nombre_archivo; // Ruta para la DB
     }
 }
 

@@ -35,6 +35,22 @@ if (btnClose) {
     };
 }
 
+if (btnVolver) {
+    btnVolver.onclick = () => {
+        const pantalla1 = document.getElementById('pantalla1');
+        const pantalla2 = document.getElementById('pantalla2');
+        
+        if (pantalla1 && pantalla2) {
+            pantalla1.classList.remove('d-none'); // Muestra la subida
+            pantalla2.classList.add('d-none');    // Oculta los detalles
+            
+            // Opcional: Limpiar la selección si quieres que el usuario elija otra imagen
+            fileInput.value = ''; 
+            archivoSeleccionado = null;
+        }
+    };
+}
+
 // Cerrar al hacer clic fuera de la caja blanca (Opcional pero recomendado)
 window.onclick = (event) => {
     if (event.target == modal) {
@@ -165,24 +181,21 @@ async function manejarPublicacion(estado) {
     
     enviando = true;
     
-    // ✅ CAMBIO: Corregir variable btnAccion
+    // 1. Identificar el botón correcto según el estado
     const btnAccion = estado === 'borrador' ? 
         document.getElementById('btnGuardarBorrador') : 
         document.getElementById('btnEnviarRevision');
     
     const textoOriginal = btnAccion?.textContent || 'Guardar';
+    
     if (btnAccion) {
         btnAccion.textContent = '⏳ Guardando...';
         btnAccion.disabled = true;
     }
     
     try {
-        // ✅ CAMBIO: Usar IDs correctos
-        const postTitle = document.getElementById('postTitle');
-        const postDesc = document.getElementById('postDesc');
-        
-        const titulo = postTitle.value.trim();
-        const desc = postDesc.value.trim();
+        const titulo = document.getElementById('postTitle').value.trim();
+        const desc = document.getElementById('postDesc').value.trim();
         let imagenBase64 = null;
         
         // Convertir imagen a Base64 si existe
@@ -190,40 +203,49 @@ async function manejarPublicacion(estado) {
             imagenBase64 = await convertirABase64(archivoSeleccionado);
         }
         
-        // Enviar datos
+        // Enviar datos al backend
         const datosPost = {
             titulo,
             descripcion: desc,
-            imagen_url: imagenBase64,
+            imagen: imagenBase64,
             status: estado
         };
         
-        const respuesta = await fetch('../../backend/publicar.php', {
+        const respuesta = await fetch('../backend/publicar.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosPost)
         });
         
-        if (!respuesta.ok) {
-            throw new Error(`HTTP ${respuesta.status}`);
-        }
+        if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
         
         const resultado = await respuesta.json();
         
         if (resultado.success) {
             alert(`✅ Post guardado como ${estado}`);
-            cerrarModal();
-            
-            // Recargar listado si la función existe
-            if (typeof cargarPostsDelAutor === 'function') {
-                cargarPostsDelAutor();
+
+            // 2. Insertar la tarjeta en el panel de forma inmediata
+            if (typeof renderizarTarjetaEnPanel === 'function') {
+                renderizarTarjetaEnPanel({
+                    titulo: titulo,
+                    descripcion: desc,
+                    // Usamos el src de la imagen que ya se ve en la modal
+                    imagen: document.getElementById('imgPreview').src, 
+                    status: estado
+                });
             }
+
+            cerrarModal(); // Esto cierra y limpia el formulario
+            
         } else {
             alert(`❌ ${resultado.error}`);
         }
+
     } catch (error) {
+        console.error("Error en la publicación:", error);
         alert(`❌ Error: ${error.message}`);
     } finally {
+        // 3. Importante: Liberar el estado para poder guardar otro post después
         enviando = false;
         if (btnAccion) {
             btnAccion.textContent = textoOriginal;
@@ -355,4 +377,47 @@ async function cambiarARevision(boton) {
         boton.textContent = textoOriginal;
         boton.disabled = false;
     }
+}
+
+// ============================================
+// EDITAR
+// ============================================
+async function abrirEditarPost(id) {
+    // Aquí podrías hacer un fetch para obtener los datos actuales del post 
+    // o buscarlos en un array local si los guardaste al cargar.
+    
+    // Por ahora, simulamos la apertura de la modal:
+    modal.style.display = 'flex';
+    document.getElementById('pantalla1').classList.add('d-none');
+    document.getElementById('pantalla2').classList.remove('d-none');
+    
+    // Cambiamos el título de la modal para que el usuario sepa que está editando
+    document.querySelector('.modal-title').textContent = 'Editar Publicación';
+    
+    // Nota: Necesitarás guardar el ID en una variable global para que al dar 
+    // "Guardar", el sistema sepa que es un UPDATE y no un INSERT.
+}
+
+function prepararEdicion(boton) {
+    // 1. Encontrar la tarjeta (el artículo) más cercano al botón
+    const tarjeta = boton.closest('.tarjeta-horizontal');
+    
+    // 2. Extraer los datos de la tarjeta
+    const titulo = tarjeta.querySelector('h4').textContent;
+    const descripcion = tarjeta.querySelector('.extracto').textContent;
+    const imagenSrc = tarjeta.querySelector('.imagen-lateral img').src;
+
+    // 3. Llenar los campos de la modal
+    document.getElementById('postTitle').value = titulo;
+    document.getElementById('postDesc').value = descripcion;
+    document.getElementById('imgPreview').src = imagenSrc;
+    document.getElementById('fileNameDisplay').textContent = "Imagen actual";
+
+    // 4. Abrir la modal directamente en la pantalla de edición (Pantalla 2)
+    modal.style.display = 'flex';
+    document.getElementById('pantalla1').classList.add('d-none'); // Ocultar zona de carga
+    document.getElementById('pantalla2').classList.remove('d-none'); // Mostrar formulario
+    
+    // Cambiar el texto de los botones o títulos si es necesario
+    document.querySelector('.modal-title').textContent = 'Editar Publicación';
 }
