@@ -1,6 +1,7 @@
 // ============================================
 // VARIABLES GLOBALES
 // ============================================
+
 const modal = document.getElementById('modalAdmin');
 console.log("Elemento modal:", modal);
 
@@ -253,12 +254,18 @@ async function manejarPublicacion(estado) {
             status: estado
         };
 
-        // Fetch
+        // Fetch al backend
         const respuesta = await fetch('../backend/publicar.php', {
+
             method: 'POST',
+
+            // IMPORTANTE PARA PHP SESSION
+            credentials: 'include',
+
             headers: {
                 'Content-Type': 'application/json'
             },
+
             body: JSON.stringify(datosPost)
         });
 
@@ -280,7 +287,11 @@ async function manejarPublicacion(estado) {
                     id: resultado.post_id,
                     titulo: titulo,
                     descripcion: desc,
-                    imagen: document.getElementById('imgPreview').src,
+
+                    // IMPORTANTE:
+                    // usar la URL REAL del backend
+                    imagen: '../frontend/' + resultado.imagen_url,
+
                     status: estado
                 });
             }
@@ -400,7 +411,7 @@ if (btnEnviarRevision) {
 
 
 // ============================================
-// CAMBIAR A REVISIÓN
+// CAMBIAR POST A REVISIÓN
 // ============================================
 
 async function cambiarARevision(boton) {
@@ -430,6 +441,8 @@ async function cambiarARevision(boton) {
 
             method: 'POST',
 
+            credentials: 'include',
+
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -453,7 +466,11 @@ async function cambiarARevision(boton) {
             const listaRevision = document.getElementById('listaRevision');
 
             if (listaRevision && tarjeta) {
-                listaRevision.insertAdjacentElement('afterbegin', tarjeta);
+
+                listaRevision.insertAdjacentElement(
+                    'afterbegin',
+                    tarjeta
+                );
             }
 
             const etiqueta = tarjeta.querySelector('.etiqueta-borrador');
