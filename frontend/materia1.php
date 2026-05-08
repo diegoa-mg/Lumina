@@ -223,46 +223,79 @@ async function cargarPublicaciones() {
 
         contenedor.innerHTML = '';
 
-        posts.forEach(post => {
+        // SOLO PUBLICADOS
+        const publicaciones = posts.filter(
+            post => post.status === 'publicado'
+        );
+
+        if (publicaciones.length === 0) {
+
+            contenedor.innerHTML = `
+                <div class="col-span-full text-center py-10">
+                    <h3 class="text-2xl font-bold text-gray-500">
+                        No hay publicaciones aún
+                    </h3>
+                </div>
+            `;
+
+            return;
+        }
+
+        publicaciones.forEach(post => {
+
+            const imagen = post.imagen_url
+                ? post.imagen_url
+                : 'img/default-post.jpg';
+
+            const autor = post.autor
+                ? post.autor
+                : 'Autor desconocido';
+
+            const descripcionCorta =
+                post.descripcion.length > 120
+                ? post.descripcion.substring(0, 120) + '...'
+                : post.descripcion;
 
             const tarjeta = `
             
-            <div class="content-box bg-white rounded-xl border p-5 shadow-sm" data-type="articulo">
+            <div class="content-box bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-lg transition duration-300 flex flex-col"
+                 data-type="articulo">
 
-                <span class="text-xs font-bold bg-green-100 text-green-600 px-2 py-1 rounded">
+                <span class="w-fit text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full">
                     ARTÍCULO
                 </span>
 
-                <h3 class="text-xl font-bold mt-3 mb-2">
+                <h3 class="text-xl font-bold mt-4 mb-2 text-gray-800">
                     ${post.titulo}
                 </h3>
 
-                <p class="text-sm text-gray-600 mb-4">
-                    ${post.descripcion.substring(0, 120)}...
+                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+                    ${descripcionCorta}
                 </p>
 
                 <img 
-                    src="${post.imagen_url}" 
-                    class="w-full h-48 object-cover rounded-lg mb-4"
+                    src="${imagen}" 
+                    class="w-full h-52 object-cover rounded-xl mb-4"
+                    alt="Imagen publicación"
                 >
 
                 <div class="contenido-completo hidden">
 
-                    <span class="text-xs font-bold bg-green-100 text-green-600 px-2 py-1 rounded">
+                    <span class="text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full">
                         ARTÍCULO
                     </span>
 
-                    <h2 class="text-2xl md:text-3xl font-bold mt-3 leading-tight">
+                    <h2 class="text-3xl font-bold mt-4 mb-2 text-gray-900">
                         ${post.titulo}
                     </h2>
 
-                    <p class="text-sm text-gray-500 mb-4">
-                        Por ${post.autor}
+                    <p class="text-sm text-gray-500 mb-5">
+                        Por ${autor}
                     </p>
 
                     <img 
-                        src="${post.imagen_url}"
-                        class="w-full h-60 md:h-72 object-cover rounded-xl mb-6"
+                        src="${imagen}"
+                        class="w-full h-72 object-cover rounded-2xl mb-6"
                     >
 
                     <div class="space-y-4 text-gray-700 text-[15px] leading-relaxed">
@@ -271,10 +304,12 @@ async function cargarPublicaciones() {
 
                 </div>
 
-                <div class="flex justify-between items-center text-sm mt-4">
-                    <button class="abrir-modal text-blue-600 font-bold hover:underline">
+                <div class="flex justify-between items-center mt-auto pt-4">
+
+                    <button class="abrir-modal text-blue-600 font-bold hover:text-blue-800 transition">
                         Leer más →
                     </button>
+
                 </div>
 
             </div>
@@ -287,14 +322,22 @@ async function cargarPublicaciones() {
         activarModales();
 
     } catch(error) {
-        console.error(error);
+
+        console.error("Error cargando publicaciones:", error);
+
     }
 
 }
 
+
+// ============================================
+// MODALES
+// ============================================
+
 function activarModales() {
 
     const botones = document.querySelectorAll(".abrir-modal");
+
     const modal = document.getElementById("modal");
     const modalBox = document.getElementById("modalBox");
     const modalContenido = document.getElementById("modalContenido");
@@ -305,7 +348,9 @@ function activarModales() {
         btn.addEventListener("click", () => {
 
             const card = btn.closest(".content-box");
-            const contenido = card.querySelector(".contenido-completo").innerHTML;
+
+            const contenido =
+                card.querySelector(".contenido-completo").innerHTML;
 
             modalContenido.innerHTML = contenido;
 
@@ -313,8 +358,17 @@ function activarModales() {
             modal.classList.add("flex");
 
             setTimeout(() => {
-                modalBox.classList.remove("scale-95", "opacity-0");
-                modalBox.classList.add("scale-100", "opacity-100");
+
+                modalBox.classList.remove(
+                    "scale-95",
+                    "opacity-0"
+                );
+
+                modalBox.classList.add(
+                    "scale-100",
+                    "opacity-100"
+                );
+
             }, 10);
 
         });
@@ -323,24 +377,48 @@ function activarModales() {
 
     function cerrarModal() {
 
-        modalBox.classList.remove("scale-100", "opacity-100");
-        modalBox.classList.add("scale-95", "opacity-0");
+        modalBox.classList.remove(
+            "scale-100",
+            "opacity-100"
+        );
+
+        modalBox.classList.add(
+            "scale-95",
+            "opacity-0"
+        );
 
         setTimeout(() => {
+
             modal.classList.add("hidden");
             modal.classList.remove("flex");
+
         }, 200);
 
     }
 
     cerrar.addEventListener("click", cerrarModal);
 
+    modal.addEventListener("click", (e) => {
+
+        if (e.target === modal) {
+            cerrarModal();
+        }
+
+    });
+
 }
 
-document.addEventListener("DOMContentLoaded", cargarPublicaciones);
+
+// ============================================
+// INICIAR
+// ============================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    cargarPublicaciones
+);
 
 </script>
-
 <script src="js/auth.js"></script>
 <script src="js/menu_ui.js"></script>
 
