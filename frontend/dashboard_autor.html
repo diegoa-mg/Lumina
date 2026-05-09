@@ -129,16 +129,47 @@
                 <div class="admin-grid">
                     <!-- Formulario -->
                     <div class="form-side">
-                        <h2>Detalles</h2>
-                        <div class="field">
-                            <label>Título</label>
-                            <input type="text" id="postTitle" required>
-                        </div>
-                        <div class="field">
-                            <label class="field-titulo">Descripción</label>
-                            <textarea id="postDesc" required></textarea>
-                        </div>
-                    </div>
+
+    <h2>Detalles</h2>
+
+    <div class="field">
+        <label>Título</label>
+        <input type="text" id="postTitle" required>
+    </div>
+
+    <div class="field">
+        <label class="field-titulo">Descripción</label>
+        <textarea id="postDesc" required></textarea>
+    </div>
+
+    <!-- NUEVO -->
+    <div class="field">
+
+        <label>Tipo</label>
+
+        <select id="postTipo">
+
+            <option value="articulo">
+                Artículo
+            </option>
+
+            <option value="video">
+                Video
+            </option>
+
+            <option value="noticia">
+                Noticia
+            </option>
+
+            <option value="recurso">
+                Recurso
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
 
                     <!-- Preview -->
                     <div class="preview-side">

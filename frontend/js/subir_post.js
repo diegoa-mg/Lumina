@@ -1,17 +1,46 @@
 // Función dedicada exclusivamente al diseño visual
 function renderizarTarjetaEnPanel(post) {
-    const contenedor = post.status === 'borrador' 
-        ? document.getElementById('listaBorradores') 
-        : document.getElementById('listaRevision');
+    let contenedor;
+
+if (post.status === 'borrador') {
+
+    contenedor = document.getElementById('listaBorradores');
+
+} else if (post.status === 'publicado') {
+
+    contenedor = document.getElementById('listaPublicados');
+
+} else {
+
+    contenedor = document.getElementById('listaRevision');
+}
 
     const nuevaTarjeta = `
-        <article class="tarjeta-horizontal" data-post-id="${post.id}">
+        <article 
+    class="tarjeta-horizontal"
+
+    data-post-id="${post.id}"
+
+    data-titulo="${post.titulo}"
+
+    data-descripcion="${post.descripcion}"
+
+    data-imagen="${post.imagen_url}"
+
+    data-tipo="${post.tipo}"
+>
             <div class="imagen-lateral">
                 <img src="${post.imagen}" alt="Preview">
             </div>
             <div class="contenido-derecha">
                 <div class="header-card-autor">
-                    <span class="etiqueta-borrador">${post.status === 'borrador' ? 'Borrador' : 'En Revisión'}</span>
+                    <span class="etiqueta-borrador">${
+    post.status === 'borrador'
+        ? 'Borrador'
+        : post.status === 'publicado'
+            ? 'Publicado'
+            : 'En Revisión'
+}</span>
                 </div>
                 <h4>${post.titulo}</h4>
                 <div class="autor-info">
