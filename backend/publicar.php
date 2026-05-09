@@ -50,8 +50,8 @@ if (!$data) {
 
 $titulo = trim($data['titulo'] ?? '');
 $descripcion = trim($data['descripcion'] ?? '');
-
-// FORZAR PUBLICACIÓN DIRECTA
+$tipo = $data['tipo'] ?? 'articulo';
+// FORZAR A PUBLICADO
 $status = 'publicado';
 
 if (empty($titulo) || empty($descripcion)) {
@@ -86,10 +86,23 @@ if (
         )
     ) {
 
-        $formato = $matches[1];
+        $formato = strtolower($matches[1]);
         $base64_puro = $matches[2];
 
-        // Validar tamaño
+        // VALIDAR FORMATOS
+        $formatosPermitidos = ['jpg', 'jpeg', 'png', 'webp'];
+
+        if (!in_array($formato, $formatosPermitidos)) {
+
+            echo json_encode([
+                'success' => false,
+                'error' => 'Formato de imagen no permitido'
+            ]);
+
+            exit;
+        }
+
+        // VALIDAR TAMAÑO
         $tamanio_kb = (strlen($base64_puro) * 0.75) / 1024;
 
         if ($tamanio_kb > 5120) {
@@ -102,7 +115,7 @@ if (
             exit;
         }
 
-        // Nombre archivo
+        // NOMBRE ÚNICO
         $nombre_archivo =
             'post_' .
             $autor_id .
@@ -111,24 +124,38 @@ if (
             '.' .
             $formato;
 
-        // Carpeta uploads
+        // CARPETA
         $ruta_directorio =
             __DIR__ . '/../frontend/uploads/posts/';
 
-        // Ruta completa
+        // CREAR SI NO EXISTE
+        if (!is_dir($ruta_directorio)) {
+
+            mkdir($ruta_directorio, 0777, true);
+        }
+
+        // RUTA COMPLETA
         $ruta_archivo =
             $ruta_directorio . $nombre_archivo;
 
-        // Crear carpeta si no existe
-        if (!is_dir($ruta_directorio)) {
+        // DECODIFICAR IMAGEN
+        $imagen_decodificada =
+            base64_decode($base64_puro);
 
-            mkdir($ruta_directorio, 0775, true);
+        if ($imagen_decodificada === false) {
+
+            echo json_encode([
+                'success' => false,
+                'error' => 'Error al decodificar imagen'
+            ]);
+
+            exit;
         }
 
-        // Guardar archivo
+        // GUARDAR ARCHIVO
         $guardado = file_put_contents(
             $ruta_archivo,
-            base64_decode($base64_puro)
+            $imagen_decodificada
         );
 
         if ($guardado === false) {
@@ -141,7 +168,7 @@ if (
             exit;
         }
 
-        // Ruta que se guarda en DB
+        // URL PARA FRONTEND
         $imagen_url =
             'uploads/posts/' . $nombre_archivo;
     }
@@ -155,14 +182,15 @@ if (
 $stmt = $conexion->prepare(
 
     "INSERT INTO publicaciones
-    (
-        titulo,
-        descripcion,
-        imagen_url,
-        status,
-        autor_id
-    )
-    VALUES (?, ?, ?, ?, ?)"
+(
+    titulo,
+    descripcion,
+    imagen_url,
+    tipo,
+    status,
+    autor_id
+)
+VALUES (?, ?, ?, ?, ?, ?)"
 
 );
 

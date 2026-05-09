@@ -3,7 +3,6 @@
 // ============================================
 
 const modal = document.getElementById('modalAdmin');
-console.log("Elemento modal:", modal);
 
 const btnOpen = document.getElementById('btnAbrirModal');
 const btnClose = document.getElementById('btnCerrar');
@@ -12,49 +11,56 @@ const btnVolver = document.querySelector('.btnVolver');
 
 let archivoSeleccionado = null;
 let enviando = false;
+let postEditando = null;
 
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
-const FORMATOS_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
+const FORMATOS_PERMITIDOS = [
+    'image/jpeg',
+    'image/png',
+    'image/webp'
+];
 
 
 // ============================================
-// EVENT LISTENERS - MODAL
+// EVENTOS MODAL
 // ============================================
 
-// Abrir Modal
 if (btnOpen) {
+
     btnOpen.onclick = () => {
+
+        postEditando = null;
+
+        resetearFormulario();
+
         modal.style.display = 'flex';
     };
 }
 
-// Cerrar Modal
 if (btnClose) {
+
     btnClose.onclick = () => {
         cerrarModal();
     };
 }
 
-// Botón volver
 if (btnVolver) {
+
     btnVolver.onclick = () => {
 
-        const pantalla1 = document.getElementById('pantalla1');
-        const pantalla2 = document.getElementById('pantalla2');
+        document
+            .getElementById('pantalla1')
+            .classList.remove('d-none');
 
-        if (pantalla1 && pantalla2) {
-
-            pantalla1.classList.remove('d-none');
-            pantalla2.classList.add('d-none');
-
-            fileInput.value = '';
-            archivoSeleccionado = null;
-        }
+        document
+            .getElementById('pantalla2')
+            .classList.add('d-none');
     };
 }
 
-// Cerrar al hacer click fuera
 window.onclick = (event) => {
+
     if (event.target == modal) {
         cerrarModal();
     }
@@ -62,7 +68,7 @@ window.onclick = (event) => {
 
 
 // ============================================
-// MANEJO DE IMAGEN
+// INPUT IMAGEN
 // ============================================
 
 if (fileInput) {
@@ -73,44 +79,19 @@ if (fileInput) {
 
         if (!file) return;
 
-        // Validar tamaño
         if (file.size > MAX_IMAGE_SIZE) {
 
-            alert('⚠️ Imagen muy pesada. Máximo 5MB');
-            fileInput.value = '';
+            alert('⚠️ Imagen muy pesada');
             return;
         }
 
-        // Validar formato
         if (!FORMATOS_PERMITIDOS.includes(file.type)) {
 
-            alert('⚠️ Solo se permiten JPG, PNG o WebP');
-            fileInput.value = '';
+            alert('⚠️ Formato inválido');
             return;
         }
 
-        // Validar dimensiones
-        const img = new Image();
-
-        img.onload = () => {
-
-            if (img.width < 400 || img.height < 300) {
-
-                alert('⚠️ Imagen muy pequeña (mínimo 400x300px)');
-                fileInput.value = '';
-                return;
-            }
-
-            procesarImagen(file);
-        };
-
-        img.onerror = () => {
-
-            alert('❌ No se pudo leer la imagen');
-            fileInput.value = '';
-        };
-
-        img.src = URL.createObjectURL(file);
+        procesarImagen(file);
     };
 }
 
@@ -127,27 +108,19 @@ function procesarImagen(file) {
 
     reader.onload = (event) => {
 
-        const imgPreview = document.getElementById('imgPreview');
-        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        document.getElementById('imgPreview').src =
+            event.target.result;
 
-        if (imgPreview) {
-            imgPreview.src = event.target.result;
-        }
+        document.getElementById('fileNameDisplay')
+            .textContent = file.name;
 
-        if (fileNameDisplay) {
-            fileNameDisplay.textContent = file.name;
-        }
+        document
+            .getElementById('pantalla1')
+            .classList.add('d-none');
 
-        // Cambiar pantalla
-        const pantalla1 = document.getElementById('pantalla1');
-        const pantalla2 = document.getElementById('pantalla2');
-
-        if (pantalla1) pantalla1.classList.add('d-none');
-        if (pantalla2) pantalla2.classList.remove('d-none');
-    };
-
-    reader.onerror = () => {
-        alert('❌ Error al leer archivo');
+        document
+            .getElementById('pantalla2')
+            .classList.remove('d-none');
     };
 
     reader.readAsDataURL(file);
@@ -160,45 +133,17 @@ function procesarImagen(file) {
 
 function validarCampos() {
 
-    const postTitle = document.getElementById('postTitle');
-    const postDesc = document.getElementById('postDesc');
+    const titulo =
+        document.getElementById('postTitle')
+        .value.trim();
 
-    if (!postTitle || !postDesc) {
+    const descripcion =
+        document.getElementById('postDesc')
+        .value.trim();
 
-        alert('⚠️ Elementos del formulario no encontrados');
-        return false;
-    }
-
-    const titulo = postTitle.value.trim();
-    const desc = postDesc.value.trim();
-
-    if (!titulo || !desc) {
+    if (!titulo || !descripcion) {
 
         alert('⚠️ Completa todos los campos');
-        return false;
-    }
-
-    if (titulo.length < 5) {
-
-        alert('⚠️ Título mínimo 5 caracteres');
-        return false;
-    }
-
-    if (titulo.length > 150) {
-
-        alert('⚠️ Título máximo 150 caracteres');
-        return false;
-    }
-
-    if (desc.length < 20) {
-
-        alert('⚠️ Descripción mínimo 20 caracteres');
-        return false;
-    }
-
-    if (desc.length > 2000) {
-
-        alert('⚠️ Descripción máximo 2000 caracteres');
         return false;
     }
 
@@ -207,122 +152,7 @@ function validarCampos() {
 
 
 // ============================================
-// PUBLICAR
-// ============================================
-
-async function manejarPublicacion(estado) {
-
-    if (!validarCampos()) return;
-
-    if (enviando) {
-
-        alert('⏳ Ya se está guardando...');
-        return;
-    }
-
-    enviando = true;
-
-    const btnAccion = estado === 'borrador'
-        ? document.getElementById('btnGuardarBorrador')
-        : document.getElementById('btnEnviarRevision');
-
-    const textoOriginal = btnAccion?.textContent || 'Guardar';
-
-    if (btnAccion) {
-
-        btnAccion.textContent = '⏳ Guardando...';
-        btnAccion.disabled = true;
-    }
-
-    try {
-
-        const titulo = document.getElementById('postTitle').value.trim();
-        const desc = document.getElementById('postDesc').value.trim();
-
-        let imagenBase64 = null;
-
-        // Convertir imagen
-        if (archivoSeleccionado) {
-            imagenBase64 = await convertirABase64(archivoSeleccionado);
-        }
-
-        // Datos a enviar
-        const datosPost = {
-            titulo,
-            descripcion: desc,
-            imagen: imagenBase64,
-            status: estado
-        };
-
-        // Fetch al backend
-        const respuesta = await fetch('../backend/publicar.php', {
-
-            method: 'POST',
-
-            // IMPORTANTE PARA PHP SESSION
-            credentials: 'include',
-
-            headers: {
-                'Content-Type': 'application/json'
-            },
-
-            body: JSON.stringify(datosPost)
-        });
-
-        if (!respuesta.ok) {
-            throw new Error(`HTTP ${respuesta.status}`);
-        }
-
-        const resultado = await respuesta.json();
-
-        if (resultado.success) {
-
-            alert(`✅ Post guardado como ${estado}`);
-
-            // Insertar tarjeta instantáneamente
-            if (typeof renderizarTarjetaEnPanel === 'function') {
-
-                renderizarTarjetaEnPanel({
-
-                    id: resultado.post_id,
-                    titulo: titulo,
-                    descripcion: desc,
-
-                    // IMPORTANTE:
-                    // usar la URL REAL del backend
-                    imagen: '../frontend/' + resultado.imagen_url,
-
-                    status: estado
-                });
-            }
-
-            cerrarModal();
-
-        } else {
-
-            alert(`❌ ${resultado.error}`);
-        }
-
-    } catch (error) {
-
-        console.error("Error en la publicación:", error);
-        alert(`❌ Error: ${error.message}`);
-
-    } finally {
-
-        enviando = false;
-
-        if (btnAccion) {
-
-            btnAccion.textContent = textoOriginal;
-            btnAccion.disabled = false;
-        }
-    }
-}
-
-
-// ============================================
-// CONVERTIR A BASE64
+// CONVERTIR BASE64
 // ============================================
 
 function convertirABase64(file) {
@@ -333,9 +163,7 @@ function convertirABase64(file) {
 
         reader.onload = () => resolve(reader.result);
 
-        reader.onerror = () => reject(
-            new Error('Error al leer archivo')
-        );
+        reader.onerror = reject;
 
         reader.readAsDataURL(file);
     });
@@ -343,48 +171,143 @@ function convertirABase64(file) {
 
 
 // ============================================
-// RESETEAR FORMULARIO
+// CREAR / EDITAR POST
 // ============================================
 
-function resetearFormulario() {
+async function manejarPublicacion(estado) {
 
-    const postTitle = document.getElementById('postTitle');
-    const postDesc = document.getElementById('postDesc');
-    const imgPreview = document.getElementById('imgPreview');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    if (!validarCampos()) return;
 
-    if (postTitle) postTitle.value = '';
-    if (postDesc) postDesc.value = '';
+    if (enviando) return;
 
-    if (fileInput) fileInput.value = '';
+    enviando = true;
 
-    if (imgPreview) imgPreview.src = '';
+    try {
 
-    if (fileNameDisplay) {
-        fileNameDisplay.textContent = 'Selecciona una imagen';
+        const titulo =
+            document.getElementById('postTitle')
+            .value.trim();
+
+        const descripcion =
+            document.getElementById('postDesc')
+            .value.trim();
+
+        const tipo =
+            document.getElementById('postTipo')
+            ?.value || 'articulo';
+
+        let imagenBase64 = null;
+
+        if (archivoSeleccionado) {
+
+            imagenBase64 =
+                await convertirABase64(
+                    archivoSeleccionado
+                );
+        }
+
+        // ============================================
+        // EDITAR
+        // ============================================
+
+        if (postEditando) {
+
+            const respuesta = await fetch(
+                '../backend/editar_post.php',
+                {
+                    method: 'POST',
+
+                    credentials: 'include',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+
+                        post_id: postEditando,
+
+                        titulo,
+
+                        descripcion,
+
+                        tipo,
+
+                        imagen: imagenBase64
+                    })
+                }
+            );
+
+            const resultado =
+                await respuesta.json();
+
+            if (resultado.success) {
+
+                alert('✅ Post actualizado');
+
+                location.reload();
+
+            } else {
+
+                alert(resultado.error);
+            }
+
+            return;
+        }
+
+        // ============================================
+        // CREAR
+        // ============================================
+
+        const respuesta = await fetch(
+            '../backend/publicar.php',
+            {
+                method: 'POST',
+
+                credentials: 'include',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+
+                    titulo,
+
+                    descripcion,
+
+                    tipo,
+
+                    imagen: imagenBase64,
+
+                    status: estado
+                })
+            }
+        );
+
+        const resultado = await respuesta.json();
+
+        if (resultado.success) {
+
+            alert('✅ Publicación creada');
+
+            location.reload();
+
+        } else {
+
+            alert(resultado.error);
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert('❌ Error al guardar');
+
+    } finally {
+
+        enviando = false;
     }
-
-    archivoSeleccionado = null;
-
-    const pantalla1 = document.getElementById('pantalla1');
-    const pantalla2 = document.getElementById('pantalla2');
-
-    if (pantalla1) pantalla1.classList.remove('d-none');
-    if (pantalla2) pantalla2.classList.add('d-none');
-}
-
-
-// ============================================
-// CERRAR MODAL
-// ============================================
-
-function cerrarModal() {
-
-    if (modal) {
-        modal.style.display = 'none';
-    }
-
-    resetearFormulario();
 }
 
 
@@ -392,125 +315,26 @@ function cerrarModal() {
 // BOTONES
 // ============================================
 
-const btnGuardarBorrador = document.getElementById('btnGuardarBorrador');
-const btnEnviarRevision = document.getElementById('btnEnviarRevision');
+const btnGuardar =
+    document.getElementById('btnGuardarBorrador');
 
-if (btnGuardarBorrador) {
+const btnRevision =
+    document.getElementById('btnEnviarRevision');
 
-    btnGuardarBorrador.onclick = () => {
+if (btnGuardar) {
+
+    btnGuardar.onclick = () => {
+
         manejarPublicacion('borrador');
     };
 }
 
-if (btnEnviarRevision) {
+if (btnRevision) {
 
-    btnEnviarRevision.onclick = () => {
+    btnRevision.onclick = () => {
+
         manejarPublicacion('revision');
     };
-}
-
-
-// ============================================
-// CAMBIAR POST A REVISIÓN
-// ============================================
-
-async function cambiarARevision(boton) {
-
-    const tarjeta = boton.closest('article');
-    const postId = tarjeta?.dataset.postId;
-
-    if (!postId) {
-
-        alert('⚠️ Error: No se encontró el ID del post');
-        return;
-    }
-
-    if (!confirm('¿Estás seguro de enviar este post a revisión?')) {
-        return;
-    }
-
-    boton.disabled = true;
-
-    const textoOriginal = boton.textContent;
-
-    boton.textContent = '⏳ Enviando...';
-
-    try {
-
-        const respuesta = await fetch('../backend/cambiar_estado_post.php', {
-
-            method: 'POST',
-
-            credentials: 'include',
-
-            headers: {
-                'Content-Type': 'application/json'
-            },
-
-            body: JSON.stringify({
-                post_id: postId,
-                status: 'revision'
-            })
-        });
-
-        if (!respuesta.ok) {
-            throw new Error(`HTTP ${respuesta.status}`);
-        }
-
-        const resultado = await respuesta.json();
-
-        if (resultado.success) {
-
-            alert('✅ Post enviado a revisión');
-
-            const listaRevision = document.getElementById('listaRevision');
-
-            if (listaRevision && tarjeta) {
-
-                listaRevision.insertAdjacentElement(
-                    'afterbegin',
-                    tarjeta
-                );
-            }
-
-            const etiqueta = tarjeta.querySelector('.etiqueta-borrador');
-
-            if (etiqueta) {
-                etiqueta.textContent = 'En Revisión';
-            }
-
-            const btnRevision = tarjeta.querySelector('.btn-revision-post');
-
-            if (btnRevision) {
-                btnRevision.remove();
-            }
-        }
-
-    } catch (error) {
-
-        alert(`❌ Error: ${error.message}`);
-
-    } finally {
-
-        boton.textContent = textoOriginal;
-        boton.disabled = false;
-    }
-}
-
-
-// ============================================
-// EDITAR
-// ============================================
-
-async function abrirEditarPost(id) {
-
-    modal.style.display = 'flex';
-
-    document.getElementById('pantalla1').classList.add('d-none');
-    document.getElementById('pantalla2').classList.remove('d-none');
-
-    document.querySelector('.modal-title').textContent =
-        'Editar Publicación';
 }
 
 
@@ -520,24 +344,173 @@ async function abrirEditarPost(id) {
 
 function prepararEdicion(boton) {
 
-    const tarjeta = boton.closest('.tarjeta-horizontal');
+    const tarjeta =
+        boton.closest('.tarjeta-horizontal');
 
-    const titulo = tarjeta.querySelector('h4').textContent;
-    const descripcion = tarjeta.querySelector('.extracto').textContent;
-    const imagenSrc = tarjeta.querySelector('.imagen-lateral img').src;
+    if (!tarjeta) return;
 
-    document.getElementById('postTitle').value = titulo;
-    document.getElementById('postDesc').value = descripcion;
-    document.getElementById('imgPreview').src = imagenSrc;
+    // ============================================
+    // DATOS
+    // ============================================
 
-    document.getElementById('fileNameDisplay').textContent =
-        'Imagen actual';
+    const id =
+        tarjeta.dataset.postId;
+
+    const titulo =
+        tarjeta.dataset.titulo;
+
+    const descripcion =
+        tarjeta.dataset.descripcion;
+
+    const imagen =
+        tarjeta.dataset.imagen;
+
+    const tipo =
+        tarjeta.dataset.tipo;
+
+    postEditando = id;
+
+    // ============================================
+    // TITULOS
+    // ============================================
+
+    document
+        .querySelectorAll('.modal-title')
+        .forEach(t => {
+            t.textContent = 'Editar';
+        });
+
+    // ============================================
+    // LLENAR INPUTS
+    // ============================================
+
+    document.getElementById('postTitle')
+        .value = titulo || '';
+
+    document.getElementById('postDesc')
+        .value = descripcion || '';
+
+    const tipoSelect =
+        document.getElementById('postTipo');
+
+    if (tipoSelect) {
+
+        tipoSelect.value =
+            tipo || 'articulo';
+    }
+
+    // ============================================
+    // IMAGEN
+    // ============================================
+
+    const imgPreview =
+        document.getElementById('imgPreview');
+
+    if (imgPreview && imagen) {
+
+        imgPreview.src = imagen;
+    }
+
+    // ============================================
+    // TEXTO IMAGEN
+    // ============================================
+
+    document.getElementById(
+        'fileNameDisplay'
+    ).textContent = 'Imagen actual';
+
+    // ============================================
+    // ABRIR MODAL
+    // ============================================
 
     modal.style.display = 'flex';
 
-    document.getElementById('pantalla1').classList.add('d-none');
-    document.getElementById('pantalla2').classList.remove('d-none');
+    document
+        .getElementById('pantalla1')
+        .classList.add('d-none');
 
-    document.querySelector('.modal-title').textContent =
-        'Editar Publicación';
+    document
+        .getElementById('pantalla2')
+        .classList.remove('d-none');
+
+    // ============================================
+    // BOTONES
+    // ============================================
+
+    document.getElementById(
+        'btnGuardarBorrador'
+    ).textContent = 'Guardar cambios';
+
+    document.getElementById(
+        'btnEnviarRevision'
+    ).style.display = 'none';
+}
+
+
+// ============================================
+// RESET FORMULARIO
+// ============================================
+
+function resetearFormulario() {
+
+    postEditando = null;
+
+    archivoSeleccionado = null;
+
+    document.getElementById('postTitle').value = '';
+
+    document.getElementById('postDesc').value = '';
+
+    document.getElementById('imgPreview').src = '';
+
+    document.getElementById(
+        'fileNameDisplay'
+    ).textContent =
+        'Selecciona una imagen';
+
+    if (fileInput) {
+        fileInput.value = '';
+    }
+
+    const tipoSelect =
+        document.getElementById('postTipo');
+
+    if (tipoSelect) {
+
+        tipoSelect.value = 'articulo';
+    }
+
+    document
+        .querySelectorAll('.modal-title')
+        .forEach(t => {
+            t.textContent = 'Crear';
+        });
+
+    document.getElementById(
+        'btnGuardarBorrador'
+    ).textContent = 'Guardar';
+
+    document.getElementById(
+        'btnEnviarRevision'
+    ).style.display = 'block';
+
+    document
+        .getElementById('pantalla1')
+        .classList.remove('d-none');
+
+    document
+        .getElementById('pantalla2')
+        .classList.add('d-none');
+}
+
+
+// ============================================
+// CERRAR MODAL
+// ============================================
+
+function cerrarModal() {
+
+    modal.style.display = 'none';
+
+    resetearFormulario();
 }
