@@ -49,10 +49,12 @@ if (!$data) {
 // ============================================
 
 $titulo = trim($data['titulo'] ?? '');
+
 $descripcion = trim($data['descripcion'] ?? '');
-$tipo = $data['tipo'] ?? 'articulo';
-// FORZAR A PUBLICADO
-$status = 'publicado';
+
+$tipo = trim($data['tipo'] ?? 'articulo');
+
+$status = trim($data['status'] ?? 'borrador');
 
 if (empty($titulo) || empty($descripcion)) {
 
@@ -205,15 +207,20 @@ if (!$stmt) {
 }
 
 $stmt->bind_param(
-    "ssssi",
+    "sssssi",
+
     $titulo,
+
     $descripcion,
+
     $imagen_url,
+
+    $tipo,
+
     $status,
+
     $autor_id
 );
-
-
 // ============================================
 // 6. EJECUTAR
 // ============================================

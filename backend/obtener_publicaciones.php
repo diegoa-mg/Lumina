@@ -9,6 +9,7 @@ SELECT
     publicaciones.titulo,
     publicaciones.descripcion,
     publicaciones.imagen_url,
+    publicaciones.tipo,
     publicaciones.status,
     publicaciones.fecha_creacion,
     usuarios.nombre AS autor

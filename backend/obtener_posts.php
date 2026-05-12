@@ -13,7 +13,7 @@ if (!isset($_SESSION['usuario_id'])) {
 $autor_id = $_SESSION['usuario_id'];
 
 // Consulta para traer los posts del autor logueado
-$query = "SELECT titulo, descripcion, imagen_url as imagen_url, status FROM publicaciones WHERE autor_id = ? ORDER BY id DESC";
+$query = "SELECT id, titulo, descripcion, imagen_url, tipo, status FROM publicaciones WHERE autor_id = ? ORDER BY id DESC";
 $stmt = $conexion->prepare($query);
 $stmt->bind_param("i", $autor_id);
 $stmt->execute();
