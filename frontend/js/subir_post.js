@@ -6,20 +6,12 @@ function renderizarTarjetaEnPanel(post) {
 
     let contenedor;
 
-    if (post.status === 'borrador') {
-
-        contenedor =
-            document.getElementById('listaBorradores');
-
+    if (post.status === 'borrador' || post.status === 'rechazado') { // Los rechazados vuelven a la lista de borradores
+        contenedor = document.getElementById('listaBorradores');
     } else if (post.status === 'publicado') {
-
-        contenedor =
-            document.getElementById('listaPublicados');
-
+        contenedor = document.getElementById('listaPublicados');
     } else {
-
-        contenedor =
-            document.getElementById('listaRevision');
+        contenedor = document.getElementById('listaRevision');
     }
 
     const imagenFinal = post.imagen
@@ -55,16 +47,16 @@ function renderizarTarjetaEnPanel(post) {
 
             <div class="header-card-autor">
 
-                <span class="etiqueta-borrador">
-
+                <span class="etiqueta-borrador ${post.status === 'rechazado' ? 'etiqueta-rechazado' : ''}">
                     ${
-                        post.status === 'borrador'
-                        ? 'Borrador'
-                        : post.status === 'publicado'
-                            ? 'Publicado'
-                            : 'En Revisión'
+                        post.status === 'borrador' 
+                        ? 'Borrador' 
+                        : post.status === 'rechazado' 
+                            ? 'Rechazado' 
+                            : post.status === 'publicado' 
+                                ? 'Publicado' 
+                                : 'En Revisión'
                     }
-
                 </span>
 
             </div>
@@ -101,7 +93,7 @@ function renderizarTarjetaEnPanel(post) {
             </button>
 
             ${
-                post.status === 'borrador'
+                post.status === 'borrador' || post.status === 'rechazado'
                 ? `
                 <button 
                     class="btn-accion-autor btn-revision-post"
@@ -118,7 +110,7 @@ function renderizarTarjetaEnPanel(post) {
                 `
                 : ''
             }
-
+                
         </div>
 
     </article>

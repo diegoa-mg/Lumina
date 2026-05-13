@@ -54,15 +54,23 @@ $descripcion = trim($data['descripcion'] ?? '');
 
 $tipo = trim($data['tipo'] ?? 'articulo');
 
-$status = trim($data['status'] ?? 'borrador');
+$status = trim($data['status'] ?? 'borrador'); // ¡Falta esta línea!
+
+$status_permitidos = ['borrador', 'revision', 'publicado', 'rechazado'];
+
+if (!in_array($status, $status_permitidos)) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'Estado de publicación no válido'
+    ]);
+    exit;
+}
 
 if (empty($titulo) || empty($descripcion)) {
-
     echo json_encode([
         'success' => false,
         'error' => 'Título y descripción son obligatorios'
     ]);
-
     exit;
 }
 
