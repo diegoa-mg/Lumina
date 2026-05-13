@@ -164,14 +164,13 @@
     border-radius: 1.2rem;
     border: 1px solid #e5e7eb;
     display: flex; 
-    align-items: stretch; /* Alinea al inicio para que el contenido crezca */
+    align-items: flex-start; /* Alinea al inicio para que el contenido crezca */
     padding: 2rem; 
     gap: 2rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: default; /* Cambiado a default porque ahora tiene botones internos */
     position: relative;
     overflow: hidden;
-
 }
 
 .tarjeta-horizontal:hover {
@@ -194,18 +193,25 @@
 
 /* Contenedor de info */
 .contenido-derecha {
-    flex: 1;
+    flex: 1; /* Esto hace que tome el espacio sobrante sin empujar de más */
+    min-width: 0; /* Evita que textos largos rompan el layout */
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
-    height: 100%;
-    justify-content: space-between;
 }
 
 .contenido-derecha h4 {
     font-size: 2rem;
     margin: 0;
     color: var(--azul-logo);
+}
+
+.extracto {
+    font-size: 1.4rem;
+    color: #6b7280;
+    margin: 0;
+    max-width: 90%;
+    word-wrap: break-word;
 }
 
 /* Badge de estado (Borrador / Revisión) */
@@ -223,14 +229,21 @@
     text-transform: uppercase;
 }
 
+.etiqueta-borrador.etiqueta-rechazado {
+    background-color: #e94141 !important; /* Rojo Lumina */
+    color: white !important;
+    border: none;
+}
+
 /* Sección de botones en la esquina inferior derecha */
 .footer-card-autor {
     display: flex;
-    justify-content: center; /* Alineación a la derecha */
-    gap: 1.2rem;
-    margin-top: auto;
-    border-top: 1px solid #f0f2f5;
-    padding-top: 1.5rem;
+    flex-direction: row; /* Botones uno al lado del otro */
+    gap: 1rem;
+    align-self: flex-end;
+    margin-left: auto; /* Empuja el bloque de botones a la derecha */
+    border-top: none; /* Quitamos la línea para que fluyan mejor lateralmente */
+    padding-top: 0;
 }
 
 /* Contenedor de la foto y los textos */
