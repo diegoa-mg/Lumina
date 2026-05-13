@@ -58,6 +58,7 @@ CREATE TABLE `publicaciones` (
   `titulo` varchar(255) NOT NULL,
   `descripcion` text NOT NULL,
   `imagen_url` varchar(500) DEFAULT NULL,
+  `tipo` enum('articulo','video','noticia','recurso') NOT NULL DEFAULT 'articulo',
   `categoria_id` int(11) DEFAULT NULL,
   `status` enum('borrador','revision','publicado','rechazado') DEFAULT 'borrador',
   `autor_id` int(11) NOT NULL,

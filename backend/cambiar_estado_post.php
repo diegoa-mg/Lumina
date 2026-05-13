@@ -3,101 +3,68 @@
 header('Content-Type: application/json');
 
 include 'conexion_bd.php';
+include 'post_helpers.php';
 
-
-// ============================================
-// RECIBIR DATOS
-// ============================================
-
-$data = json_decode(
-    file_get_contents('php://input'),
-    true
-);
-
-
-// ============================================
-// VALIDAR
-// ============================================
+$data = json_decode(file_get_contents('php://input'), true);
 
 if (!$data) {
-
     echo json_encode([
         'success' => false,
-        'error' => 'Datos inválidos'
+        'error' => 'Datos invalidos'
     ]);
 
     exit;
 }
 
 $post_id = intval($data['post_id'] ?? 0);
-
-$status = trim($data['status'] ?? '');
+$status = normalizar_status_post($data['status'] ?? '');
 
 if (!$post_id || !$status) {
-
     echo json_encode([
         'success' => false,
-        'error' => 'Faltan datos'
+        'error' => 'Datos incompletos o estado no valido'
     ]);
 
     exit;
 }
 
-
-// ============================================
-// ACTUALIZAR STATUS
-// ============================================
-
-$stmt = $conexion->prepare(
-
-    "UPDATE publicaciones
-    SET status = ?
-    WHERE id = ?"
-
-);
+if ($status === 'publicado') {
+    $stmt = $conexion->prepare(
+        "UPDATE publicaciones
+        SET status = ?, fecha_publicacion = COALESCE(fecha_publicacion, NOW())
+        WHERE id = ?"
+    );
+} else {
+    $stmt = $conexion->prepare(
+        "UPDATE publicaciones
+        SET status = ?
+        WHERE id = ?"
+    );
+}
 
 if (!$stmt) {
-
     echo json_encode([
         'success' => false,
-        'error' => $conexion->error
+        'error' => 'Error SQL: ' . $conexion->error
     ]);
 
     exit;
 }
 
-$stmt->bind_param(
-    "si",
-    $status,
-    $post_id
-);
-
-
-// ============================================
-// EJECUTAR
-// ============================================
+$stmt->bind_param("si", $status, $post_id);
 
 if ($stmt->execute()) {
-
     echo json_encode([
         'success' => true
     ]);
-
 } else {
-
     echo json_encode([
         'success' => false,
         'error' => $stmt->error
     ]);
 }
 
-
-// ============================================
-// CERRAR
-// ============================================
-
 $stmt->close();
-
 $conexion->close();
 
 ?>

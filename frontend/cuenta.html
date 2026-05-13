@@ -101,28 +101,35 @@
                     <div class="fila-dato">
                         <label>Nombre</label>
                         <div class="dato-inline">
-                            <div class="campo-falso"></div>
-                            <button type="button" class="btn-editar">Editar</button>
+                            <input class="campo-falso campo-cuenta" id="cuenta-nombre" data-campo="nombre" type="text" value="Cargando..." disabled>
+                            <button type="button" class="btn-editar" data-campo="nombre">Editar</button>
                         </div>
                     </div>
 
                     <div class="fila-dato">
                         <label>Usuario</label>
                         <div class="dato-inline">
-                            <div class="campo-falso"></div>
-                            <button type="button" class="btn-editar">Editar</button>
+                            <input class="campo-falso campo-cuenta" id="cuenta-usuario" data-campo="usuario" type="text" value="Cargando..." disabled>
+                            <button type="button" class="btn-editar" data-campo="usuario">Editar</button>
                         </div>
                     </div>
 
                     <div class="fila-dato">
                         <label>Correo</label>
                         <div class="dato-inline">
-                            <div class="campo-falso"></div>
-                            <button type="button" class="btn-editar">Editar</button>
+                            <input class="campo-falso campo-cuenta" id="cuenta-correo" data-campo="correo" type="email" value="Cargando..." disabled>
+                            <button type="button" class="btn-editar" data-campo="correo">Editar</button>
                         </div>
                     </div>
 
-                    <button type="button" class="btn-password">Cambiar contraseña</button>
+                    <div class="fila-dato">
+                        <label>Contraseña</label>
+                        <div class="dato-inline">
+                            <input class="campo-falso campo-cuenta campo-password" id="cuenta-password" data-campo="password" type="password" value="Cargando..." disabled>
+                            <button type="button" class="btn-editar" data-campo="password">Editar</button>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="avatar-panel">
@@ -223,6 +230,7 @@
 
     <script src="js/auth.js"></script>
     <script src="js/menu_ui.js"></script>
+    <script src="js/cuenta.js"></script>
 </body>
 
 <script>
@@ -234,10 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             // 1. Borramos la sesión del navegador
-            localStorage.removeItem('sesion_activa');
             
             // 2. Redirigimos al inicio
-            window.location.href = 'index.html';
         });
     }
 
