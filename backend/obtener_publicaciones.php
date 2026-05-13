@@ -25,7 +25,8 @@ SELECT
     publicaciones.categoria_id,
     categorias.nombre_categoria AS materia,
     publicaciones.fecha_creacion,
-    usuarios.nombre AS autor
+    usuarios.nombre AS autor,
+    usuarios.foto_url AS autor_foto
 FROM publicaciones
 INNER JOIN usuarios
 ON publicaciones.autor_id = usuarios.id

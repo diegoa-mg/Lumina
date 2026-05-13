@@ -200,7 +200,7 @@
         <button class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
             Recientes
         </button>
-        <button class="bg-white px-4 py-2 rounded-lg shadow">
+        <button class="bg-white px-4 py-2 rounded-lg shadow text-gray-500 cursor-default">
             Populares
         </button>
     </div>
@@ -208,13 +208,13 @@
     <div class="relative">
 
         <!-- Flecha izquierda -->
-        <button onclick="moveCarousel(-1)"
-            class="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-white shadow-xl rounded-full w-12 h-12 flex items-center justify-center hover:scale-110 transition">
+        <button id="carouselPrev" onclick="moveCarousel(-1)"
+            class="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-blue-600 text-white shadow-xl rounded-full w-16 h-16 text-3xl flex items-center justify-center hover:scale-110 hover:bg-blue-700 transition">
             ❮
         </button>
 
         <!-- Carrusel -->
-        <div class="overflow-hidden">
+        <div id="carouselViewport" class="scrollbar-invisible overflow-x-auto overflow-y-hidden scroll-smooth px-16 pb-4">
             <div id="carousel" class="flex gap-6 transition-transform duration-700 ease-in-out">
 
                 <!-- CARD 1 -->
@@ -415,8 +415,8 @@
             </div>
         </div>
         <!-- Flecha derecha -->
-        <button onclick="moveCarousel(1)"
-            class="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-white shadow-xl rounded-full w-12 h-12 flex items-center justify-center hover:scale-110 transition">
+        <button id="carouselNext" onclick="moveCarousel(1)"
+            class="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-blue-600 text-white shadow-xl rounded-full w-16 h-16 text-3xl flex items-center justify-center hover:scale-110 hover:bg-blue-700 transition">
             ❯
         </button>
     </div>
@@ -516,18 +516,243 @@
 <script>
 let currentSlide = 0;
 
-function moveCarousel(direction) {
-    const carousel = document.getElementById("carousel");
-    const cards = carousel.children.length;
-    const cardWidth = 324; // 300 + gap aprox
-
-    currentSlide += direction;
-
-    if (currentSlide < 0) currentSlide = 0;
-    if (currentSlide > cards - 3) currentSlide = cards - 3;
-
-    carousel.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
+function escapeHtml(valor) {
+    return String(valor ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
 }
+
+function formatearFecha(fecha) {
+    if (!fecha) return '';
+
+    const fechaObj = new Date(fecha.replace(' ', 'T'));
+
+    if (Number.isNaN(fechaObj.getTime())) {
+        return fecha;
+    }
+
+    return fechaObj.toLocaleDateString('es-MX', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    });
+}
+
+function descripcionCorta(texto) {
+    const limpio = String(texto ?? '');
+    return limpio.length > 125
+        ? `${limpio.substring(0, 125)}...`
+        : limpio;
+}
+
+const PREF_KEY = 'lumina_preferencias_contenido';
+const PREF_DEFAULTS = {
+    materias: {
+        1: true,
+        2: true,
+        3: true,
+        4: true,
+        5: true,
+        6: true,
+        7: true,
+        8: true
+    },
+    tipos: {
+        articulo: true,
+        video: true,
+        noticia: true,
+        recurso: true
+    }
+};
+
+function cargarPreferenciasContenido() {
+    try {
+        const guardadas = JSON.parse(localStorage.getItem(PREF_KEY) || '{}');
+
+        return {
+            materias: {
+                ...PREF_DEFAULTS.materias,
+                ...(guardadas.materias || {})
+            },
+            tipos: {
+                ...PREF_DEFAULTS.tipos,
+                ...(guardadas.tipos || {})
+            }
+        };
+    } catch (error) {
+        return JSON.parse(JSON.stringify(PREF_DEFAULTS));
+    }
+}
+
+function filtrarPorPreferencias(posts) {
+    const preferencias = cargarPreferenciasContenido();
+
+    return posts.filter((post) => {
+        const materiaId = String(post.categoria_id || '1');
+        const tipo = post.tipo || 'articulo';
+
+        return preferencias.materias[materiaId] !== false
+            && preferencias.tipos[tipo] !== false;
+    });
+}
+
+function renderPostReciente(post) {
+    const imagen = post.imagen_url || 'img/clases/clase2.webp';
+    const tipo = post.tipo || 'articulo';
+    const autor = post.autor || 'Autor desconocido';
+    const autorFoto = post.autor_foto || '';
+    const materia = post.materia || 'Materia sin asignar';
+    const fecha = formatearFecha(post.fecha_creacion);
+    const avatarAutor = autorFoto
+        ? `<img src="${escapeHtml(autorFoto)}" class="w-8 h-8 rounded-full object-cover" alt="Foto de ${escapeHtml(autor)}">`
+        : `<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                <span class="material-symbols-outlined text-gray-500 text-lg">person</span>
+           </div>`;
+
+    return `
+        <article class="min-w-[300px] h-[500px] bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col">
+            <img src="${escapeHtml(imagen)}" class="w-full h-48 object-cover" alt="Imagen publicacion">
+
+            <div class="p-5 flex flex-col flex-1">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">
+                        ${escapeHtml(tipo.toUpperCase())}
+                    </span>
+                    <span class="material-symbols-outlined text-gray-400 text-lg">
+                        bookmark
+                    </span>
+                </div>
+
+                <h3 class="text-lg font-bold text-gray-900 leading-tight mb-4">
+                    ${escapeHtml(post.titulo)}
+                </h3>
+
+                <div class="flex items-center gap-2 mb-4">
+                    ${avatarAutor}
+                    <div>
+                        <p class="text-sm font-semibold">${escapeHtml(autor)}</p>
+                        <p class="text-xs text-gray-400">${escapeHtml(fecha)}</p>
+                    </div>
+                </div>
+
+                <p class="text-sm text-gray-600 leading-relaxed flex-1">
+                    ${escapeHtml(descripcionCorta(post.descripcion))}
+                </p>
+
+                <div class="flex justify-end mt-3">
+                    <span class="max-w-full truncate bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+                        ${escapeHtml(materia)}
+                    </span>
+                </div>
+
+                <div class="pt-4 mt-3 border-t flex justify-between items-center">
+                    <button type="button" class="flex items-center gap-2 text-gray-500 cursor-default">
+                        <span class="material-symbols-outlined text-lg">favorite</span>
+                        Me gusta
+                    </button>
+                    <span class="text-sm text-gray-400">0</span>
+                </div>
+            </div>
+        </article>
+    `;
+}
+
+async function cargarUltimasPublicaciones() {
+    const carousel = document.getElementById("carousel");
+    const viewport = document.getElementById("carouselViewport");
+    if (!carousel) return;
+
+    try {
+        carousel.innerHTML = `
+            <div class="min-w-full text-center py-12 text-gray-500">
+                Cargando publicaciones...
+            </div>
+        `;
+
+        const respuesta = await fetch('../backend/obtener_publicaciones.php');
+        const posts = await respuesta.json();
+
+        if (!Array.isArray(posts) || posts.length === 0) {
+            carousel.innerHTML = `
+                <div class="min-w-full text-center py-12">
+                    <h3 class="text-2xl font-bold text-gray-500">No hay publicaciones recientes</h3>
+                </div>
+            `;
+            return;
+        }
+
+        const postsFiltrados = filtrarPorPreferencias(posts);
+
+        if (postsFiltrados.length === 0) {
+            carousel.innerHTML = `
+                <div class="min-w-full text-center py-12">
+                    <h3 class="text-2xl font-bold text-gray-500">No hay publicaciones con tus preferencias activas</h3>
+                </div>
+            `;
+            requestAnimationFrame(actualizarFlechasCarousel);
+            return;
+        }
+
+        currentSlide = 0;
+        carousel.style.transform = 'none';
+        if (viewport) {
+            viewport.scrollLeft = 0;
+        }
+        carousel.innerHTML = postsFiltrados.map(renderPostReciente).join('');
+        requestAnimationFrame(actualizarFlechasCarousel);
+    } catch (error) {
+        console.error('Error cargando publicaciones recientes:', error);
+        carousel.innerHTML = `
+            <div class="min-w-full text-center py-12">
+                <h3 class="text-2xl font-bold text-gray-500">No se pudieron cargar las publicaciones</h3>
+            </div>
+        `;
+    }
+}
+
+function actualizarFlechasCarousel() {
+    const viewport = document.getElementById("carouselViewport");
+    const prev = document.getElementById("carouselPrev");
+    const next = document.getElementById("carouselNext");
+
+    if (!viewport || !prev || !next) return;
+
+    const maxScroll = Math.max(viewport.scrollWidth - viewport.clientWidth, 0);
+    const enInicio = viewport.scrollLeft <= 4;
+    const enFinal = viewport.scrollLeft >= maxScroll - 4;
+
+    prev.classList.toggle('hidden', enInicio || maxScroll === 0);
+    next.classList.toggle('hidden', enFinal || maxScroll === 0);
+}
+
+function moveCarousel(direction) {
+    const viewport = document.getElementById("carouselViewport");
+    if (!viewport) return;
+
+    const distancia = Math.min(680, viewport.clientWidth * 0.85);
+
+    viewport.scrollBy({
+        left: direction * distancia,
+        behavior: 'smooth'
+    });
+
+    window.setTimeout(actualizarFlechasCarousel, 350);
+}
+
+document.addEventListener('DOMContentLoaded', cargarUltimasPublicaciones);
+document.addEventListener('DOMContentLoaded', () => {
+    const viewport = document.getElementById("carouselViewport");
+
+    if (viewport) {
+        viewport.addEventListener('scroll', actualizarFlechasCarousel, { passive: true });
+    }
+
+    window.addEventListener('resize', actualizarFlechasCarousel);
+    actualizarFlechasCarousel();
+});
 </script>
         
 

@@ -14,7 +14,7 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 $usuario_id = (int) $_SESSION['usuario_id'];
-$stmt = $conexion->prepare('SELECT nombre, usuarios, correo, password FROM usuarios WHERE id = ? LIMIT 1');
+$stmt = $conexion->prepare('SELECT nombre, usuarios, correo, password, foto_url FROM usuarios WHERE id = ? LIMIT 1');
 $stmt->bind_param('i', $usuario_id);
 $stmt->execute();
 $resultado = $stmt->get_result();
@@ -36,6 +36,7 @@ echo json_encode([
         'nombre' => $usuario['nombre'],
         'usuario' => $usuario['usuarios'],
         'correo' => $usuario['correo'],
+        'foto_url' => $usuario['foto_url'],
         'tiene_password' => !empty($usuario['password'])
     ]
 ]);

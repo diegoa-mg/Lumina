@@ -93,3 +93,12 @@ p.copy {
 .materia-card:hover img {
     transform: scale(1.1);
 }
+
+.scrollbar-invisible {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-invisible::-webkit-scrollbar {
+    display: none;
+}

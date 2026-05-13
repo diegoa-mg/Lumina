@@ -23,8 +23,8 @@
     <link rel="preload" href="css/navbar.css" as="style">
     <link rel="stylesheet" href="css/navbar.css">
 
-    <link rel="preload" href="css/cuenta.css" as="style">
-    <link rel="stylesheet" href="css/cuenta.css">
+    <link rel="preload" href="css/cuenta.css?v=2" as="style">
+    <link rel="stylesheet" href="css/cuenta.css?v=2">
     
 </head>
 <body>
@@ -93,7 +93,7 @@
 
         <section class="bloque-cuenta">
             <div class="bloque-header">
-                <h2>Resumen de Actividad</h2>
+                <h2>Datos Personales</h2>
             </div>
 
             <div class="cuenta-grid">
@@ -133,12 +133,39 @@
                 </div>
 
                 <div class="avatar-panel">
-                    <div class="avatar-circle">
-                        <span class="material-symbols-outlined">person</span>
-                    </div>
+                    <button type="button" class="avatar-circle" id="btn-avatar" aria-label="Cambiar foto de perfil">
+                        <img id="foto-perfil" class="avatar-img" src="" alt="Foto de perfil">
+                        <span id="avatar-icon" class="material-symbols-outlined">person</span>
+                        <span class="avatar-edit material-symbols-outlined">photo_camera</span>
+                    </button>
+                    <div class="avatar-hint">Haz click para cambiar tu foto</div>
                 </div>
             </div>
         </section>
+
+        <div class="perfil-modal-overlay" id="modal-foto-perfil">
+            <div class="perfil-modal">
+                <button type="button" class="perfil-modal-close" id="btn-cerrar-foto">&times;</button>
+                <h2>Cambiar foto de perfil</h2>
+
+                <div class="perfil-upload" id="perfil-drop-zone">
+                    <span class="material-symbols-outlined perfil-upload-icon">cloud_upload</span>
+                    <p class="perfil-upload-main">Selecciona una imagen para tu perfil</p>
+                    <p class="perfil-upload-sub">JPG, PNG o WEBP. Maximo 5 MB.</p>
+                    <input type="file" id="input-foto-perfil" hidden accept="image/jpeg,image/png,image/webp">
+                    <button type="button" class="btn-select-foto" id="btn-seleccionar-foto">Seleccionar imagen</button>
+                </div>
+
+                <div class="perfil-preview d-none" id="perfil-preview-panel">
+                    <img id="preview-foto-perfil" src="" alt="Preview foto de perfil">
+                    <p id="nombre-foto-perfil">Imagen seleccionada</p>
+                    <div class="perfil-actions">
+                        <button type="button" class="btn-cancelar-foto" id="btn-cancelar-foto">Cancelar</button>
+                        <button type="button" class="btn-guardar-foto" id="btn-guardar-foto">Guardar foto</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <section class="bloque-cuenta">
             <div class="bloque-header">
@@ -230,7 +257,7 @@
 
     <script src="js/auth.js"></script>
     <script src="js/menu_ui.js"></script>
-    <script src="js/cuenta.js"></script>
+    <script src="js/cuenta.js?v=2"></script>
 </body>
 
 <script>
