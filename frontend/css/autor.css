@@ -1,3 +1,13 @@
+.seccion-vacia {
+    background-color: var(--blanco);
+    border-radius: 1.2rem;
+    border: 1px dashed #d1d5db;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 1.4rem;
+}
+
 .boton-crear{
     background-color: var(--blanco);
     font-size: 3rem;
@@ -312,6 +322,49 @@
 .btn-revision-post:hover {
     background-color: var(--secundario);
     transform: translateY(-2px);
+}
+
+.btn-eliminar-post {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    padding: 0.4rem;
+    border-radius: 0.6rem;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s, background 0.2s;
+}
+
+.btn-eliminar-post:hover {
+    color: #ef4444;
+    background: #fee2e2;
+}
+
+.btn-cambiar-imagen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 0.9rem;
+    margin-top: 1rem;
+    background: var(--gris-claro);
+    border: none;
+    border-radius: 0.8rem;
+    font-size: 1.3rem;
+    font-family: var(--fuente-principal);
+    color: #6b7280;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-cambiar-imagen:hover {
+    background: #d1d5db;
+    color: #374151;
 }
 
 @media (max-width: 760px) {

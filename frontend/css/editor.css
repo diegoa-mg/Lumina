@@ -93,12 +93,29 @@
     font-size: 1.4rem; 
 }
 
-.field input, .field textarea {
+.tipo-materia-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
+    align-items: end;
+    margin-top: 1rem;
+}
+
+.tipo-materia-row .field {
+    min-width: 0;
+}
+
+.field input, .field textarea, .field select {
     width: 100%;
     background: var(--gris-claro);
     border: none;
-    border-radius: 0.8rem; 
+    border-radius: 0.8rem;
     padding: 1rem;
+}
+
+.field select {
+    min-height: 4.2rem;
+    display: block;
 }
 
 .field textarea{
