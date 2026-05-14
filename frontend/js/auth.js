@@ -28,10 +28,17 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         
         // Configurar botón de cerrar sesión inmediatamente después de inyectar
-        document.getElementById('cerrar-sesion').addEventListener('click', (e) => {
+        document.getElementById('cerrar-sesion').addEventListener('click', async (e) => {
             e.preventDefault();
-            localStorage.clear();
-            window.location.href = 'index.html';
+            try {
+                await fetch('../backend/cerrar_sesion.php', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+            } finally {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
         });
     } else {
         nav.innerHTML = `

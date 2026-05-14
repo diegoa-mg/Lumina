@@ -1,25 +1,54 @@
 <?php
 // backend/obtener_posts.php
-header('Content-Type: application/json');
-session_start();
-include 'conexion_bd.php';
 
-// Validar sesión (Diego, asegúrate de haber iniciado sesión antes)
+header('Content-Type: application/json');
+
+session_start();
+
+include 'conexion_bd.php';
+include 'post_helpers.php';
+
 if (!isset($_SESSION['usuario_id'])) {
-    echo json_encode([]); // Devolvemos lista vacía si no hay sesión
+    echo json_encode([]);
     exit;
 }
 
-$autor_id = $_SESSION['usuario_id'];
+$autor_id = intval($_SESSION['usuario_id']);
+$tipo_select = publicaciones_tiene_columna($conexion, 'tipo')
+    ? "tipo"
+    : "'articulo' AS tipo";
 
-// Consulta para traer los posts del autor logueado
-$query = "SELECT id, titulo, descripcion, imagen_url, tipo, status FROM publicaciones WHERE autor_id = ? ORDER BY id DESC";
+$query = "
+SELECT
+    publicaciones.id,
+    publicaciones.titulo,
+    publicaciones.descripcion,
+    publicaciones.imagen_url,
+    publicaciones.status,
+    $tipo_select,
+    publicaciones.categoria_id,
+    categorias.nombre_categoria AS materia,
+    publicaciones.fecha_creacion
+FROM publicaciones
+LEFT JOIN categorias
+ON publicaciones.categoria_id = categorias.id
+WHERE autor_id = ?
+ORDER BY publicaciones.id DESC
+";
+
 $stmt = $conexion->prepare($query);
+
+if (!$stmt) {
+    echo json_encode([]);
+    exit;
+}
+
 $stmt->bind_param("i", $autor_id);
 $stmt->execute();
 $resultado = $stmt->get_result();
 
 $posts = [];
+
 while ($fila = $resultado->fetch_assoc()) {
     $posts[] = $fila;
 }
@@ -28,4 +57,5 @@ echo json_encode($posts);
 
 $stmt->close();
 $conexion->close();
+
 ?>

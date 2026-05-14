@@ -5,13 +5,10 @@ header('Content-Type: application/json');
 session_start();
 
 include 'conexion_bd.php';
-
-
-// ============================================
-// VALIDAR SESIÓN
-// ============================================
+include 'post_helpers.php';
 
 if (!isset($_SESSION['usuario_id'])) {
+    http_response_code(401);
 
     echo json_encode([
         'success' => false,
@@ -21,48 +18,26 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-
-// ============================================
-// RECIBIR DATOS
-// ============================================
-
-$data = json_decode(
-    file_get_contents("php://input"),
-    true
-);
+$data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data) {
-
     echo json_encode([
         'success' => false,
-        'error' => 'Datos inválidos'
+        'error' => 'Datos invalidos'
     ]);
 
     exit;
 }
 
-
-// ============================================
-// DATOS
-// ============================================
-
 $post_id = intval($data['post_id'] ?? 0);
-
+$autor_id = intval($_SESSION['usuario_id']);
 $titulo = trim($data['titulo'] ?? '');
-
 $descripcion = trim($data['descripcion'] ?? '');
-
-$tipo = trim($data['tipo'] ?? 'articulo');
-
+$tipo = normalizar_tipo_post($data['tipo'] ?? 'articulo');
+$categoria_id = obtener_categoria_post_desde_data($data);
 $imagen = $data['imagen'] ?? null;
 
-
-// ============================================
-// VALIDAR
-// ============================================
-
-if (!$post_id || !$titulo || !$descripcion) {
-
+if (!$post_id || $titulo === '' || $descripcion === '') {
     echo json_encode([
         'success' => false,
         'error' => 'Campos incompletos'
@@ -71,29 +46,28 @@ if (!$post_id || !$titulo || !$descripcion) {
     exit;
 }
 
-
-// ============================================
-// OBTENER POST
-// ============================================
-
 $stmt = $conexion->prepare(
-
     "SELECT imagen_url
     FROM publicaciones
-    WHERE id = ?"
-
+    WHERE id = ? AND autor_id = ?"
 );
 
-$stmt->bind_param("i", $post_id);
+if (!$stmt) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'Error SQL: ' . $conexion->error
+    ]);
 
+    exit;
+}
+
+$stmt->bind_param("ii", $post_id, $autor_id);
 $stmt->execute();
-
 $resultado = $stmt->get_result();
-
 $post = $resultado->fetch_assoc();
+$stmt->close();
 
 if (!$post) {
-
     echo json_encode([
         'success' => false,
         'error' => 'Post no encontrado'
@@ -104,86 +78,90 @@ if (!$post) {
 
 $imagen_url = $post['imagen_url'];
 
+$resultado_imagen = guardar_imagen_post_base64(
+    $imagen,
+    'post_' . $autor_id
+);
 
-// ============================================
-// NUEVA IMAGEN
-// ============================================
-
-if ($imagen && strpos($imagen, 'data:image') === 0) {
-
-    preg_match(
-        '/data:image\/(\w+);base64,(.*)/',
-        $imagen,
-        $matches
-    );
-
-    $formato = $matches[1];
-
-    $contenido = base64_decode($matches[2]);
-
-    $nombre_archivo =
-        'post_' .
-        time() .
-        '.' .
-        $formato;
-
-    $ruta =
-        __DIR__ .
-        '/../frontend/uploads/posts/' .
-        $nombre_archivo;
-
-    file_put_contents($ruta, $contenido);
-
-    $imagen_url =
-        'uploads/posts/' .
-        $nombre_archivo;
+if (is_array($resultado_imagen) && empty($resultado_imagen['success'])) {
+    echo json_encode($resultado_imagen);
+    exit;
 }
 
+if (is_array($resultado_imagen)) {
+    $imagen_url = $resultado_imagen['imagen_url'];
+}
 
-// ============================================
-// ACTUALIZAR
-// ============================================
+$tiene_tipo = publicaciones_tiene_columna($conexion, 'tipo');
 
-$stmt = $conexion->prepare(
+if ($tiene_tipo) {
+    $stmt = $conexion->prepare(
+        "UPDATE publicaciones
+        SET titulo = ?,
+            descripcion = ?,
+            tipo = ?,
+            categoria_id = ?,
+            imagen_url = ?
+        WHERE id = ? AND autor_id = ?"
+    );
+} else {
+    $stmt = $conexion->prepare(
+        "UPDATE publicaciones
+        SET titulo = ?,
+            descripcion = ?,
+            categoria_id = ?,
+            imagen_url = ?
+        WHERE id = ? AND autor_id = ?"
+    );
+}
 
-    "UPDATE publicaciones
-    SET
-        titulo = ?,
-        descripcion = ?,
-        tipo = ?,
-        imagen_url = ?
-    WHERE id = ?"
-
-);
-
-$stmt->bind_param(
-
-    "ssssi",
-
-    $titulo,
-    $descripcion,
-    $tipo,
-    $imagen_url,
-    $post_id
-);
-
-
-// ============================================
-// EJECUTAR
-// ============================================
-
-if ($stmt->execute()) {
-
+if (!$stmt) {
     echo json_encode([
-        'success' => true
+        'success' => false,
+        'error' => 'Error SQL: ' . $conexion->error
     ]);
 
-} else {
+    exit;
+}
 
+if ($tiene_tipo) {
+    $stmt->bind_param(
+        "sssisii",
+        $titulo,
+        $descripcion,
+        $tipo,
+        $categoria_id,
+        $imagen_url,
+        $post_id,
+        $autor_id
+    );
+} else {
+    $stmt->bind_param(
+        "ssisii",
+        $titulo,
+        $descripcion,
+        $categoria_id,
+        $imagen_url,
+        $post_id,
+        $autor_id
+    );
+}
+
+if ($stmt->execute()) {
+    echo json_encode([
+        'success' => true,
+        'imagen_url' => $imagen_url,
+        'tipo' => $tipo,
+        'categoria_id' => $categoria_id
+    ]);
+} else {
     echo json_encode([
         'success' => false,
         'error' => $stmt->error
     ]);
 }
+
+$stmt->close();
+$conexion->close();
 
 ?>

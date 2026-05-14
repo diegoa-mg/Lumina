@@ -60,3 +60,45 @@ p.copy {
     padding: 2rem 0;
     text-align: center;
 }
+
+/* Tarjetas de materias */
+.materia-card {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.materia-card .materia-overlay {
+    align-items: center;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    left: 0;
+    opacity: 0;
+    pointer-events: auto;
+    position: absolute;
+    right: 0;
+    text-decoration: none;
+    top: 0;
+    transition: opacity 0.3s ease;
+    z-index: 20;
+}
+
+.materia-card:hover .materia-overlay,
+.materia-card:focus-within .materia-overlay {
+    opacity: 1 !important;
+}
+
+.materia-card:hover img {
+    transform: scale(1.1);
+}
+
+.scrollbar-invisible {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-invisible::-webkit-scrollbar {
+    display: none;
+}

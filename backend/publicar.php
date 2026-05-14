@@ -6,14 +6,9 @@ header('Content-Type: application/json');
 session_start();
 
 include 'conexion_bd.php';
-
-
-// ============================================
-// 1. VALIDAR AUTENTICACIÓN
-// ============================================
+include 'post_helpers.php';
 
 if (!isset($_SESSION['usuario_id'])) {
-
     http_response_code(401);
 
     echo json_encode([
@@ -24,188 +19,75 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-
-// ============================================
-// 2. RECIBIR DATOS
-// ============================================
-
-$json = file_get_contents('php://input');
-
-$data = json_decode($json, true);
+$data = json_decode(file_get_contents('php://input'), true);
 
 if (!$data) {
-
     echo json_encode([
         'success' => false,
-        'error' => 'Datos inválidos'
+        'error' => 'Datos invalidos'
     ]);
 
     exit;
 }
-
-
-// ============================================
-// 3. VALIDAR CAMPOS
-// ============================================
 
 $titulo = trim($data['titulo'] ?? '');
-
 $descripcion = trim($data['descripcion'] ?? '');
+$tipo = normalizar_tipo_post($data['tipo'] ?? 'articulo');
+$categoria_id = obtener_categoria_post_desde_data($data);
+$status = normalizar_status_post($data['status'] ?? 'borrador');
 
-$tipo = trim($data['tipo'] ?? 'articulo');
-
-$status = trim($data['status'] ?? 'borrador'); // ¡Falta esta línea!
-
-$status_permitidos = ['borrador', 'revision', 'publicado', 'rechazado'];
-
-if (!in_array($status, $status_permitidos)) {
+if (!$status) {
     echo json_encode([
         'success' => false,
-        'error' => 'Estado de publicación no válido'
+        'error' => 'Estado de publicacion no valido'
     ]);
+
     exit;
 }
 
-if (empty($titulo) || empty($descripcion)) {
+if ($titulo === '' || $descripcion === '') {
     echo json_encode([
         'success' => false,
-        'error' => 'Título y descripción son obligatorios'
+        'error' => 'Titulo y descripcion son obligatorios'
     ]);
+
     exit;
 }
 
-$autor_id = $_SESSION['usuario_id'];
-
+$autor_id = intval($_SESSION['usuario_id']);
 $imagen_url = null;
 
-
-// ============================================
-// 4. PROCESAR IMAGEN
-// ============================================
-
-if (
-    !empty($data['imagen']) &&
-    strpos($data['imagen'], 'data:image') === 0
-) {
-
-    if (
-        preg_match(
-            '/data:image\/(\w+);base64,(.*)/',
-            $data['imagen'],
-            $matches
-        )
-    ) {
-
-        $formato = strtolower($matches[1]);
-        $base64_puro = $matches[2];
-
-        // VALIDAR FORMATOS
-        $formatosPermitidos = ['jpg', 'jpeg', 'png', 'webp'];
-
-        if (!in_array($formato, $formatosPermitidos)) {
-
-            echo json_encode([
-                'success' => false,
-                'error' => 'Formato de imagen no permitido'
-            ]);
-
-            exit;
-        }
-
-        // VALIDAR TAMAÑO
-        $tamanio_kb = (strlen($base64_puro) * 0.75) / 1024;
-
-        if ($tamanio_kb > 5120) {
-
-            echo json_encode([
-                'success' => false,
-                'error' => 'La imagen es demasiado pesada'
-            ]);
-
-            exit;
-        }
-
-        // NOMBRE ÚNICO
-        $nombre_archivo =
-            'post_' .
-            $autor_id .
-            '_' .
-            time() .
-            '.' .
-            $formato;
-
-        // CARPETA
-        $ruta_directorio =
-            __DIR__ . '/../frontend/uploads/posts/';
-
-        // CREAR SI NO EXISTE
-        if (!is_dir($ruta_directorio)) {
-
-            mkdir($ruta_directorio, 0777, true);
-        }
-
-        // RUTA COMPLETA
-        $ruta_archivo =
-            $ruta_directorio . $nombre_archivo;
-
-        // DECODIFICAR IMAGEN
-        $imagen_decodificada =
-            base64_decode($base64_puro);
-
-        if ($imagen_decodificada === false) {
-
-            echo json_encode([
-                'success' => false,
-                'error' => 'Error al decodificar imagen'
-            ]);
-
-            exit;
-        }
-
-        // GUARDAR ARCHIVO
-        $guardado = file_put_contents(
-            $ruta_archivo,
-            $imagen_decodificada
-        );
-
-        if ($guardado === false) {
-
-            echo json_encode([
-                'success' => false,
-                'error' => 'Error al guardar imagen'
-            ]);
-
-            exit;
-        }
-
-        // URL PARA FRONTEND
-        $imagen_url =
-            'uploads/posts/' . $nombre_archivo;
-    }
-}
-
-
-// ============================================
-// 5. INSERTAR EN BASE DE DATOS
-// ============================================
-
-$stmt = $conexion->prepare(
-
-    "INSERT INTO publicaciones
-(
-    titulo,
-    descripcion,
-    imagen_url,
-    tipo,
-    status,
-    autor_id
-)
-VALUES (?, ?, ?, ?, ?, ?)"
-
+$resultado_imagen = guardar_imagen_post_base64(
+    $data['imagen'] ?? null,
+    'post_' . $autor_id
 );
 
-if (!$stmt) {
+if (is_array($resultado_imagen) && empty($resultado_imagen['success'])) {
+    echo json_encode($resultado_imagen);
+    exit;
+}
 
+if (is_array($resultado_imagen)) {
+    $imagen_url = $resultado_imagen['imagen_url'];
+}
+
+$tiene_tipo = publicaciones_tiene_columna($conexion, 'tipo');
+
+if ($tiene_tipo) {
+    $stmt = $conexion->prepare(
+        "INSERT INTO publicaciones
+        (titulo, descripcion, imagen_url, tipo, categoria_id, status, autor_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?)"
+    );
+} else {
+    $stmt = $conexion->prepare(
+        "INSERT INTO publicaciones
+        (titulo, descripcion, imagen_url, categoria_id, status, autor_id)
+        VALUES (?, ?, ?, ?, ?, ?)"
+    );
+}
+
+if (!$stmt) {
     echo json_encode([
         'success' => false,
         'error' => 'Error SQL: ' . $conexion->error
@@ -214,61 +96,47 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param(
-    "sssssi",
-
-    $titulo,
-
-    $descripcion,
-
-    $imagen_url,
-
-    $tipo,
-
-    $status,
-
-    $autor_id
-);
-// ============================================
-// 6. EJECUTAR
-// ============================================
+if ($tiene_tipo) {
+    $stmt->bind_param(
+        "ssssisi",
+        $titulo,
+        $descripcion,
+        $imagen_url,
+        $tipo,
+        $categoria_id,
+        $status,
+        $autor_id
+    );
+} else {
+    $stmt->bind_param(
+        "sssisi",
+        $titulo,
+        $descripcion,
+        $imagen_url,
+        $categoria_id,
+        $status,
+        $autor_id
+    );
+}
 
 if ($stmt->execute()) {
-
-    $post_id = $conexion->insert_id;
-
     echo json_encode([
-
         'success' => true,
-
-        'post_id' => $post_id,
-
+        'post_id' => $conexion->insert_id,
         'imagen_url' => $imagen_url,
-
+        'tipo' => $tipo,
+        'categoria_id' => $categoria_id,
         'status' => $status,
-
-        'mensaje' => 'Publicación creada correctamente'
-
+        'mensaje' => 'Publicacion creada correctamente'
     ]);
-
 } else {
-
     echo json_encode([
-
         'success' => false,
-
         'error' => 'Error al guardar: ' . $stmt->error
-
     ]);
 }
 
-
-// ============================================
-// 7. CERRAR
-// ============================================
-
 $stmt->close();
-
 $conexion->close();
 
 ?>

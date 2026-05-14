@@ -196,6 +196,10 @@ async function manejarPublicacion(estado) {
             document.getElementById('postTipo')
             ?.value || 'articulo';
 
+        const categoriaId =
+            document.getElementById('postMateria')
+            ?.value || '1';
+
         let imagenBase64 = null;
 
         if (archivoSeleccionado) {
@@ -232,6 +236,8 @@ async function manejarPublicacion(estado) {
                         descripcion,
 
                         tipo,
+
+                        categoria_id: categoriaId,
 
                         imagen: imagenBase64
                     })
@@ -277,6 +283,8 @@ async function manejarPublicacion(estado) {
                     descripcion,
 
                     tipo,
+
+                    categoria_id: categoriaId,
 
                     imagen: imagenBase64,
 
@@ -368,6 +376,9 @@ function prepararEdicion(boton) {
     const tipo =
         tarjeta.dataset.tipo;
 
+    const categoriaId =
+        tarjeta.dataset.categoriaId;
+
     postEditando = id;
 
     // ============================================
@@ -399,6 +410,15 @@ function prepararEdicion(boton) {
             tipo || 'articulo';
     }
 
+    const materiaSelect =
+        document.getElementById('postMateria');
+
+    if (materiaSelect) {
+
+        materiaSelect.value =
+            categoriaId || '1';
+    }
+
     // ============================================
     // IMAGEN
     // ============================================
@@ -408,7 +428,9 @@ function prepararEdicion(boton) {
 
     if (imgPreview && imagen) {
 
-        imgPreview.src = imagen;
+        imgPreview.src = typeof resolveImageSrc === 'function'
+            ? resolveImageSrc(imagen)
+            : imagen;
     }
 
     // ============================================
@@ -478,6 +500,14 @@ function resetearFormulario() {
     if (tipoSelect) {
 
         tipoSelect.value = 'articulo';
+    }
+
+    const materiaSelect =
+        document.getElementById('postMateria');
+
+    if (materiaSelect) {
+
+        materiaSelect.value = '1';
     }
 
     document
