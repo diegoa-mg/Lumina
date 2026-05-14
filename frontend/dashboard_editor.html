@@ -64,8 +64,36 @@
 
             <div id="contenedorPosts" class="space-y-6">
 
-        </div>
+            </div>
+            
+            <div id="modalAdmin" class="modal-overlay" style="display: none;">
+                <div class="modal-content">
+                    <span id="btnCerrar" class="close-modal" onclick="cerrarModal()">&times;</span>
+                    <h2 class="modal-title">Editar Publicación</h2>
+                    
+                    <div class="modal-body">
+                        <div class="form-side">
+                            <div class="campo">
+                                <label>Título</label>
+                                <input type="text" id="postTitle">
+                            </div>
+                            <div class="campo">
+                                <label>Descripción</label>
+                                <textarea id="postDesc" rows="5"></textarea>
+                            </div>
+                        </div>
 
+                        <div class="preview-side">
+                            <div class="preview-card">
+                                <img id="imgPreview" src="" alt="Preview">
+                            </div>
+                            <div class="actions">
+                                <button class="btn-save" id="btnGuardarCambiosEditor">Guardar Cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -77,185 +105,252 @@
         <p class="copy">© 2026 Lumina: Claridad a la información</p>
     </footer>
 
-<script src="js/auth.js"></script>
-<script src="js/menu_ui.js"></script>
-<script>
+    <script src="js/auth.js"></script>
+    <script src="js/menu_ui.js"></script>
+    <script src="js/crear.js"></script>
+    <script>
 
-async function cargarPostsRevision() {
+    async function cargarPostsRevision() {
 
-    try {
+        try {
 
-        const respuesta =
-            await fetch('../backend/obtener_revision.php');
+            const respuesta =
+                await fetch('../backend/obtener_revision.php');
 
-        const posts = await respuesta.json();
+            const posts = await respuesta.json();
 
-        const contenedor =
-            document.getElementById('contenedorPosts');
+            const contenedor =
+                document.getElementById('contenedorPosts');
 
-        contenedor.innerHTML = '';
+            contenedor.innerHTML = '';
 
-        if (posts.length === 0) {
+            if (posts.length === 0) {
 
-            contenedor.innerHTML = `
-                <div class="bg-white p-8 rounded-2xl shadow">
-                    <h2 class="text-2xl font-bold text-gray-500">
-                        No hay posts en revisión
+                contenedor.innerHTML = `
+                    <div class="bg-white p-8 rounded-2xl shadow">
+                        <h2 class="text-2xl font-bold text-gray-500">
+                            No hay posts en revisión
+                        </h2>
+                    </div>
+                `;
+
+                return;
+            }
+
+            posts.forEach(post => {
+
+                const tarjeta = `
+                
+                <div class="bg-white rounded-2xl shadow p-6">
+
+                    <img
+                        src="../frontend/${post.imagen_url}"
+                        class="w-full h-72 object-cover rounded-xl mb-5"
+                    >
+
+                    <h2 class="text-3xl font-bold mb-3">
+                        ${post.titulo}
                     </h2>
-                </div>
-            `;
 
-            return;
-        }
+                    <p class="text-gray-600 mb-6">
+                        ${post.descripcion}
+                    </p>
 
-        posts.forEach(post => {
+                    <div class="flex gap-4">
 
-            const tarjeta = `
-            
-            <div class="bg-white rounded-2xl shadow p-6">
+                        <button
+                            onclick="aprobarPost(${post.id})"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold"
+                        >
+                            Aprobar
+                        </button>
 
-                <img
-                    src="../frontend/${post.imagen_url}"
-                    class="w-full h-72 object-cover rounded-xl mb-5"
-                >
+                        <button
+                            onclick="rechazarPost(${post.id})"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold"
+                        >
+                            Rechazar
+                        </button>
+                        
+                        <button
+                            onclick"abrirModalEdicion(${post.id})"
+                            class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-bold"
+                        >
+                            Editar
+                        </button>
 
-                <h2 class="text-3xl font-bold mb-3">
-                    ${post.titulo}
-                </h2>
-
-                <p class="text-gray-600 mb-6">
-                    ${post.descripcion}
-                </p>
-
-                <div class="flex gap-4">
-
-                    <button
-                        onclick="aprobarPost(${post.id})"
-                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold"
-                    >
-                        Aprobar
-                    </button>
-
-                    <button
-                        onclick="rechazarPost(${post.id})"
-                        class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold"
-                    >
-                        Rechazar
-                    </button>
+                    </div>
 
                 </div>
+                `;
 
-            </div>
-            `;
-
-            contenedor.insertAdjacentHTML(
-                'beforeend',
-                tarjeta
-            );
-
-        });
-
-    } catch(error) {
-
-        console.error(error);
-
-    }
-
-}
-
-
-async function aprobarPost(id) {
-
-    try {
-
-        const respuesta =
-            await fetch('../backend/cambiar_estado_post.php', {
-
-                method: 'POST',
-
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-
-                body: JSON.stringify({
-
-                    post_id: id,
-                    status: 'publicado'
-
-                })
+                contenedor.insertAdjacentHTML(
+                    'beforeend',
+                    tarjeta
+                );
 
             });
 
-        const resultado = await respuesta.json();
+        } catch(error) {
 
-        if (resultado.success) {
-
-            alert('✅ Post aprobado');
-
-            cargarPostsRevision();
-
-        } else {
-
-            alert(resultado.error);
+            console.error(error);
 
         }
 
-    } catch(error) {
+    }
 
-        console.error(error);
+
+    async function aprobarPost(id) {
+
+        try {
+
+            const respuesta =
+                await fetch('../backend/cambiar_estado_post.php', {
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+
+                        post_id: id,
+                        status: 'publicado'
+
+                    })
+
+                });
+
+            const resultado = await respuesta.json();
+
+            if (resultado.success) {
+
+                alert('✅ Post aprobado');
+
+                cargarPostsRevision();
+
+            } else {
+
+                alert(resultado.error);
+
+            }
+
+        } catch(error) {
+
+            console.error(error);
+
+        }
 
     }
 
-}
 
+    async function rechazarPost(id) {
 
-async function rechazarPost(id) {
+        try {
 
-    try {
+            const respuesta =
+                await fetch('../backend/cambiar_estado_post.php', {
 
-        const respuesta =
-            await fetch('../backend/cambiar_estado_post.php', {
+                    method: 'POST',
 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+
+                        post_id: id,
+                        status: 'rechazado'
+
+                    })
+
+                });
+
+            const resultado = await respuesta.json();
+
+            if (resultado.success) {
+
+                alert('❌ Post rechazado');
+
+                cargarPostsRevision();
+
+            }
+
+        } catch(error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+    // Variable para guardar el ID del post que estamos editando
+    let postEditandoId = null;
+
+    function abrirModalEdicion(id, boton) {
+        console.log("Abriendo edición para ID:", id); // Para depurar en consola
+        postEditandoId = id;
+        
+        // 1. Encontrar la tarjeta y sus datos
+        const tarjeta = boton.closest('.tarjeta-horizontal');
+        const tituloActual = tarjeta.querySelector('h4').textContent;
+        const descActual = tarjeta.querySelector('.extracto').textContent;
+        const imgActual = tarjeta.querySelector('img').src;
+
+        // 2. Llenar los campos de la modal
+        document.getElementById('postTitle').value = tituloActual;
+        document.getElementById('postDesc').value = descActual;
+        document.getElementById('imgPreview').src = imgActual;
+
+        // 3. MOSTRAR LA MODAL
+        const modal = document.getElementById('modalAdmin');
+        modal.style.display = 'flex'; 
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalAdmin').style.display = 'none';
+    }
+
+    // Evento para el botón de guardar
+    document.getElementById('btnGuardarCambiosEditor').onclick = async function() {
+        const titulo = document.getElementById('postTitle').value;
+        const descripcion = document.getElementById('postDesc').value;
+
+        try {
+            const respuesta = await fetch('../backend/cambiar_estado_post.php', {
                 method: 'POST',
-
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-
-                    post_id: id,
-                    status: 'rechazado'
-
+                    post_id: postEditandoId,
+                    titulo: titulo,
+                    descripcion: descripcion,
+                    status: 'revision' // Se mantiene en revisión tras editar
                 })
-
             });
 
-        const resultado = await respuesta.json();
+            const resultado = await respuesta.json();
 
-        if (resultado.success) {
-
-            alert('❌ Post rechazado');
-
-            cargarPostsRevision();
-
+            if (resultado.success) {
+                alert('✅ Cambios guardados por el Editor');
+                cerrarModal();
+                cargarPostsRevision(); // Refresca la lista
+            } else {
+                alert('❌ Error: ' + resultado.error);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('❌ Error al conectar con el servidor');
         }
-
-    } catch(error) {
-
-        console.error(error);
-
-    }
-
-}
+    };
 
 
-document.addEventListener(
-    'DOMContentLoaded',
-    cargarPostsRevision
-);
+    document.addEventListener(
+        'DOMContentLoaded',
+        cargarPostsRevision
+    );
 
-</script>
+    </script>
 
 </body>
 </html> 
