@@ -10,7 +10,6 @@
 @media (min-width: 768px) {
     .nav-bg {
         align-items: center;
-        position: relative;
         flex-direction: row;
         align-items: center;
     }
@@ -68,19 +67,23 @@
     margin-left: 1.2rem;
     outline: none;
     border: none;
-    background: transparent;    
+    background: transparent;
     width: 100%;
+}
+
+.search:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 @media (min-width: 768px) {
     .search-container {
+        flex: 1;
+        max-width: 50rem;
         flex-direction: row;
         align-items: center;
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
+        margin-left: 2rem;
+        margin-right: 2rem;
     }
 }
 
