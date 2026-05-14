@@ -1,0 +1,291 @@
+/* Overlay del fondo */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+
+/* Caja blanca de la modal */
+.modal-content {
+    background: var(--blanco);
+    padding: 4rem;
+    border-radius: 1.2rem;
+    width: min(900px, 95%);
+    position: relative;
+    font-family: var(--fuente-principal);
+}
+
+.modal-title {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    font-weight: 500;
+}
+
+/* Zona de subida (Pantalla 1) */
+.upload-box {
+    border: 2px dashed #ccc;
+    border-radius: 1.5rem;
+    padding: 6rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.cloud-icon { position: relative; margin-bottom: 1rem; }
+.main-cloud { font-size: 10rem !important; }
+.arrow-up { 
+    position: absolute; top: 35%; left: 35%; 
+    font-size: 3.5rem !important; color: var(--blanco);
+}
+
+/* Botón azul tipo Image_7/8 */
+.btn-revision,
+.btn-select {
+    background: #2b4cd1; /* Color exacto del mockup */
+    color: white;
+    border: none;
+    padding: 1.2rem 3rem;
+    border-radius: 0.8rem;
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.btn-revision {
+    width: 100%;
+}
+
+/* Utilidades */
+.d-none { display: none; }
+.close-modal {
+    position: absolute; top: 2rem; right: 2rem;
+    font-size: 3rem; cursor: pointer;
+}
+
+/* Boton volver */
+.btnVolver {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.btnVolver .icono {
+    font-size: 1.5rem;
+}
+
+/* Grid de detalles (Pantalla 2) */
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 4rem;
+}
+
+.field label { 
+    display: block; 
+    margin-bottom: 0.5rem; 
+    font-size: 1.4rem; 
+}
+
+.field input, .field textarea {
+    width: 100%;
+    background: var(--gris-claro);
+    border: none;
+    border-radius: 0.8rem; 
+    padding: 1rem;
+}
+
+.field textarea{
+    height: 20rem;
+    resize: none;
+}
+
+.field-titulo {
+    margin-top: 1rem;
+}
+
+.btn-save {
+    background: #00ceef; /* Celeste de tu mockup */
+    color: white;
+    width: 100%; 
+    padding: 1.2rem; 
+    border-radius: 0.8rem; 
+    border: none; 
+    margin-bottom: 1rem;
+}
+
+#imgPreview {
+    width: 100%;
+    height: 20rem;
+    object-fit: cover;
+    display: block;
+    border-radius: 1.2rem;
+}
+
+/* Apariencia de las tarjetas de los post */
+/* Contenedor de la lista de tarjetas */
+.contenedor-tarjetas {
+    width: 100%;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Base de la tarjeta horizontal */
+.tarjeta-horizontal {
+    align-items: center;
+    background-color: #fafbfd; 
+    border-radius: 1.2rem;
+    border: 1px solid #e5e7eb;
+    display: flex; 
+    align-items: flex-start; /* Alinea al inicio para que el contenido crezca */
+    padding: 2rem; 
+    gap: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: default; /* Cambiado a default porque ahora tiene botones internos */
+    position: relative;
+    overflow: hidden;
+}
+
+.tarjeta-horizontal:hover {
+    transform: scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Imagen lateral */
+.imagen-lateral {
+    flex: 0 0 30%; 
+    height: 100%;
+}
+
+.imagen-lateral img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1.2rem;
+}
+
+/* Contenedor de info */
+.contenido-derecha {
+    flex: 1; /* Esto hace que tome el espacio sobrante sin empujar de más */
+    min-width: 0; /* Evita que textos largos rompan el layout */
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.contenido-derecha h4 {
+    font-size: 2rem;
+    margin: 0;
+    color: var(--azul-logo);
+}
+
+.extracto {
+    font-size: 1.4rem;
+    color: #6b7280;
+    margin: 0;
+    max-width: 90%;
+    word-wrap: break-word;
+}
+
+/* Badge de estado (Borrador / Revisión) */
+.header-card-autor {
+    margin-bottom: 0.5rem;
+}
+
+.etiqueta-borrador {
+    background-color: #fef3c7;
+    color: #92400e;
+    padding: 0.3rem 1rem;
+    border-radius: 0.6rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.etiqueta-borrador.etiqueta-rechazado {
+    background-color: #e94141 !important; /* Rojo Lumina */
+    color: white !important;
+    border: none;
+}
+
+/* Sección de botones en la esquina inferior derecha */
+.footer-card-autor {
+    display: flex;
+    flex-direction: row; /* Botones uno al lado del otro */
+    gap: 1rem;
+    align-self: flex-end;
+    margin-left: auto; /* Empuja el bloque de botones a la derecha */
+    border-top: none; /* Quitamos la línea para que fluyan mejor lateralmente */
+    padding-top: 0;
+}
+
+/* Contenedor de la foto y los textos */
+.autor-info {
+    display: flex;
+    align-items: center; /* Alinea la foto con el centro del bloque de texto */
+    gap: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+/* Columna que agrupa nombre y fecha */
+.datos-autor-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem; /* Controla qué tan "pegados" están el nombre y la fecha */
+}
+
+.nombre-autor {
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin: 0; /* Elimina márgenes por defecto para que no se separen */
+    color: var(--azul-logo);
+}
+
+.fecha-autor {
+    font-size: 1.2rem;
+    color: #6b7280;
+    margin: 0; /* Elimina márgenes por defecto */
+}
+
+/* Estilo de los nuevos botones de acción */
+.btn-accion-autor {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1.6rem;
+    border-radius: 0.8rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: var(--fuente-principal);
+    transition: all 0.2s ease;
+}
+
+.btn-editar-post {
+    background-color: var(--gris-claro);
+    color: var(--azul-logo);
+}
+
+.btn-editar-post:hover {
+    background-color: #d1d5db;
+}
+
+.btn-revision-post {
+    background-color: var(--azul-logo);
+    color: var(--blanco);
+}
+
+.btn-revision-post:hover {
+    background-color: var(--secundario);
+    transform: translateY(-2px);
+}
