@@ -499,7 +499,7 @@ function resetearFormulario() {
 
     if (tipoSelect) {
 
-        tipoSelect.value = 'articulo';
+        tipoSelect.value = 'Articulo';
     }
 
     const materiaSelect =

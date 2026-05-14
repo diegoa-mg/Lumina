@@ -142,7 +142,6 @@
         <textarea id="postDesc" required></textarea>
     </div>
 
-    <!-- NUEVO -->
     <div class="tipo-materia-row">
 
     <div class="field">
@@ -151,19 +150,19 @@
 
         <select id="postTipo">
 
-            <option value="articulo">
+            <option value="Articulo">
                 Artículo
             </option>
 
-            <option value="video">
+            <option value="Video">
                 Video
             </option>
 
-            <option value="noticia">
+            <option value="Noticia">
                 Noticia
             </option>
 
-            <option value="recurso">
+            <option value="Recurso">
                 Recurso
             </option>
 
@@ -203,6 +202,14 @@
                                 <p class="filename" id="fileNameDisplay">highlights.mp4</p>
                             </div>
                         </div>
+                        <button
+                            type="button"
+                            class="btn-cambiar-imagen"
+                            onclick="document.getElementById('fileInput').click()"
+                        >
+                            <span class="material-symbols-outlined">photo_camera</span>
+                            Cambiar imagen
+                        </button>
                         <div class="actions">
                             <button class="btn-save" id="btnGuardarBorrador">Guardar</button>
                             <button class="btn-revision" id="btnEnviarRevision">Enviar a revisión</button>

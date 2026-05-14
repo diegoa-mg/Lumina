@@ -77,6 +77,14 @@ function renderizarTarjetaEnPanel(post) {
         data-tipo="${tipo}"
         data-categoria-id="${categoriaId}"
     >
+        <button
+            class="btn-eliminar-post"
+            onclick="eliminarPost(${id})"
+            title="Eliminar post"
+        >
+            <span class="material-symbols-outlined">delete</span>
+        </button>
+
         <div class="imagen-lateral">
             <img src="${imagenFinal}" alt="Preview">
         </div>
@@ -184,10 +192,53 @@ async function cargarPostsDelAutor() {
                 status: post.status || 'borrador'
             });
         });
+
+        const mensajesVacios = {
+            listaBorradores: 'No tienes borradores guardados. ¡Crea tu primer post!',
+            listaRevision:   'No tienes posts en revisión. Envía un borrador para que el editor lo revise.',
+            listaPublicados: 'Aún no tienes posts publicados. ¡Sigue adelante!'
+        };
+
+        for (const [id, mensaje] of Object.entries(mensajesVacios)) {
+            const contenedor = document.getElementById(id);
+            if (contenedor && contenedor.children.length === 0) {
+                contenedor.innerHTML =
+                    `<div class="seccion-vacia">${mensaje}</div>`;
+            }
+        }
     } catch (error) {
         console.error('Error al cargar posts:', error);
     }
 }
+
+// ============================================
+// ELIMINAR POST
+// ============================================
+
+async function eliminarPost(postId) {
+    if (!confirm('¿Seguro que quieres eliminar este post? Esta acción no se puede deshacer.')) return;
+
+    try {
+        const respuesta = await fetch('../backend/eliminar_post.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ post_id: postId })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (resultado.success) {
+            cargarPostsDelAutor();
+        } else {
+            alert('❌ Error: ' + resultado.error);
+        }
+    } catch (error) {
+        console.error(error);
+        alert('❌ Error al eliminar el post');
+    }
+}
+
 
 // ============================================
 // INICIAR

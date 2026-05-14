@@ -41,7 +41,7 @@ function publicaciones_tiene_columna($conexion, $columna) {
 }
 
 function normalizar_tipo_post($tipo) {
-    $tipo = trim($tipo ?: 'articulo');
+    $tipo = trim(strtolower($tipo ?: 'articulo'));
     $tipos_permitidos = ['articulo', 'video', 'noticia', 'recurso'];
 
     return in_array($tipo, $tipos_permitidos, true)
