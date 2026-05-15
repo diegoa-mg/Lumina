@@ -22,12 +22,12 @@
     <link rel="preload" href="css/styles.css" as="style">
     <link rel="stylesheet" href="css/styles.css">
 
-    <link rel="preload" href="css/navbar.css" as="style">
-    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="preload" href="css/navbar.css?v=5" as="style">
+    <link rel="stylesheet" href="css/navbar.css?v=5">
 
   </head>
   <body>
-    <header>
+        <header>
         <div class="nav-bg">
 
             <!-- Logo -->
@@ -36,9 +36,16 @@
                   <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
                 </a>
             </div>
+            
+            <!-- Barra de busqueda -->
+            <div class="search-container">
+                <span class="search-icon material-symbols-outlined">search</span>
+                <input class="search" type="search" placeholder="Buscar...">
+            </div>
 
             <nav class="nav-principal">
                 <a href="index.html">Inicio</a>
+                <a href="login.html">Iniciar Sesion</a>
             </nav>
 
         </div>
@@ -99,5 +106,7 @@
         </div>
       </div>
     </div>
-  </body>
+      <script src="js/auth.js?v=5"></script>
+    <script src="js/menu_ui.js?v=5"></script>
+</body>
 </html>

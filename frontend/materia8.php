@@ -20,38 +20,37 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="css/recursos.css">
-    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/navbar.css?v=5">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="preload" href="css/base.css" as="style">
+    <link rel="stylesheet" href="css/base.css">
 </head>
 
 <body class="bg-gray-100">
 
-<header>
+    <header>
+        <div class="nav-bg">
 
-    <div class="nav-bg">
+            <!-- Logo -->
+            <div class="logo">
+                <a href="index.html">
+                  <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
+                </a>
+            </div>
+            
+            <!-- Barra de busqueda -->
+            <div class="search-container">
+                <span class="search-icon material-symbols-outlined">search</span>
+                <input class="search" type="search" placeholder="Buscar...">
+            </div>
 
-        <div class="logo">
-            <a href="index.html">
-                <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png">
-            </a>
-        </div>  
+            <nav class="nav-principal">
+                <a href="index.html">Inicio</a>
+                <a href="login.html">Iniciar Sesion</a>
+            </nav>
 
-        <div class="search-container">
-            <span class="search-icon material-symbols-outlined">
-                search
-            </span>
-
-            <input class="search" type="search" placeholder="Buscar...">
         </div>
-
-        <nav class="nav-principal">
-            <a href="index.html">Inicio</a>
-            <a href="login.html">Iniciar Sesión</a>
-        </nav>
-
-    </div>
-
-</header>
+    </header>
 
 
 <!-- ================= MAIN ================= -->
@@ -60,7 +59,16 @@
 
     <div class="max-w-[1400px] mx-auto px-4 py-6">
 
-        <section class="bg-gray-200 rounded-xl p-4 flex flex-col md:flex-row justify-between gap-4">
+                <button
+            type="button"
+            onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='recursos.html'; }"
+            class="mb-4 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm border border-gray-200 hover:bg-gray-50 hover:text-blue-700 transition"
+            aria-label="Regresar a la pagina anterior"
+        >
+            <span class="material-symbols-outlined text-xl">arrow_back</span>
+            Regresar
+        </button>
+<section class="bg-gray-200 rounded-xl p-4 flex flex-col md:flex-row justify-between gap-4">
 
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold">
@@ -139,13 +147,23 @@
 
             <div class="flex gap-3 mb-6">
 
-                <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                <div id="comentarioAvatarActual" class="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div>
 
                 <input type="text"
+                       id="comentarioInput"
+                       maxlength="500"
                        placeholder="Añadir comentario..."
                        class="flex-1 bg-white border rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
 
+                <button id="comentarioEnviar"
+                        type="button"
+                        class="bg-blue-600 text-white font-bold rounded-xl px-5 py-2 hover:bg-blue-700 transition disabled:opacity-60">
+                    Publicar
+                </button>
+
             </div>
+
+            <div id="comentariosLista" class="space-y-3 mb-10"></div>
 
         </section>
 
@@ -186,7 +204,7 @@
         <button id="cerrarModal"
                 class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl">
 
-            ✕
+            ×
 
         </button>
 
@@ -217,6 +235,7 @@ const MATERIAS = {
 
 const archivoMateria = window.location.pathname.split('/').pop();
 const materiaActual = MATERIAS[archivoMateria] || MATERIAS['materia1.php'];
+window.materiaActual = materiaActual;
 
 document.title = `Lumina - ${materiaActual.nombre}`;
 document.getElementById('materiaNombre').textContent = materiaActual.nombre;
@@ -278,6 +297,17 @@ document.addEventListener("click", (e) => {
 // ============================================
 // CARGAR PUBLICACIONES
 // ============================================
+
+function etiquetaTipoMateria(tipo) {
+    const etiquetas = {
+        articulo: 'Artículo',
+        video: 'Video',
+        noticia: 'Noticia',
+        recurso: 'Recurso'
+    };
+
+    return etiquetas[String(tipo || '').toLowerCase()] || String(tipo || '');
+}
 
 async function cargarPublicaciones() {
 
@@ -341,7 +371,7 @@ async function cargarPublicaciones() {
 
                 <span class="w-fit text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full">
 
-                    ${tipo.toUpperCase()}
+                    ${etiquetaTipoMateria(tipo)}
 
                 </span>
 
@@ -367,7 +397,7 @@ async function cargarPublicaciones() {
 
                     <span class="text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full">
 
-                        ${tipo.toUpperCase()}
+                        ${etiquetaTipoMateria(tipo)}
 
                     </span>
 
@@ -532,8 +562,9 @@ document.addEventListener(
 
 </script>
 
-<script src="js/auth.js"></script>
-<script src="js/menu_ui.js"></script>
+<script src="js/auth.js?v=5"></script>
+<script src="js/menu_ui.js?v=5"></script>
+<script src="js/comentarios_materia.js?v=1"></script>
 
 </body>
 </html>

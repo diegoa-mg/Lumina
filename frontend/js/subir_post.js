@@ -31,8 +31,20 @@ const MATERIAS_POST = {
     5: 'Desarrollo Emprendedor',
     6: 'Sistemas Digitales',
     7: 'Ingles',
-    8: 'Orientacion y Tutoria'
+    8: 'Orientacion y Tutoria',
+    9: 'Avisos Generales'
 };
+
+function etiquetaTipoPost(tipo) {
+    const etiquetas = {
+        articulo: 'Artículo',
+        video: 'Video',
+        noticia: 'Noticia',
+        recurso: 'Recurso'
+    };
+
+    return etiquetas[String(tipo || '').toLowerCase()] || String(tipo || '');
+}
 
 // ============================================
 // RENDERIZAR TARJETA
@@ -57,9 +69,20 @@ function renderizarTarjetaEnPanel(post) {
     const descripcion = escapeHtml(post.descripcion);
     const imagen = escapeHtml(post.imagen);
     const tipo = escapeHtml(post.tipo || 'articulo');
+    const tipoTexto = escapeHtml(etiquetaTipoPost(post.tipo || 'articulo'));
+    const seccion = escapeHtml(post.seccion || 'post');
+    const tipoAviso = escapeHtml(post.tipo_aviso || 'academico');
+    const urgente = Number(post.urgente || 0) === 1;
+    const importante = Number(post.importante || 0) === 1;
     const categoriaId = Number(post.categoria_id || 1);
     const materia = escapeHtml(post.materia || MATERIAS_POST[categoriaId] || 'POO');
-    const imagenFinal = escapeHtml(resolveImageSrc(post.imagen));
+    const imagenFinal = escapeHtml(
+        seccion === 'aviso'
+            ? ''
+            : resolveImageSrc(post.imagen)
+    );
+    const iconoAviso = tipoAviso === 'plataforma' ? 'language' : 'school';
+    const textoTipoAviso = tipoAviso === 'plataforma' ? 'Plataforma' : 'Academico';
     const estadoTexto = {
         borrador: 'Borrador',
         rechazado: 'Rechazado',
@@ -75,11 +98,33 @@ function renderizarTarjetaEnPanel(post) {
         data-descripcion="${descripcion}"
         data-imagen="${imagen}"
         data-tipo="${tipo}"
+        data-seccion="${seccion}"
+        data-tipo-aviso="${tipoAviso}"
+        data-urgente="${urgente ? '1' : '0'}"
+        data-importante="${importante ? '1' : '0'}"
         data-categoria-id="${categoriaId}"
     >
-        <div class="imagen-lateral">
-            <img src="${imagenFinal}" alt="Preview">
-        </div>
+        <button
+            class="btn-eliminar-post"
+            onclick="eliminarPost(${id})"
+            title="Eliminar post"
+        >
+            <span class="material-symbols-outlined">delete</span>
+        </button>
+
+        ${
+            seccion === 'aviso'
+            ? `
+            <div class="imagen-lateral aviso-lateral">
+                <span class="material-symbols-outlined">${iconoAviso}</span>
+            </div>
+            `
+            : `
+            <div class="imagen-lateral">
+                <img src="${imagenFinal}" alt="Preview">
+            </div>
+            `
+        }
 
         <div class="contenido-derecha">
             <div class="header-card-autor">
@@ -92,8 +137,19 @@ function renderizarTarjetaEnPanel(post) {
 
             <p class="extracto">${descripcion}</p>
 
-            <p class="text-sm">Tipo: ${tipo}</p>
-            <p class="text-sm">Materia: ${materia}</p>
+            ${
+                seccion === 'aviso'
+                ? `
+                <p class="text-sm">Publicacion: Aviso</p>
+                <p class="text-sm">Tipo de aviso: ${textoTipoAviso}</p>
+                <p class="text-sm">Urgencia: ${urgente ? 'Urgente' : 'No urgente'}</p>
+                <p class="text-sm">Importante: ${importante ? 'Si' : 'No'}</p>
+                `
+                : `
+                <p class="text-sm">Tipo: ${tipoTexto}</p>
+                <p class="text-sm">Materia: ${materia}</p>
+                `
+            }
         </div>
 
         <div class="footer-card-autor">
@@ -179,15 +235,62 @@ async function cargarPostsDelAutor() {
                 descripcion: post.descripcion,
                 imagen: post.imagen_url,
                 tipo: post.tipo || 'articulo',
+                seccion: post.seccion || 'post',
+                tipo_aviso: post.tipo_aviso || 'academico',
+                urgente: post.urgente || 0,
+                importante: post.importante || 0,
                 categoria_id: post.categoria_id || 1,
                 materia: post.materia || '',
                 status: post.status || 'borrador'
             });
         });
+
+        const mensajesVacios = {
+            listaBorradores: 'No tienes borradores guardados. ¡Crea tu primer post!',
+            listaRevision:   'No tienes posts en revisión. Envía un borrador para que el editor lo revise.',
+            listaPublicados: 'Aún no tienes posts publicados. ¡Sigue adelante!'
+        };
+
+        for (const [id, mensaje] of Object.entries(mensajesVacios)) {
+            const contenedor = document.getElementById(id);
+            if (contenedor && contenedor.children.length === 0) {
+                contenedor.innerHTML =
+                    `<div class="seccion-vacia">${mensaje}</div>`;
+            }
+        }
     } catch (error) {
         console.error('Error al cargar posts:', error);
     }
 }
+
+// ============================================
+// ELIMINAR POST
+// ============================================
+
+async function eliminarPost(postId) {
+    if (!confirm('¿Seguro que quieres eliminar este post? Esta acción no se puede deshacer.')) return;
+
+    try {
+        const respuesta = await fetch('../backend/eliminar_post.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ post_id: postId })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (resultado.success) {
+            cargarPostsDelAutor();
+        } else {
+            alert('❌ Error: ' + resultado.error);
+        }
+    } catch (error) {
+        console.error(error);
+        alert('❌ Error al eliminar el post');
+    }
+}
+
 
 // ============================================
 // INICIAR

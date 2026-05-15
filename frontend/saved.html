@@ -14,22 +14,23 @@
 
     <link rel="preload" href="css/normalize.css" as="style">
     <link rel="stylesheet" href="css/normalize.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preload" href="css/base.css" as="style">
     <link rel="stylesheet" href="css/base.css">
     <link rel="preload" href="css/styles.css" as="style">
     <link rel="stylesheet" href="css/styles.css">
 
-    <link rel="preload" href="css/navbar.css" as="style">
-    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="preload" href="css/navbar.css?v=5" as="style">
+    <link rel="stylesheet" href="css/navbar.css?v=5">
 
-    <link rel="preload" href="css/likes.css" as="style">
-    <link rel="stylesheet" href="css/likes.css">
+    <link rel="preload" href="css/likes.css?v=3" as="style">
+    <link rel="stylesheet" href="css/likes.css?v=3">
 
 </head>
 <body>
     <!-- Menú de Navegación -->
-    <header>
+        <header>
         <div class="nav-bg">
 
             <!-- Logo -->
@@ -39,7 +40,7 @@
                 </a>
             </div>
             
-            <!-- Barra de búsqueda -->
+            <!-- Barra de busqueda -->
             <div class="search-container">
                 <span class="search-icon material-symbols-outlined">search</span>
                 <input class="search" type="search" placeholder="Buscar...">
@@ -47,21 +48,7 @@
 
             <nav class="nav-principal">
                 <a href="index.html">Inicio</a>
-                <a href="avisos.html">Avisos</a>
-                <a href="recursos.html">Recursos</a>
-                <div class="dropdown-container">
-                    <button id="btn-cuenta" class="btn-cuenta-estilo">
-                        <span>Cuenta</span>
-                        <span class="material-symbols-outlined">expand_more</span>
-                    </button>
-                    <div id="menu-dropdown" class="dropdown-content">
-                        <a href="cuenta.html">Ajustes</a>
-                        <a href="autor.html" class="autor-opt">Panel Autor</a>
-                        <a href="admin.html" class="admin-opt">Panel Admin</a> 
-                        <hr>
-                        <a href="#" id="cerrar-sesion" class="logout">Cerrar Sesión</a>
-                    </div>
-                </div>
+                <a href="login.html">Iniciar Sesion</a>
             </nav>
 
         </div>
@@ -77,7 +64,7 @@
     <main class="recursos-main">
         <h1>Favoritos</h1>
 
-        <div class="contenedor-principal-likes">
+        <div class="contenedor-principal-likes" id="listado-reacciones" data-tipo="guardado">
             <article class="tarjeta-horizontal">
                 <div class="imagen-lateral">
                     <img src="img/clases/clase2.webp" alt="C++">
@@ -177,8 +164,10 @@
         <p class="copy">© 2026 Lumina: Claridad a la información</p>
     </footer>
 
-    <script src="js/auth.js"></script>
-    <script src="js/menu_ui.js"></script>
+    <script src="js/auth.js?v=5"></script>
+    <script src="js/menu_ui.js?v=5"></script>
+    <script src="js/reacciones.js?v=2"></script>
+    <script src="js/reacciones_listado.js?v=2"></script>
 
 </body>
 

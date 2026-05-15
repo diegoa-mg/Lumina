@@ -14,14 +14,15 @@
 
     <link rel="preload" href="css/normalize.css" as="style">
     <link rel="stylesheet" href="css/normalize.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preload" href="css/base.css" as="style">
     <link rel="stylesheet" href="css/base.css">
-    <link rel="preload" href="css/styles.css" as="style">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preload" href="css/styles.css?v=4" as="style">
+    <link rel="stylesheet" href="css/styles.css?v=4">
 
-    <link rel="preload" href="css/navbar.css" as="style">
-    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="preload" href="css/navbar.css?v=5" as="style">
+    <link rel="stylesheet" href="css/navbar.css?v=5">
 
     <link rel="preload" href="css/cuenta.css?v=2" as="style">
     <link rel="stylesheet" href="css/cuenta.css?v=2">
@@ -29,14 +30,17 @@
 </head>
 <body>
 
-    <header>
+        <header>
         <div class="nav-bg">
+
+            <!-- Logo -->
             <div class="logo">
                 <a href="index.html">
-                    <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
+                  <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
                 </a>
             </div>
-
+            
+            <!-- Barra de busqueda -->
             <div class="search-container">
                 <span class="search-icon material-symbols-outlined">search</span>
                 <input class="search" type="search" placeholder="Buscar...">
@@ -44,23 +48,9 @@
 
             <nav class="nav-principal">
                 <a href="index.html">Inicio</a>
-                <a href="avisos.html">Avisos</a>
-                <a href="recursos.html">Recursos</a>
-                <a href="calendario.html">Calendario</a>
-                <div class="dropdown-container">
-                    <button id="btn-cuenta" class="btn-cuenta-estilo">
-                        <span>Cuenta</span>
-                        <span class="material-symbols-outlined">expand_more</span>
-                    </button>
-                    <div id="menu-dropdown" class="dropdown-content">
-                        <a href="cuenta.html">Ajustes</a>
-                        <a href="autor.html" class="autor-opt">Panel Autor</a>
-                        <a href="admin.html" class="admin-opt">Panel Admin</a> 
-                        <hr>
-                        <a href="#" id="cerrar-sesion" class="logout">Cerrar Sesión</a>
-                    </div>
-                </div>
+                <a href="login.html">Iniciar Sesion</a>
             </nav>
+
         </div>
     </header>
 
@@ -74,7 +64,7 @@
                 <article class="mini-card likes-card">
                     <span class="material-symbols-outlined">favorite</span>
                     <div>
-                        <p class="numero">12</p>
+                        <p class="numero" id="cuenta-total-likes">0</p>
                         <p class="texto">Me Gusta</p>
                     </div>
                 </article>
@@ -84,7 +74,7 @@
                 <article class="mini-card saves-card">
                     <span class="material-symbols-outlined">bookmark</span>
                     <div>
-                        <p class="numero">5</p>
+                        <p class="numero" id="cuenta-total-guardados">0</p>
                         <p class="texto">Publicaciones guardadas</p>
                     </div>
                 </article>
@@ -255,9 +245,9 @@
         <p class="copy">© 2026 Lumina: Claridad a la información</p>
     </footer>
 
-    <script src="js/auth.js"></script>
-    <script src="js/menu_ui.js"></script>
-    <script src="js/cuenta.js?v=2"></script>
+    <script src="js/auth.js?v=5"></script>
+    <script src="js/menu_ui.js?v=5"></script>
+    <script src="js/cuenta.js?v=3"></script>
 </body>
 
 <script>

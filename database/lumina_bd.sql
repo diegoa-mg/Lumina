@@ -59,6 +59,9 @@ CREATE TABLE `publicaciones` (
   `descripcion` text NOT NULL,
   `imagen_url` varchar(500) DEFAULT NULL,
   `tipo` enum('articulo','video','noticia','recurso') NOT NULL DEFAULT 'articulo',
+  `seccion` enum('post','aviso') NOT NULL DEFAULT 'post',
+  `tipo_aviso` enum('academico','plataforma') NOT NULL DEFAULT 'academico',
+  `urgente` tinyint(1) NOT NULL DEFAULT 0,
   `categoria_id` int(11) DEFAULT NULL,
   `status` enum('borrador','revision','publicado','rechazado') DEFAULT 'borrador',
   `autor_id` int(11) NOT NULL,
@@ -88,14 +91,21 @@ CREATE TABLE `reacciones` (
 
 INSERT INTO `reacciones` (`id`, `usuario_id`, `elemento_id`, `seccion`, `tipo_reaccion`, `fecha`) VALUES
 (1, 1, 1, 'recursos', 'guardado', '2026-04-23 17:43:59'),
-(2, 1, 1, 'recursos', 'guardado', '2026-04-23 17:44:02'),
-(3, 1, 1, 'recursos', 'guardado', '2026-04-23 17:44:02'),
-(4, 1, 1, 'recursos', 'like', '2026-04-30 19:35:06'),
-(5, 1, 1, 'recursos', 'guardado', '2026-04-30 19:35:08'),
-(6, 1, 1, 'recursos', 'like', '2026-04-30 19:35:14'),
-(7, 1, 1, 'recursos', 'like', '2026-04-30 19:35:14'),
-(8, 1, 1, 'recursos', 'guardado', '2026-04-30 19:35:15'),
-(9, 1, 1, 'recursos', 'guardado', '2026-04-30 19:35:16');
+(4, 1, 1, 'recursos', 'like', '2026-04-30 19:35:06');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `comentarios_materia`
+--
+
+CREATE TABLE `comentarios_materia` (
+  `id` int(11) NOT NULL,
+  `categoria_id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `comentario` text NOT NULL,
+  `fecha_creacion` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -160,6 +170,7 @@ ALTER TABLE `publicaciones`
   ADD KEY `fk_publicaciones_usuarios` (`autor_id`),
   ADD KEY `fk_publicaciones_categorias` (`categoria_id`),
   ADD KEY `idx_status` (`status`),
+  ADD KEY `idx_seccion_status` (`seccion`,`status`),
   ADD KEY `idx_autor_status` (`autor_id`,`status`);
 
 --
@@ -167,7 +178,18 @@ ALTER TABLE `publicaciones`
 --
 ALTER TABLE `reacciones`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_usuario_reaccion` (`usuario_id`);
+  ADD UNIQUE KEY `uq_reaccion_usuario_elemento_tipo` (`usuario_id`,`elemento_id`,`seccion`,`tipo_reaccion`),
+  ADD KEY `fk_usuario_reaccion` (`usuario_id`),
+  ADD KEY `idx_reacciones_usuario_tipo` (`usuario_id`,`tipo_reaccion`),
+  ADD KEY `idx_reacciones_elemento` (`elemento_id`,`seccion`);
+
+--
+-- Indices de la tabla `comentarios_materia`
+--
+ALTER TABLE `comentarios_materia`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_comentarios_materia_categoria` (`categoria_id`,`fecha_creacion`),
+  ADD KEY `idx_comentarios_materia_usuario` (`usuario_id`);
 
 --
 -- Indices de la tabla `roles`
@@ -206,6 +228,12 @@ ALTER TABLE `reacciones`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
+-- AUTO_INCREMENT de la tabla `comentarios_materia`
+--
+ALTER TABLE `comentarios_materia`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
@@ -233,6 +261,13 @@ ALTER TABLE `publicaciones`
 --
 ALTER TABLE `reacciones`
   ADD CONSTRAINT `fk_usuario_reaccion` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `comentarios_materia`
+--
+ALTER TABLE `comentarios_materia`
+  ADD CONSTRAINT `fk_comentarios_materia_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_comentarios_materia_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `usuarios`

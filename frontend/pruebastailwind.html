@@ -7,14 +7,44 @@
     <title>Document</title>
     <link rel="stylesheet" href="./css/output.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="preload" href="css/base.css" as="style">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="preload" href="css/navbar.css?v=5" as="style">
+    <link rel="stylesheet" href="css/navbar.css?v=5">
 </head>
 
 <body>
+    <header>
+        <div class="nav-bg">
+
+            <!-- Logo -->
+            <div class="logo">
+                <a href="index.html">
+                  <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
+                </a>
+            </div>
+            
+            <!-- Barra de busqueda -->
+            <div class="search-container">
+                <span class="search-icon material-symbols-outlined">search</span>
+                <input class="search" type="search" placeholder="Buscar...">
+            </div>
+
+            <nav class="nav-principal">
+                <a href="index.html">Inicio</a>
+                <a href="login.html">Iniciar Sesion</a>
+            </nav>
+
+        </div>
+    </header>
 
   
     
     <button class="h-10 w-150 m-3 p-5 pb-10f2dr3geuj7 bg-purple-400">Horizontal</button>
     <button class="bg-purple-800 text-white p-8">padding</button>
+    <script src="js/auth.js?v=5"></script>
+    <script src="js/menu_ui.js?v=5"></script>
 </body>
 
 </html>  
