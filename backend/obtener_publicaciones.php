@@ -21,6 +21,8 @@ SELECT
     publicaciones.descripcion,
     publicaciones.imagen_url,
     publicaciones.status,
+    publicaciones.youtube_url,
+    publicaciones.noticia_url,
     $tipo_select,
     publicaciones.categoria_id,
     categorias.nombre_categoria AS materia,

@@ -9,6 +9,16 @@ const btnClose = document.getElementById('btnCerrar');
 const fileInput = document.getElementById('fileInput');
 const btnVolver = document.querySelector('.btnVolver');
 
+const tipoSelect =
+    document.getElementById('postTipo');
+
+const campoYoutube =
+    document.querySelector('.campo-youtube');
+
+const campoNoticia =
+    document.querySelector('.campo-noticia');
+
+
 let archivoSeleccionado = null;
 let enviando = false;
 let postEditando = null;
@@ -21,7 +31,30 @@ const FORMATOS_PERMITIDOS = [
     'image/webp'
 ];
 
+function actualizarCamposTipo() {
 
+    const tipo = tipoSelect.value.toLowerCase();
+
+    campoYoutube.classList.add('d-none');
+    campoNoticia.classList.add('d-none');
+
+    if (tipo === 'video') {
+
+        campoYoutube.classList.remove('d-none');
+
+    } else if (tipo === 'noticia') {
+
+        campoNoticia.classList.remove('d-none');
+    }
+}
+
+if (postTipo) {
+
+    postTipo.addEventListener(
+        'change',
+        actualizarCamposTipo
+    );
+}
 // ============================================
 // EVENTOS MODAL
 // ============================================
@@ -200,6 +233,14 @@ async function manejarPublicacion(estado) {
             document.getElementById('postMateria')
             ?.value || '1';
 
+        const youtubeUrl =
+            document.getElementById('youtubeUrl')
+            ?.value.trim() || '';
+
+        const noticiaUrl =
+            document.getElementById('noticiaUrl')
+            ?.value.trim() || '';
+
         let imagenBase64 = null;
 
         if (archivoSeleccionado) {
@@ -239,7 +280,11 @@ async function manejarPublicacion(estado) {
 
                         categoria_id: categoriaId,
 
-                        imagen: imagenBase64
+                        imagen: imagenBase64,
+
+                        youtube_url: youtubeUrl,
+
+                        noticia_url: noticiaUrl,
                     })
                 }
             );
@@ -287,6 +332,10 @@ async function manejarPublicacion(estado) {
                     categoria_id: categoriaId,
 
                     imagen: imagenBase64,
+
+                    youtube_url: youtubeUrl,
+                    
+                    noticia_url: noticiaUrl,
 
                     status: estado
                 })
