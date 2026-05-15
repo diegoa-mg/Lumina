@@ -18,6 +18,11 @@ if(mysqli_num_rows($validar_login) > 0){
         // CLAVE: Guardamos el ID para las reacciones
         $_SESSION['usuario_id'] = $usuario['id']; 
         $_SESSION['usuario'] = $usuario['usuarios'];
+
+        $rol_id = (int) $usuario['rol_id'];
+        $res_rol = mysqli_query($conexion, "SELECT nombre FROM roles WHERE id = $rol_id LIMIT 1");
+        $fila_rol = mysqli_fetch_assoc($res_rol);
+        $_SESSION['rol'] = $fila_rol['nombre'] ?? 'Usuario';
         
         echo '<script>
             localStorage.setItem("sesion_activa", "true");
