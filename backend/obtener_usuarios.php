@@ -10,7 +10,6 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-// Solo admins pueden ver la lista de usuarios
 $rolSesion = $_SESSION['rol'] ?? '';
 if (strtolower($rolSesion) !== 'administrador') {
     http_response_code(403);
@@ -18,7 +17,11 @@ if (strtolower($rolSesion) !== 'administrador') {
     exit;
 }
 
-$sql = "SELECT id, nombre, correo, rol, estado, foto_url FROM usuarios ORDER BY nombre ASC";
+$sql = "SELECT u.id, u.nombre, u.usuarios, u.correo, u.foto_url, r.nombre AS rol
+        FROM usuarios u
+        LEFT JOIN roles r ON u.rol_id = r.id
+        ORDER BY u.nombre ASC";
+
 $resultado = $conexion->query($sql);
 
 if (!$resultado) {
