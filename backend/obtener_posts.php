@@ -17,6 +17,18 @@ $autor_id = intval($_SESSION['usuario_id']);
 $tipo_select = publicaciones_tiene_columna($conexion, 'tipo')
     ? "tipo"
     : "'articulo' AS tipo";
+$seccion_select = publicaciones_tiene_columna($conexion, 'seccion')
+    ? "seccion"
+    : "'post' AS seccion";
+$tipo_aviso_select = publicaciones_tiene_columna($conexion, 'tipo_aviso')
+    ? "tipo_aviso"
+    : "'academico' AS tipo_aviso";
+$urgente_select = publicaciones_tiene_columna($conexion, 'urgente')
+    ? "urgente"
+    : "0 AS urgente";
+$importante_select = publicaciones_tiene_columna($conexion, 'importante')
+    ? "importante"
+    : "0 AS importante";
 
 $query = "
 SELECT
@@ -26,6 +38,10 @@ SELECT
     publicaciones.imagen_url,
     publicaciones.status,
     $tipo_select,
+    $seccion_select,
+    $tipo_aviso_select,
+    $urgente_select,
+    $importante_select,
     publicaciones.categoria_id,
     categorias.nombre_categoria AS materia,
     publicaciones.fecha_creacion

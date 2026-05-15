@@ -1,24 +1,118 @@
 <?php
-session_start(); // Siempre primero
-include 'conexion_bd.php';
+session_start();
+header('Content-Type: application/json; charset=utf-8');
+
+require_once __DIR__ . '/conexion_bd.php';
 
 if (!isset($_SESSION['usuario_id'])) {
-    echo "Error: Sesión no encontrada. Por favor, vuelve a loguearte.";
+    http_response_code(401);
+    echo json_encode([
+        'ok' => false,
+        'mensaje' => 'Debes iniciar sesion para reaccionar.'
+    ]);
     exit;
 }
 
-$user = $_SESSION['usuario_id'];
-$elem_id = $_POST['elemento_id'];
-$seccion = $_POST['seccion'];
-$tipo = $_POST['tipo'];
+$usuario_id = intval($_SESSION['usuario_id']);
+$elemento_id = intval($_POST['elemento_id'] ?? 0);
+$seccion = trim($_POST['seccion'] ?? 'recursos');
+$tipo = trim($_POST['tipo'] ?? '');
 
-$query = "INSERT INTO reacciones (usuario_id, elemento_id, seccion, tipo_reaccion) 
-          VALUES ('$user', '$elem_id', '$seccion', '$tipo')";
+$tipos_permitidos = ['like', 'guardado'];
 
-if (mysqli_query($conexion, $query)) {
-    echo ($tipo == 'guardado') ? "Publicación guardada correctamente" : "Te gusta esta publicación";
-} else {
-    // Esto te dirá exactamente qué falló en el SQL
-    echo "Error en la base de datos: " . mysqli_error($conexion);
+if ($elemento_id <= 0 || !in_array($tipo, $tipos_permitidos, true)) {
+    http_response_code(400);
+    echo json_encode([
+        'ok' => false,
+        'mensaje' => 'Reaccion invalida.'
+    ]);
+    exit;
 }
-?>
+
+$stmt = $conexion->prepare(
+    "SELECT id, seccion
+    FROM publicaciones
+    WHERE id = ? AND status = 'publicado'
+    LIMIT 1"
+);
+$stmt->bind_param('i', $elemento_id);
+$stmt->execute();
+$publicacion = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+if (!$publicacion) {
+    http_response_code(404);
+    echo json_encode([
+        'ok' => false,
+        'mensaje' => 'Publicacion no encontrada.'
+    ]);
+    exit;
+}
+
+if ($tipo === 'like' && ($publicacion['seccion'] ?? 'post') === 'aviso') {
+    http_response_code(400);
+    echo json_encode([
+        'ok' => false,
+        'mensaje' => 'Los avisos no pueden recibir Me gusta.'
+    ]);
+    exit;
+}
+
+$stmt = $conexion->prepare(
+    "SELECT id
+    FROM reacciones
+    WHERE usuario_id = ? AND elemento_id = ? AND seccion = ? AND tipo_reaccion = ?
+    LIMIT 1"
+);
+$stmt->bind_param('iiss', $usuario_id, $elemento_id, $seccion, $tipo);
+$stmt->execute();
+$reaccion = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+if ($reaccion) {
+    $stmt = $conexion->prepare("DELETE FROM reacciones WHERE id = ?");
+    $stmt->bind_param('i', $reaccion['id']);
+    $stmt->execute();
+    $stmt->close();
+    $activo = false;
+} else {
+    $stmt = $conexion->prepare(
+        "INSERT INTO reacciones (usuario_id, elemento_id, seccion, tipo_reaccion)
+        VALUES (?, ?, ?, ?)"
+    );
+    $stmt->bind_param('iiss', $usuario_id, $elemento_id, $seccion, $tipo);
+    $stmt->execute();
+    $stmt->close();
+    $activo = true;
+}
+
+$stmt = $conexion->prepare(
+    "SELECT tipo_reaccion, COUNT(*) AS total
+    FROM reacciones
+    WHERE elemento_id = ? AND seccion = ?
+    GROUP BY tipo_reaccion"
+);
+$stmt->bind_param('is', $elemento_id, $seccion);
+$stmt->execute();
+$resultado = $stmt->get_result();
+$totales = [
+    'like' => 0,
+    'guardado' => 0
+];
+
+while ($fila = $resultado->fetch_assoc()) {
+    if (isset($totales[$fila['tipo_reaccion']])) {
+        $totales[$fila['tipo_reaccion']] = intval($fila['total']);
+    }
+}
+
+$stmt->close();
+
+echo json_encode([
+    'ok' => true,
+    'activo' => $activo,
+    'tipo' => $tipo,
+    'elemento_id' => $elemento_id,
+    'seccion' => $seccion,
+    'totales' => $totales
+]);

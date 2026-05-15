@@ -4,7 +4,11 @@ function publicaciones_tiene_columna($conexion, $columna) {
     static $cache = [];
 
     $columnas_permitidas = [
-        'tipo' => true
+        'tipo' => true,
+        'seccion' => true,
+        'tipo_aviso' => true,
+        'urgente' => true,
+        'importante' => true
     ];
 
     if (!isset($columnas_permitidas[$columna])) {
@@ -41,12 +45,38 @@ function publicaciones_tiene_columna($conexion, $columna) {
 }
 
 function normalizar_tipo_post($tipo) {
-    $tipo = trim($tipo ?: 'articulo');
+    $tipo = trim(strtolower($tipo ?: 'articulo'));
     $tipos_permitidos = ['articulo', 'video', 'noticia', 'recurso'];
 
     return in_array($tipo, $tipos_permitidos, true)
         ? $tipo
         : 'articulo';
+}
+
+function normalizar_seccion_publicacion($seccion) {
+    $seccion = trim(strtolower($seccion ?: 'post'));
+    $secciones_permitidas = ['post', 'aviso'];
+
+    return in_array($seccion, $secciones_permitidas, true)
+        ? $seccion
+        : 'post';
+}
+
+function normalizar_tipo_aviso($tipo_aviso) {
+    $tipo_aviso = trim(strtolower($tipo_aviso ?: 'academico'));
+    $tipos_permitidos = ['academico', 'plataforma'];
+
+    return in_array($tipo_aviso, $tipos_permitidos, true)
+        ? $tipo_aviso
+        : 'academico';
+}
+
+function normalizar_urgente_aviso($urgente) {
+    return filter_var($urgente, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+}
+
+function normalizar_importante_post($importante, $seccion = 'post') {
+    return filter_var($importante, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
 }
 
 function normalizar_categoria_post($categoria_id) {
