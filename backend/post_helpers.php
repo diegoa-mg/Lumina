@@ -4,7 +4,9 @@ function publicaciones_tiene_columna($conexion, $columna) {
     static $cache = [];
 
     $columnas_permitidas = [
-        'tipo' => true
+        'tipo' => true,
+        'youtube_url' => true,
+        'noticia_url' => true
     ];
 
     if (!isset($columnas_permitidas[$columna])) {
