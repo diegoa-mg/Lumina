@@ -12,6 +12,16 @@ const btnVolverSelector = document.querySelectorAll('.btnVolverSelector');
 const btnCrearPost = document.getElementById('btnCrearPost');
 const btnCrearAviso = document.getElementById('btnCrearAviso');
 
+const tipoSelect =
+    document.getElementById('postTipo');
+
+const campoYoutube =
+    document.querySelector('.campo-youtube');
+
+const campoNoticia =
+    document.querySelector('.campo-noticia');
+
+
 let archivoSeleccionado = null;
 let enviando = false;
 let postEditando = null;
@@ -25,19 +35,30 @@ const FORMATOS_PERMITIDOS = [
     'image/webp'
 ];
 
-const CONFIG_AVISOS = {
-    academico: {
-        texto: 'Academico',
-        icono: 'school',
-        clase: 'bg-rojo'
-    },
-    plataforma: {
-        texto: 'Plataforma',
-        icono: 'language',
-        clase: 'bg-rojo2'
-    }
-};
+function actualizarCamposTipo() {
 
+    const tipo = tipoSelect.value.toLowerCase();
+
+    campoYoutube.classList.add('d-none');
+    campoNoticia.classList.add('d-none');
+
+    if (tipo === 'video') {
+
+        campoYoutube.classList.remove('d-none');
+
+    } else if (tipo === 'noticia') {
+
+        campoNoticia.classList.remove('d-none');
+    }
+}
+
+if (postTipo) {
+
+    postTipo.addEventListener(
+        'change',
+        actualizarCamposTipo
+    );
+}
 // ============================================
 // NAVEGACION MODAL
 // ============================================
@@ -232,7 +253,31 @@ async function manejarPublicacion(estado) {
     enviando = true;
 
     try {
-        const datos = obtenerCamposActuales();
+
+        const titulo =
+            document.getElementById('postTitle')
+            .value.trim();
+
+        const descripcion =
+            document.getElementById('postDesc')
+            .value.trim();
+
+        const tipo =
+            document.getElementById('postTipo')
+            ?.value || 'articulo';
+
+        const categoriaId =
+            document.getElementById('postMateria')
+            ?.value || '1';
+
+        const youtubeUrl =
+            document.getElementById('youtubeUrl')
+            ?.value.trim() || '';
+
+        const noticiaUrl =
+            document.getElementById('noticiaUrl')
+            ?.value.trim() || '';
+
         let imagenBase64 = null;
 
         if (archivoSeleccionado && (datos.seccion !== 'aviso' || datos.importante)) {
@@ -246,7 +291,54 @@ async function manejarPublicacion(estado) {
         };
 
         if (postEditando) {
-            payload.post_id = postEditando;
+
+            const respuesta = await fetch(
+                '../backend/editar_post.php',
+                {
+                    method: 'POST',
+
+                    credentials: 'include',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+
+                        post_id: postEditando,
+
+                        titulo,
+
+                        descripcion,
+
+                        tipo,
+
+                        categoria_id: categoriaId,
+
+                        imagen: imagenBase64,
+
+                        youtube_url: youtubeUrl,
+
+                        noticia_url: noticiaUrl,
+                    })
+                }
+            );
+
+            const resultado =
+                await respuesta.json();
+
+            if (resultado.success) {
+
+                alert('✅ Post actualizado');
+
+                location.reload();
+
+            } else {
+
+                alert(resultado.error);
+            }
+
+            return;
         }
 
         const respuesta = await fetch(
@@ -259,7 +351,25 @@ async function manejarPublicacion(estado) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(payload)
+
+                body: JSON.stringify({
+
+                    titulo,
+
+                    descripcion,
+
+                    tipo,
+
+                    categoria_id: categoriaId,
+
+                    imagen: imagenBase64,
+
+                    youtube_url: youtubeUrl,
+                    
+                    noticia_url: noticiaUrl,
+
+                    status: estado
+                })
             }
         );
 
@@ -535,7 +645,8 @@ function resetearFormulario() {
     const tipoSelect = document.getElementById('postTipo');
 
     if (tipoSelect) {
-        tipoSelect.value = 'articulo';
+
+        tipoSelect.value = 'Articulo';
     }
 
     const materiaSelect = document.getElementById('postMateria');

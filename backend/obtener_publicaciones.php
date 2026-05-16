@@ -37,6 +37,8 @@ SELECT
     publicaciones.descripcion,
     publicaciones.imagen_url,
     publicaciones.status,
+    publicaciones.youtube_url,
+    publicaciones.noticia_url,
     $tipo_select,
     $seccion_select,
     $importante_select,

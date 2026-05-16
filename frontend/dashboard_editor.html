@@ -66,9 +66,9 @@
             </div>
             
             <div id="modalAdmin" class="modal-overlay" style="display: none;">
-                <div class="modal-content" id="pantalla2">
+                <div class="modal-content">
                     <span id="btnCerrar" class="close-modal" onclick="cerrarModal()">&times;</span>
-                    <h1 class="modal-title">Editar post</h1>
+                    <h1 class="modal-title">Editar</h1>
 
                     <div class="admin-grid">
                         <div class="form-side">
@@ -113,76 +113,9 @@
                         <div class="preview-side">
                             <div class="preview-card">
                                 <img id="imgPreview" src="" alt="Preview">
-                                <div class="file-info d-none">
-                                    <p class="filename" id="fileNameDisplay">Imagen actual</p>
-                                </div>
                             </div>
                             <div class="actions">
                                 <button class="btn-save" id="btnGuardarCambiosEditor">Guardar Cambios</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-content d-none" id="pantallaAviso">
-                    <span class="close-modal" onclick="cerrarModal()">&times;</span>
-                    <h1 class="modal-title">Editar aviso</h1>
-
-                    <div class="admin-grid">
-                        <div class="form-side">
-                            <h2>Detalles</h2>
-
-                            <div class="field">
-                                <label>Titulo</label>
-                                <input type="text" id="avisoTitle">
-                            </div>
-
-                            <div class="field">
-                                <label class="field-titulo">Descripcion</label>
-                                <textarea id="avisoDesc"></textarea>
-                            </div>
-
-                            <div class="tipo-materia-row">
-                                <div class="field">
-                                    <label>Tipo de aviso</label>
-                                    <select id="avisoTipo">
-                                        <option value="academico">Academico</option>
-                                        <option value="plataforma">Plataforma</option>
-                                    </select>
-                                </div>
-
-                                <div class="field">
-                                    <label>Urgencia</label>
-                                    <select id="avisoUrgente">
-                                        <option value="0">No urgente</option>
-                                        <option value="1">Urgente</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="preview-side">
-                            <div class="preview-aviso">
-                                <div class="preview-aviso-header">
-                                    <div class="icono-principal bg-rojo" id="avisoIconoPreview">
-                                        <span class="material-symbols-outlined" id="avisoIconoTexto">school</span>
-                                    </div>
-                                    <div>
-                                        <h3 id="avisoPreviewTitulo">Titulo del aviso</h3>
-                                        <p id="avisoPreviewFecha">Vista previa</p>
-                                    </div>
-                                    <span class="badge-urgente d-none" id="avisoPreviewUrgente">Urgente</span>
-                                </div>
-                                <p id="avisoPreviewDesc">La descripcion del aviso aparecera aqui.</p>
-                                <div class="preview-aviso-footer">
-                                    <div class="linea-negra"></div>
-                                    <span class="material-symbols-outlined" id="avisoFooterIcono">school</span>
-                                    <span class="etiqueta-blanca" id="avisoPreviewTipo">Academico</span>
-                                </div>
-                            </div>
-
-                            <div class="actions">
-                                <button class="btn-save" id="btnGuardarAvisoEditor">Guardar Cambios</button>
                             </div>
                         </div>
                     </div>
@@ -199,9 +132,9 @@
         <p class="copy">© 2026 Lumina: Claridad a la información</p>
     </footer>
 
-    <script src="js/auth.js?v=5"></script>
-    <script src="js/menu_ui.js?v=5"></script>
-    <script src="js/crear.js?v=5"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/menu_ui.js"></script>
+    <script src="js/crear.js"></script>
     <script>
 
     async function cargarPostsRevision() {
@@ -233,28 +166,6 @@
 
             posts.forEach(post => {
 
-                const esAviso = (post.seccion || 'post') === 'aviso'
-                    || Number(post.categoria_id || 0) === 9;
-                const seccionPost = esAviso ? 'aviso' : 'post';
-                const iconoAviso = post.tipo_aviso === 'plataforma'
-                    ? 'language'
-                    : 'school';
-                const tipoAviso = post.tipo_aviso === 'plataforma'
-                    ? 'Plataforma'
-                    : 'Academico';
-                const preview = esAviso
-                    ? `
-                    <div class="w-full h-72 rounded-xl mb-5 bg-blue-50 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-blue-700" style="font-size: 80px;">${iconoAviso}</span>
-                    </div>
-                    `
-                    : `
-                    <img
-                        src="../frontend/${post.imagen_url || 'img/default-post.jpg'}"
-                        class="w-full h-72 object-cover rounded-xl mb-5"
-                    >
-                    `;
-
                 const tarjeta = `
                 
                 <div class="bg-white rounded-2xl shadow p-6"
@@ -264,20 +175,16 @@
                     data-imagen="${(post.imagen_url || '').replace(/"/g, '&quot;')}"
                     data-tipo="${post.tipo || 'articulo'}"
                     data-categoria-id="${post.categoria_id || 1}"
-                    data-seccion="${seccionPost}"
-                    data-tipo-aviso="${post.tipo_aviso || 'academico'}"
-                    data-urgente="${Number(post.urgente || 0) === 1 ? '1' : '0'}"
                 >
 
-                    ${preview}
+                    <img
+                        src="../frontend/${post.imagen_url}"
+                        class="w-full h-72 object-cover rounded-xl mb-5"
+                    >
 
                     <h2 class="text-3xl font-bold mb-3">
                         ${post.titulo}
                     </h2>
-
-                    <p class="text-sm font-bold text-blue-700 mb-3">
-                        ${esAviso ? `Aviso - ${tipoAviso}${Number(post.urgente || 0) === 1 ? ' - Urgente' : ''}` : 'Post'}
-                    </p>
 
                     <p class="text-gray-600 mb-6">
                         ${post.descripcion}
@@ -324,7 +231,8 @@
 
         }
 
-    }
+                        post_id: id,
+                        status: 'publicado'
 
 
     async function aprobarPost(id) {
@@ -369,7 +277,8 @@
 
         }
 
-    }
+                        post_id: id,
+                        status: 'rechazado'
 
 
     async function rechazarPost(id) {
@@ -408,55 +317,36 @@
 
             console.error(error);
 
+        if (!titulo || !descripcion) {
+            alert('Completa todos los campos');
+            return;
         }
 
     }
 
     // Variable para guardar el ID del post que estamos editando
     let postEditandoId = null;
-    let seccionEditando = 'post';
 
     function abrirModalEdicion(boton) {
         const tarjeta = boton.closest('[data-post-id]');
         postEditandoId = tarjeta.dataset.postId;
-        seccionEditando = tarjeta.dataset.seccion === 'aviso' || tarjeta.dataset.categoriaId === '9'
-            ? 'aviso'
-            : 'post';
 
-        if (seccionEditando === 'aviso') {
-            document.getElementById('avisoTitle').value = tarjeta.dataset.titulo || '';
-            document.getElementById('avisoDesc').value = tarjeta.dataset.descripcion || '';
-            document.getElementById('avisoTipo').value = tarjeta.dataset.tipoAviso || 'academico';
-            document.getElementById('avisoUrgente').value = tarjeta.dataset.urgente === '1' ? '1' : '0';
-            document.getElementById('pantalla2').classList.add('d-none');
-            document.getElementById('pantallaAviso').classList.remove('d-none');
-
-            if (typeof actualizarPreviewAviso === 'function') {
-                actualizarPreviewAviso();
-            }
-        } else {
-            document.getElementById('postTitle').value = tarjeta.dataset.titulo || '';
-            document.getElementById('postDesc').value = tarjeta.dataset.descripcion || '';
-            document.getElementById('imgPreview').src = tarjeta.dataset.imagen ? `../frontend/${tarjeta.dataset.imagen}` : '';
-            document.getElementById('postTipo').value = tarjeta.dataset.tipo || 'articulo';
-            document.getElementById('postMateria').value = tarjeta.dataset.categoriaId || '1';
-            document.getElementById('pantallaAviso').classList.add('d-none');
-            document.getElementById('pantalla2').classList.remove('d-none');
-        }
+        document.getElementById('postTitle').value = tarjeta.dataset.titulo;
+        document.getElementById('postDesc').value = tarjeta.dataset.descripcion;
+        document.getElementById('imgPreview').src = tarjeta.dataset.imagen || '';
+        document.getElementById('postTipo').value = tarjeta.dataset.tipo || 'articulo';
+        document.getElementById('postMateria').value = tarjeta.dataset.categoriaId || '1';
 
         document.getElementById('modalAdmin').style.display = 'flex';
     }
 
     function cerrarModal() {
         document.getElementById('modalAdmin').style.display = 'none';
-        postEditandoId = null;
-        seccionEditando = 'post';
     }
 
-    async function guardarCambiosEditor() {
-        const esAviso = seccionEditando === 'aviso';
-        const titulo = document.getElementById(esAviso ? 'avisoTitle' : 'postTitle').value.trim();
-        const descripcion = document.getElementById(esAviso ? 'avisoDesc' : 'postDesc').value.trim();
+    document.getElementById('btnGuardarCambiosEditor').onclick = async function() {
+        const titulo = document.getElementById('postTitle').value.trim();
+        const descripcion = document.getElementById('postDesc').value.trim();
 
         if (!titulo || !descripcion) {
             alert('Completa todos los campos');
@@ -464,30 +354,20 @@
         }
 
         try {
-            const payload = {
-                post_id: postEditandoId,
-                titulo,
-                descripcion,
-                seccion: seccionEditando
-            };
-
-            if (esAviso) {
-                payload.tipo = 'noticia';
-                payload.categoria_id = 9;
-                payload.tipo_aviso = document.getElementById('avisoTipo').value || 'academico';
-                payload.urgente = document.getElementById('avisoUrgente').value === '1';
-            } else {
-                payload.tipo = document.getElementById('postTipo').value;
-                payload.categoria_id = document.getElementById('postMateria').value;
-                payload.tipo_aviso = 'academico';
-                payload.urgente = false;
-            }
+            const tipo = document.getElementById('postTipo').value;
+            const categoria_id = document.getElementById('postMateria').value;
 
             const respuesta = await fetch('../backend/editar_post_editor.php', {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    post_id: postEditandoId,
+                    titulo,
+                    descripcion,
+                    tipo,
+                    categoria_id
+                })
             });
 
             const resultado = await respuesta.json();
@@ -503,10 +383,7 @@
             console.error(error);
             alert('❌ Error al conectar con el servidor');
         }
-    }
-
-    document.getElementById('btnGuardarCambiosEditor').onclick = guardarCambiosEditor;
-    document.getElementById('btnGuardarAvisoEditor').onclick = guardarCambiosEditor;
+    };
 
 
     document.addEventListener(

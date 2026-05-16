@@ -8,6 +8,7 @@ include 'conexion_bd.php';
 include 'post_helpers.php';
 
 if (!isset($_SESSION['usuario_id'])) {
+
     http_response_code(401);
 
     echo json_encode([
@@ -21,6 +22,7 @@ if (!isset($_SESSION['usuario_id'])) {
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data) {
+
     echo json_encode([
         'success' => false,
         'error' => 'Datos invalidos'
@@ -29,21 +31,54 @@ if (!$data) {
     exit;
 }
 
-$post_id = intval($data['post_id'] ?? 0);
-$autor_id = intval($_SESSION['usuario_id']);
-$titulo = trim($data['titulo'] ?? '');
-$descripcion = trim($data['descripcion'] ?? '');
-$seccion = normalizar_seccion_publicacion($data['seccion'] ?? 'post');
-$tipo = normalizar_tipo_post($data['tipo'] ?? 'articulo');
-$categoria_id = $seccion === 'aviso'
-    ? 9
-    : obtener_categoria_post_desde_data($data);
-$tipo_aviso = normalizar_tipo_aviso($data['tipo_aviso'] ?? 'academico');
-$urgente = normalizar_urgente_aviso($data['urgente'] ?? false);
-$importante = normalizar_importante_post($data['importante'] ?? false, $seccion);
+// ============================================
+// DATOS
+// ============================================
+
+$post_id = intval(
+    $data['post_id'] ?? 0
+);
+
+$autor_id = intval(
+    $_SESSION['usuario_id']
+);
+
+$titulo = trim(
+    $data['titulo'] ?? ''
+);
+
+$descripcion = trim(
+    $data['descripcion'] ?? ''
+);
+
+$tipo = normalizar_tipo_post(
+    $data['tipo'] ?? 'articulo'
+);
+
+$categoria_id = obtener_categoria_post_desde_data(
+    $data
+);
+
 $imagen = $data['imagen'] ?? null;
 
-if (!$post_id || $titulo === '' || $descripcion === '') {
+$youtube_url = trim(
+    $data['youtube_url'] ?? ''
+);
+
+$noticia_url = trim(
+    $data['noticia_url'] ?? ''
+);
+
+// ============================================
+// VALIDACIONES
+// ============================================
+
+if (
+    !$post_id
+    || $titulo === ''
+    || $descripcion === ''
+) {
+
     echo json_encode([
         'success' => false,
         'error' => 'Campos incompletos'
@@ -52,6 +87,38 @@ if (!$post_id || $titulo === '' || $descripcion === '') {
     exit;
 }
 
+// Validar YouTube
+if (
+    $tipo === 'video'
+    && $youtube_url === ''
+) {
+
+    echo json_encode([
+        'success' => false,
+        'error' => 'Debes agregar un link de YouTube'
+    ]);
+
+    exit;
+}
+
+// Validar noticia
+if (
+    $tipo === 'noticia'
+    && $noticia_url === ''
+) {
+
+    echo json_encode([
+        'success' => false,
+        'error' => 'Debes agregar un link de noticia'
+    ]);
+
+    exit;
+}
+
+// ============================================
+// OBTENER POST
+// ============================================
+
 $stmt = $conexion->prepare(
     "SELECT imagen_url
     FROM publicaciones
@@ -59,6 +126,7 @@ $stmt = $conexion->prepare(
 );
 
 if (!$stmt) {
+
     echo json_encode([
         'success' => false,
         'error' => 'Error SQL: ' . $conexion->error
@@ -67,13 +135,22 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param("ii", $post_id, $autor_id);
+$stmt->bind_param(
+    "ii",
+    $post_id,
+    $autor_id
+);
+
 $stmt->execute();
+
 $resultado = $stmt->get_result();
+
 $post = $resultado->fetch_assoc();
+
 $stmt->close();
 
 if (!$post) {
+
     echo json_encode([
         'success' => false,
         'error' => 'Post no encontrado'
@@ -81,6 +158,10 @@ if (!$post) {
 
     exit;
 }
+
+// ============================================
+// IMAGEN
+// ============================================
 
 $imagen_url = $post['imagen_url'];
 
@@ -93,52 +174,61 @@ if ($seccion !== 'aviso' || $importante) {
     );
 }
 
-if (is_array($resultado_imagen) && empty($resultado_imagen['success'])) {
+if (
+    is_array($resultado_imagen)
+    && empty($resultado_imagen['success'])
+) {
+
     echo json_encode($resultado_imagen);
+
     exit;
 }
 
 if (is_array($resultado_imagen)) {
-    $imagen_url = $resultado_imagen['imagen_url'];
+
+    $imagen_url =
+        $resultado_imagen['imagen_url'];
 }
 
-$tiene_tipo = publicaciones_tiene_columna($conexion, 'tipo');
-$tiene_seccion = publicaciones_tiene_columna($conexion, 'seccion');
-$tiene_tipo_aviso = publicaciones_tiene_columna($conexion, 'tipo_aviso');
-$tiene_urgente = publicaciones_tiene_columna($conexion, 'urgente');
-$tiene_importante = publicaciones_tiene_columna($conexion, 'importante');
+// ============================================
+// VERIFICAR COLUMNA TIPO
+// ============================================
 
-$sets = ['titulo = ?', 'descripcion = ?', 'categoria_id = ?', 'imagen_url = ?'];
-$types = 'ssis';
-$valores = [
-    &$titulo,
-    &$descripcion,
-    &$categoria_id,
-    &$imagen_url
-];
+$tiene_tipo = publicaciones_tiene_columna(
+    $conexion,
+    'tipo'
+);
+
+// ============================================
+// UPDATE
+// ============================================
 
 if ($tiene_tipo) {
-    $sets[] = 'tipo = ?';
-    $types .= 's';
-    $valores[] = &$tipo;
-}
 
-if ($tiene_seccion) {
-    $sets[] = 'seccion = ?';
-    $types .= 's';
-    $valores[] = &$seccion;
-}
+    $stmt = $conexion->prepare(
+        "UPDATE publicaciones
+        SET titulo = ?,
+            descripcion = ?,
+            tipo = ?,
+            categoria_id = ?,
+            imagen_url = ?,
+            youtube_url = ?,
+            noticia_url = ?
+        WHERE id = ? AND autor_id = ?"
+    );
 
-if ($tiene_tipo_aviso) {
-    $sets[] = 'tipo_aviso = ?';
-    $types .= 's';
-    $valores[] = &$tipo_aviso;
-}
+} else {
 
-if ($tiene_urgente) {
-    $sets[] = 'urgente = ?';
-    $types .= 'i';
-    $valores[] = &$urgente;
+    $stmt = $conexion->prepare(
+        "UPDATE publicaciones
+        SET titulo = ?,
+            descripcion = ?,
+            categoria_id = ?,
+            imagen_url = ?,
+            youtube_url = ?,
+            noticia_url = ?
+        WHERE id = ? AND autor_id = ?"
+    );
 }
 
 if ($tiene_importante) {
@@ -158,6 +248,7 @@ $stmt = $conexion->prepare(
 );
 
 if (!$stmt) {
+
     echo json_encode([
         'success' => false,
         'error' => 'Error SQL: ' . $conexion->error
@@ -166,27 +257,73 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param($types, ...$valores);
+// ============================================
+// BIND PARAMS
+// ============================================
+
+if ($tiene_tipo) {
+
+    $stmt->bind_param(
+        "sssisssii",
+        $titulo,
+        $descripcion,
+        $tipo,
+        $categoria_id,
+        $imagen_url,
+        $youtube_url,
+        $noticia_url,
+        $post_id,
+        $autor_id
+    );
+
+} else {
+
+    $stmt->bind_param(
+        "ssisssii",
+        $titulo,
+        $descripcion,
+        $categoria_id,
+        $imagen_url,
+        $youtube_url,
+        $noticia_url,
+        $post_id,
+        $autor_id
+    );
+}
+
+// ============================================
+// EJECUTAR
+// ============================================
 
 if ($stmt->execute()) {
+
     echo json_encode([
+
         'success' => true,
+
         'imagen_url' => $imagen_url,
+
         'tipo' => $tipo,
-        'seccion' => $seccion,
-        'tipo_aviso' => $tipo_aviso,
-        'urgente' => $urgente,
-        'importante' => $importante,
-        'categoria_id' => $categoria_id
+
+        'categoria_id' => $categoria_id,
+
+        'youtube_url' => $youtube_url,
+
+        'noticia_url' => $noticia_url
     ]);
+
 } else {
+
     echo json_encode([
+
         'success' => false,
+
         'error' => $stmt->error
     ]);
 }
 
 $stmt->close();
+
 $conexion->close();
 
 ?>

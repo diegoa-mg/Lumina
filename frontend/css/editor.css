@@ -145,101 +145,6 @@
     border-radius: 1.2rem;
 }
 
-.preview-aviso {
-    background-color: #fafbfd;
-    border: 1px solid #e5e7eb;
-    border-radius: 1rem;
-    padding: 1.5rem;
-}
-
-.preview-aviso-header {
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-}
-
-.preview-aviso-header h3 {
-    margin: 0;
-    color: var(--azul-logo);
-    font-size: 1.8rem;
-    font-weight: 600;
-}
-
-.preview-aviso-header p,
-.preview-aviso > p {
-    color: #6b7280;
-    font-size: 1.2rem;
-    margin: 0.4rem 0 0;
-}
-
-.preview-aviso > p {
-    color: #333;
-    font-size: 1.4rem;
-    line-height: 1.5;
-    margin: 1.4rem 0 0 calc(60px + 1.2rem);
-}
-
-.preview-aviso-footer {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 1.5rem 0 1.5rem calc(60px + 1.2rem);
-}
-
-.preview-aviso-footer .material-symbols-outlined {
-    color: #0dc8f3;
-}
-
-.badge-urgente {
-    background-color: #ff474c;
-    color: white;
-    padding: 0.6rem 1.5rem;
-    border-radius: 0.8rem;
-    font-size: 1.1rem;
-    margin-left: auto;
-}
-
-.icono-principal {
-    min-width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-}
-
-.icono-principal .material-symbols-outlined {
-    font-size: 32px;
-}
-
-.bg-rojo {
-    background-color: #f75555;
-}
-
-.bg-rojo2 {
-    background-color: #0f3ab5;
-}
-
-.linea-negra {
-    flex-grow: 1;
-    height: 2px;
-    background-color: black;
-}
-
-.etiqueta-blanca {
-    display: inline-flex;
-    align-items: center;
-    background-color: #e5e7eb;
-    color: var(--negro);
-    padding: 0.35rem 1rem;
-    border-radius: 9999px;
-    font-weight: 600;
-    font-size: 1.2rem;
-    line-height: 1;
-    white-space: nowrap;
-}
-
 /* Apariencia de las tarjetas de los post */
 /* Contenedor de la lista de tarjetas */
 .contenedor-tarjetas {
@@ -400,16 +305,4 @@
 .btn-revision-post:hover {
     background-color: var(--secundario);
     transform: translateY(-2px);
-}
-
-@media (max-width: 760px) {
-    .admin-grid,
-    .tipo-materia-row {
-        grid-template-columns: 1fr;
-    }
-
-    .preview-aviso > p,
-    .preview-aviso-footer {
-        margin-left: 0;
-    }
 }

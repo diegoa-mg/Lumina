@@ -9,6 +9,7 @@ include 'conexion_bd.php';
 include 'post_helpers.php';
 
 if (!isset($_SESSION['usuario_id'])) {
+
     http_response_code(401);
 
     echo json_encode([
@@ -22,6 +23,7 @@ if (!isset($_SESSION['usuario_id'])) {
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (!$data) {
+
     echo json_encode([
         'success' => false,
         'error' => 'Datos invalidos'
@@ -30,19 +32,38 @@ if (!$data) {
     exit;
 }
 
+// ============================================
+// DATOS
+// ============================================
+
 $titulo = trim($data['titulo'] ?? '');
+
 $descripcion = trim($data['descripcion'] ?? '');
-$seccion = normalizar_seccion_publicacion($data['seccion'] ?? 'post');
-$tipo = normalizar_tipo_post($data['tipo'] ?? 'articulo');
-$categoria_id = $seccion === 'aviso'
-    ? 9
-    : obtener_categoria_post_desde_data($data);
-$tipo_aviso = normalizar_tipo_aviso($data['tipo_aviso'] ?? 'academico');
-$urgente = normalizar_urgente_aviso($data['urgente'] ?? false);
-$importante = normalizar_importante_post($data['importante'] ?? false, $seccion);
-$status = normalizar_status_post($data['status'] ?? 'borrador');
+
+$tipo = normalizar_tipo_post(
+    $data['tipo'] ?? 'articulo'
+);
+
+$categoria_id = obtener_categoria_post_desde_data($data);
+
+$status = normalizar_status_post(
+    $data['status'] ?? 'borrador'
+);
+
+$youtube_url = trim(
+    $data['youtube_url'] ?? ''
+);
+
+$noticia_url = trim(
+    $data['noticia_url'] ?? ''
+);
+
+// ============================================
+// VALIDACIONES
+// ============================================
 
 if (!$status) {
+
     echo json_encode([
         'success' => false,
         'error' => 'Estado de publicacion no valido'
@@ -52,6 +73,7 @@ if (!$status) {
 }
 
 if ($titulo === '' || $descripcion === '') {
+
     echo json_encode([
         'success' => false,
         'error' => 'Titulo y descripcion son obligatorios'
@@ -60,59 +82,103 @@ if ($titulo === '' || $descripcion === '') {
     exit;
 }
 
-if ($seccion === 'aviso' && $importante && empty($data['imagen'])) {
+// Validar YouTube si es video
+if ($tipo === 'video' && $youtube_url === '') {
+
     echo json_encode([
         'success' => false,
-        'error' => 'Los avisos importantes requieren una imagen adjunta'
+        'error' => 'Debes agregar un link de YouTube'
+    ]);
+
+    exit;
+}
+
+// Validar noticia si es noticia
+if ($tipo === 'noticia' && $noticia_url === '') {
+
+    echo json_encode([
+        'success' => false,
+        'error' => 'Debes agregar un link de noticia'
     ]);
 
     exit;
 }
 
 $autor_id = intval($_SESSION['usuario_id']);
+
 $imagen_url = null;
 
-$resultado_imagen = null;
+// ============================================
+// GUARDAR IMAGEN
+// ============================================
 
-if ($seccion !== 'aviso' || $importante) {
-    $resultado_imagen = guardar_imagen_post_base64(
-        $data['imagen'] ?? null,
-        'post_' . $autor_id
-    );
-}
+$resultado_imagen = guardar_imagen_post_base64(
+    $data['imagen'] ?? null,
+    'post_' . $autor_id
+);
 
-if (is_array($resultado_imagen) && empty($resultado_imagen['success'])) {
+if (
+    is_array($resultado_imagen)
+    && empty($resultado_imagen['success'])
+) {
+
     echo json_encode($resultado_imagen);
+
     exit;
 }
 
 if (is_array($resultado_imagen)) {
+
     $imagen_url = $resultado_imagen['imagen_url'];
 }
 
-$tiene_tipo = publicaciones_tiene_columna($conexion, 'tipo');
-$tiene_seccion = publicaciones_tiene_columna($conexion, 'seccion');
-$tiene_tipo_aviso = publicaciones_tiene_columna($conexion, 'tipo_aviso');
-$tiene_urgente = publicaciones_tiene_columna($conexion, 'urgente');
-$tiene_importante = publicaciones_tiene_columna($conexion, 'importante');
+// ============================================
+// VERIFICAR COLUMNA TIPO
+// ============================================
 
-$columnas = ['titulo', 'descripcion', 'imagen_url', 'categoria_id', 'status', 'autor_id'];
-$placeholders = ['?', '?', '?', '?', '?', '?'];
-$types = 'sssisi';
-$valores = [
-    &$titulo,
-    &$descripcion,
-    &$imagen_url,
-    &$categoria_id,
-    &$status,
-    &$autor_id
-];
+$tiene_tipo = publicaciones_tiene_columna(
+    $conexion,
+    'tipo'
+);
+
+// ============================================
+// INSERT
+// ============================================
 
 if ($tiene_tipo) {
-    $columnas[] = 'tipo';
-    $placeholders[] = '?';
-    $types .= 's';
-    $valores[] = &$tipo;
+
+    $stmt = $conexion->prepare(
+        "INSERT INTO publicaciones
+        (
+            titulo,
+            descripcion,
+            imagen_url,
+            tipo,
+            categoria_id,
+            status,
+            autor_id,
+            youtube_url,
+            noticia_url
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    );
+
+} else {
+
+    $stmt = $conexion->prepare(
+        "INSERT INTO publicaciones
+        (
+            titulo,
+            descripcion,
+            imagen_url,
+            categoria_id,
+            status,
+            autor_id,
+            youtube_url,
+            noticia_url
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    );
 }
 
 if ($tiene_seccion) {
@@ -149,6 +215,7 @@ $stmt = $conexion->prepare(
 );
 
 if (!$stmt) {
+
     echo json_encode([
         'success' => false,
         'error' => 'Error SQL: ' . $conexion->error
@@ -157,30 +224,79 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param($types, ...$valores);
+// ============================================
+// BIND PARAMS
+// ============================================
+
+if ($tiene_tipo) {
+
+    $stmt->bind_param(
+        "ssssisiss",
+        $titulo,
+        $descripcion,
+        $imagen_url,
+        $tipo,
+        $categoria_id,
+        $status,
+        $autor_id,
+        $youtube_url,
+        $noticia_url
+    );
+
+} else {
+
+    $stmt->bind_param(
+        "sssisiss",
+        $titulo,
+        $descripcion,
+        $imagen_url,
+        $categoria_id,
+        $status,
+        $autor_id,
+        $youtube_url,
+        $noticia_url
+    );
+}
+
+// ============================================
+// EJECUTAR
+// ============================================
 
 if ($stmt->execute()) {
+
     echo json_encode([
+
         'success' => true,
+
         'post_id' => $conexion->insert_id,
+
         'imagen_url' => $imagen_url,
+
         'tipo' => $tipo,
-        'seccion' => $seccion,
-        'tipo_aviso' => $tipo_aviso,
-        'urgente' => $urgente,
-        'importante' => $importante,
+
         'categoria_id' => $categoria_id,
+
         'status' => $status,
+
+        'youtube_url' => $youtube_url,
+
+        'noticia_url' => $noticia_url,
+
         'mensaje' => 'Publicacion creada correctamente'
     ]);
+
 } else {
+
     echo json_encode([
+
         'success' => false,
+
         'error' => 'Error al guardar: ' . $stmt->error
     ]);
 }
 
 $stmt->close();
+
 $conexion->close();
 
 ?>

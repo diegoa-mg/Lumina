@@ -112,19 +112,9 @@ function renderizarTarjetaEnPanel(post) {
             <span class="material-symbols-outlined">delete</span>
         </button>
 
-        ${
-            seccion === 'aviso'
-            ? `
-            <div class="imagen-lateral aviso-lateral">
-                <span class="material-symbols-outlined">${iconoAviso}</span>
-            </div>
-            `
-            : `
-            <div class="imagen-lateral">
-                <img src="${imagenFinal}" alt="Preview">
-            </div>
-            `
-        }
+        <div class="imagen-lateral">
+            <img src="${imagenFinal}" alt="Preview">
+        </div>
 
         <div class="contenido-derecha">
             <div class="header-card-autor">

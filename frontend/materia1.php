@@ -364,6 +364,52 @@ async function cargarPublicaciones() {
                 ? post.descripcion.substring(0, 120) + '...'
                 : post.descripcion;
 
+            const youtubeUrl = post.youtube_url || '';
+            const noticiaUrl = post.noticia_url || '';
+
+            let contenidoExtra = '';
+            let botonTexto = 'Leer más →';
+
+                if (tipo === 'video' && youtubeUrl) {
+
+                    let videoId = '';
+
+                if (youtubeUrl.includes('watch?v=')) {
+
+                    videoId = youtubeUrl.split('watch?v=')[1].split('&')[0];
+
+                } else if (youtubeUrl.includes('youtu.be/')) {
+
+                    videoId = youtubeUrl.split('youtu.be/')[1];
+
+                }
+
+            contenidoExtra = `
+            <iframe
+            class="w-full h-72 rounded-2xl"
+            src="https://www.youtube.com/embed/${videoId}"
+            frameborder="0"
+            allowfullscreen
+        ></iframe>
+        `;
+
+            botonTexto = 'Ver video →';
+
+            } else if (tipo === 'noticia' && noticiaUrl) {
+
+            contenidoExtra = `
+            <a
+            href="${noticiaUrl}"
+            target="_blank"
+            class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-bold transition"
+            >
+            Ir a la noticia
+            </a>
+        `;
+
+    botonTexto = 'Ver noticia →';
+}
+
             const tarjeta = `
             
             <div class="content-box bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-lg transition duration-300 flex flex-col"
@@ -422,15 +468,17 @@ async function cargarPublicaciones() {
 
                         <p>${post.descripcion}</p>
 
-                    </div>
+                        ${contenidoExtra}
 
+                    </div>
+                    
                 </div>
 
                 <div class="flex justify-between items-center mt-auto pt-4">
 
                     <button class="abrir-modal text-blue-600 font-bold hover:text-blue-800 transition">
 
-                        Leer más →
+                    ${botonTexto}
 
                     </button>
 

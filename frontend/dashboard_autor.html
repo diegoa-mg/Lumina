@@ -173,19 +173,19 @@
 
         <select id="postTipo">
 
-            <option value="articulo">
+            <option value="Articulo">
                 Artículo
             </option>
 
-            <option value="video">
+            <option value="Video">
                 Video
             </option>
 
-            <option value="noticia">
+            <option value="Noticia">
                 Noticia
             </option>
 
-            <option value="recurso">
+            <option value="Recurso">
                 Recurso
             </option>
 
@@ -212,8 +212,35 @@
 
     </div>
 
-    </div>
+</div>
 
+<!-- NUEVOS CAMPOS -->
+
+<div class="field campo-youtube d-none">
+
+    <label>URL de YouTube</label>
+
+    <input
+        type="url"
+        id="youtubeUrl"
+        placeholder="https://youtube.com/watch?v=..."
+    >
+
+</div>
+
+<div class="field campo-noticia d-none">
+
+    <label>URL de la noticia</label>
+
+    <input
+        type="url"
+        id="noticiaUrl"
+        placeholder="https://sitio.com/noticia"
+    >
+
+</div>
+     
+    
 </div>
 
                     <!-- Preview -->
@@ -231,11 +258,10 @@
                         <button
                             type="button"
                             class="btn-cambiar-imagen"
-                            id="btnCambiarImagenPost"
                             onclick="document.getElementById('fileInput').click()"
                         >
                             <span class="material-symbols-outlined">photo_camera</span>
-                            <span id="btnTextoImagenPost">Subir imagen</span>
+                            Cambiar imagen
                         </button>
                         <div class="actions">
                             <button class="btn-save" id="btnGuardarBorrador">Guardar</button>
