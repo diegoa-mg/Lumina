@@ -18,6 +18,10 @@ $tipo_select = publicaciones_tiene_columna($conexion, 'tipo')
     ? "tipo"
     : "'articulo' AS tipo";
 
+$observaciones_select = publicaciones_tiene_columna($conexion, 'observaciones_editor')
+    ? 'publicaciones.observaciones_editor AS observaciones'
+    : "NULL AS observaciones";
+
 $query = "
 SELECT
     publicaciones.id,
@@ -28,7 +32,8 @@ SELECT
     $tipo_select,
     publicaciones.categoria_id,
     categorias.nombre_categoria AS materia,
-    publicaciones.fecha_creacion
+    publicaciones.fecha_creacion,
+    $observaciones_select
 FROM publicaciones
 LEFT JOIN categorias
 ON publicaciones.categoria_id = categorias.id

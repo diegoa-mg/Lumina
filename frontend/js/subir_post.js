@@ -66,6 +66,7 @@ function renderizarTarjetaEnPanel(post) {
         publicado: 'Publicado',
         revision: 'En revision'
     }[status] || 'Borrador';
+    const observaciones = escapeHtml(post.observaciones || '');
 
     const nuevaTarjeta = `
     <article
@@ -102,6 +103,7 @@ function renderizarTarjetaEnPanel(post) {
 
             <p class="text-sm">Tipo: ${tipo}</p>
             <p class="text-sm">Materia: ${materia}</p>
+            ${status === 'rechazado' && observaciones ? `<p class="text-sm text-red-600 mt-3"><strong>Observación:</strong> ${observaciones}</p>` : ''}
         </div>
 
         <div class="footer-card-autor">
@@ -143,6 +145,7 @@ async function cambiarARevision(postId) {
             '../backend/cambiar_estado_post.php',
             {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -189,7 +192,8 @@ async function cargarPostsDelAutor() {
                 tipo: post.tipo || 'articulo',
                 categoria_id: post.categoria_id || 1,
                 materia: post.materia || '',
-                status: post.status || 'borrador'
+                status: post.status || 'borrador',
+                observaciones: post.observaciones || ''
             });
         });
 
