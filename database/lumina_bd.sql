@@ -60,6 +60,7 @@ CREATE TABLE `publicaciones` (
   `imagen_url` varchar(500) DEFAULT NULL,
   `tipo` enum('articulo','video','noticia','recurso') NOT NULL DEFAULT 'articulo',
   `categoria_id` int(11) DEFAULT NULL,
+  `observaciones_editor` text DEFAULT NULL,
   `status` enum('borrador','revision','publicado','rechazado') DEFAULT 'borrador',
   `autor_id` int(11) NOT NULL,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),

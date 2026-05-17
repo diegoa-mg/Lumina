@@ -6,7 +6,8 @@ function publicaciones_tiene_columna($conexion, $columna) {
     $columnas_permitidas = [
         'tipo' => true,
         'youtube_url' => true,
-        'noticia_url' => true
+        'noticia_url' => true,
+        'observaciones_editor' => true
     ];
 
     if (!isset($columnas_permitidas[$columna])) {

@@ -189,14 +189,7 @@
                                     <th class="px-6 py-4 text-center">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-usuarios" class="divide-y divide-gray-100">
-                                <tr id="fila-cargando">
-                                    <td colspan="5" class="px-6 py-10 text-center text-gray-400 text-sm">
-                                        <span class="material-symbols-outlined animate-spin inline-block mr-2" style="vertical-align:middle">progress_activity</span>
-                                        Cargando usuarios...
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <tbody id="usuarios-table-body" class="divide-y divide-gray-100"></tbody>
                         </table>
                     </div>
                 </section>
@@ -347,8 +340,13 @@
             <form class="space-y-8">
                 <div class="flex items-center"><label class="w-32 text-xl text-gray-700 font-medium">Nombre</label><input type="text" id="user-nombre" placeholder="Ej. Juan Pérez" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white"></div>
                 <div class="flex items-center"><label class="w-32 text-xl text-gray-700 font-medium">Email</label><input type="email" id="user-email" placeholder="ejemplo@correo.com" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white"></div>
-                <div class="flex items-center"><label class="w-32 text-xl text-gray-700 font-medium">Estado</label><input type="text" id="user-estado" placeholder="activo" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white"></div>
-                <div class="flex items-center border-b border-gray-400 pb-12"><label class="w-32 text-xl text-gray-700 font-medium">Rol</label><input type="text" id="user-rol" placeholder="Alumno / Profesor" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white"></div>
+                <div class="flex items-center"><label class="w-32 text-xl text-gray-700 font-medium">Contraseña</label><input type="password" id="user-password" placeholder="Contraseña para el usuario" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white"></div>
+                <div class="flex items-center border-b border-gray-400 pb-12"><label class="w-32 text-xl text-gray-700 font-medium">Rol</label><select id="user-rol" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white cursor-pointer appearance-none"></select></div>
+                <div id="user-materias-container" class="hidden border-b border-gray-400 pb-12">
+                    <label class="w-32 text-xl text-gray-700 font-medium block mb-4">Materias Asignadas</label>
+                    <div id="user-materias-list" class="grid grid-cols-2 gap-3">
+                    </div>
+                </div>
                 <div class="flex justify-end items-center pt-4 gap-6">
                     <button type="button" onclick="cerrarModales()" class="text-red-500 font-semibold hover:underline">Cancelar</button>
                     <button type="button" id="btnPrincipalModalUser" class="bg-[#2D50D1] text-white px-10 py-3 rounded-xl text-xl font-medium hover:bg-blue-800 transition shadow-lg">Guardar Usuario</button>
@@ -361,7 +359,6 @@
     <script src="js/menu_ui.js"></script>
     <script>
         const mainContent = document.getElementById('main-content');
-        let idActual = null;
         let nombreActual = "";
 
         function abrirModal(idModal) {
@@ -375,15 +372,6 @@
         }
 
         // --- LÓGICA USUARIOS ---
-        function abrirModalEdicionUsuario(nombre, email, rol) {
-            document.getElementById('modal-user-titulo').innerText = 'Editar Usuario';
-            document.getElementById('user-nombre').value = nombre;
-            document.getElementById('user-email').value = email;
-            document.getElementById('user-estado').value = 'activo';
-            document.getElementById('user-rol').value = rol;
-            document.getElementById('btnPrincipalModalUser').innerText = 'Guardar Cambios';
-            abrirModal('modal-agregar');
-        }
 
         // --- LÓGICA CATEGORÍAS ---
         function abrirModalEdicion(id, nombre, descripcion, imagen) {
@@ -410,126 +398,92 @@
             }
         }
 
-        // ── COLORES DE AVATAR POR ROL ──────────────────────────────
-        const rolColores = {
-            administrador: { bg: '#fee2e2', text: '#991b1b' },
-            editor:        { bg: '#fef3c7', text: '#92400e' },
-            autor:         { bg: '#dbeafe', text: '#1e40af' },
-            usuario:       { bg: '#e2e8f0', text: '#475569' },
-        };
-
-        function getIniciales(nombre) {
-            return nombre.trim().split(/\s+/).slice(0, 2).map(p => p[0].toUpperCase()).join('');
-        }
-
-        function avatarHTML(usuario) {
-            const col = rolColores[usuario.rol?.toLowerCase()] || rolColores.usuario;
-            if (usuario.foto_url) {
-                return `<img src="${usuario.foto_url}" alt="${usuario.nombre}"
-                            class="w-10 h-10 rounded-full object-cover border-2"
-                            style="border-color:${col.bg}"
-                            onerror="this.replaceWith(inicialAvatar('${getIniciales(usuario.nombre)}','${col.bg}','${col.text}'))">`;
+        // --- EVENTOS ---
+        document.getElementById('btn-abrir-agregar').addEventListener('click', async () => {
+            idActual = null;
+            document.getElementById('modal-user-titulo').innerText = 'Agregar Usuario';
+            document.getElementById('btnPrincipalModalUser').innerText = 'Guardar Usuario';
+            document.getElementById('user-nombre').value = '';
+            document.getElementById('user-email').value = '';
+            document.getElementById('user-password').value = '';
+            document.getElementById('user-password').placeholder = 'Contraseña para el usuario';
+            categoriasSeleccionadas = [];
+            if (!rolesList.length) {
+                await fetchRoles();
             }
-            return `<div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                         style="background:${col.bg};color:${col.text}">${getIniciales(usuario.nombre)}</div>`;
-        }
+            if (!categoriasList.length) {
+                await fetchCategorias();
+            }
+            document.getElementById('user-rol').value = rolesList.length ? rolesList[0].id : '';
+            toggleMateriasContainer();
+            abrirModal('modal-agregar');
+        });
 
-        function inicialAvatar(iniciales, bg, color) {
-            const d = document.createElement('div');
-            d.className = 'w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0';
-            d.style.cssText = `background:${bg};color:${color}`;
-            d.textContent = iniciales;
-            return d;
-        }
+        document.getElementById('btnPrincipalModalUser').addEventListener('click', async () => {
+            const nombre = document.getElementById('user-nombre').value.trim();
+            const email = document.getElementById('user-email').value.trim();
+            const password = document.getElementById('user-password').value;
+            const rolId = parseInt(document.getElementById('user-rol').value, 10);
 
-        function rolBadgeHTML(rol) {
-            const r = (rol || 'usuario').toLowerCase();
-            const displayRoles = { administrador:'Administrador', editor:'Editor', autor:'Autor', usuario:'Usuario' };
-            const display = displayRoles[r] || rol;
-            return `
-                <div class="role-container">
-                    <div class="role-badge role-${r}" onclick="toggleDropdown(this)">
-                        <div class="role-dot dot-${r}"></div>
-                        <span class="role-text">${display}</span>
-                        <span class="material-symbols-outlined" style="font-size:16px">expand_more</span>
-                    </div>
-                    <div class="role-dropdown">
-                        <div class="dropdown-item" onclick="selectRole(this,'usuario')"><div class="role-dot dot-miembro"></div> Usuario</div>
-                        <div class="dropdown-item" onclick="selectRole(this,'autor')"><div class="role-dot dot-autor"></div> Autor</div>
-                        <div class="dropdown-item" onclick="selectRole(this,'editor')"><div class="role-dot dot-editor"></div> Editor</div>
-                        <div class="dropdown-item" onclick="selectRole(this,'administrador')"><div class="role-dot dot-admin"></div> Administrador</div>
-                    </div>
-                </div>`;
-        }
-
-        function estadoBadge(estado) {
-            const activo = (estado || '').toLowerCase() === 'activo';
-            return activo
-                ? `<span class="text-green-600 font-medium text-sm">Activo</span>`
-                : `<span class="text-gray-400 font-medium text-sm">Inactivo</span>`;
-        }
-
-        function renderTablaUsuarios(usuarios) {
-            const tbody = document.getElementById('tabla-usuarios');
-            if (!usuarios.length) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400 text-sm">No hay usuarios registrados.</td></tr>`;
+            if (!nombre || !email || !rolId) {
+                alert('Por favor completa nombre, correo y rol.');
                 return;
             }
-            tbody.innerHTML = usuarios.map(u => `
-                <tr class="hover:bg-gray-50 transition" data-id="${u.id}">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
-                            ${avatarHTML(u)}
-                            <span class="font-medium text-gray-800">${u.nombre}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-gray-600 text-sm">${u.correo}</td>
-                    <td class="px-6 py-4"><span class="text-green-600 font-medium text-sm">Activo</span></td>
-                    <td class="px-6 py-4">${rolBadgeHTML(u.rol)}</td>
-                    <td class="px-6 py-4 text-center">
-                        <button onclick="abrirModalEdicionUsuario('${u.nombre}','${u.correo}','${u.rol}')"
-                                class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition">Editar</button>
-                    </td>
-                </tr>`).join('');
-        }
 
-        async function cargarUsuarios() {
-            try {
-                const res = await fetch('../backend/obtener_usuarios.php');
-                const data = await res.json();
-                if (data.ok) {
-                    renderTablaUsuarios(data.usuarios);
-                } else {
-                    document.getElementById('tabla-usuarios').innerHTML =
-                        `<tr><td colspan="5" class="px-6 py-10 text-center text-red-400 text-sm">${data.mensaje}</td></tr>`;
-                }
-            } catch (e) {
-                document.getElementById('tabla-usuarios').innerHTML =
-                    `<tr><td colspan="5" class="px-6 py-10 text-center text-red-400 text-sm">Error al conectar con el servidor.</td></tr>`;
+            if (!idActual && password.trim() === '') {
+                alert('Debes ingresar una contraseña para el nuevo usuario.');
+                return;
             }
-        }
 
-        cargarUsuarios();
-        document.getElementById('btn-abrir-agregar').addEventListener('click', () => {
-            document.getElementById('modal-user-titulo').innerText = "Agregar Usuario";
-            document.getElementById('btnPrincipalModalUser').innerText = 'Guardar Usuario';
-            // Limpiar campos
-            document.getElementById('user-nombre').value = "";
-            document.getElementById('user-email').value = "";
-            document.getElementById('user-estado').value = "";
-            document.getElementById('user-rol').value = "";
-            abrirModal('modal-agregar');
+            const rolObj = rolesList.find(r => r.id === rolId);
+            const esAutor = rolObj && rolObj.nombre.toLowerCase() === 'autor';
+            
+            if (esAutor) {
+                const checkboxes = Array.from(document.querySelectorAll('#user-materias-list input[type="checkbox"]:checked'));
+                categoriasSeleccionadas = checkboxes.map(cb => parseInt(cb.value, 10));
+                if (categoriasSeleccionadas.length === 0) {
+                    alert('Debe asignar al menos una materia al autor.');
+                    return;
+                }
+            }
+
+            const payload = new URLSearchParams();
+            payload.append('nombre', nombre);
+            payload.append('email', email);
+            payload.append('rol_id', rolId);
+            if (password.trim() !== '') {
+                payload.append('password', password);
+            }
+            if (idActual) {
+                payload.append('id', idActual);
+            }
+            if (categoriasSeleccionadas.length > 0) {
+                payload.append('categorias', JSON.stringify(categoriasSeleccionadas));
+            }
+
+            const response = await fetch('../backend/guardar_usuario.php', {
+                method: 'POST',
+                body: payload,
+            });
+            const data = await response.json();
+
+            if (!data.ok) {
+                alert(data.mensaje || 'Error al guardar el usuario.');
+                return;
+            }
+
+            await fetchUsuarios();
+            cerrarModales();
+            alert(data.mensaje);
         });
 
         document.getElementById('btn-abrir-categoria').addEventListener('click', () => {
             document.getElementById('modal-cat-titulo').innerText = 'Nueva Categoría';
             document.getElementById('btnPrincipalModal').innerText = 'Crear Categoría';
             document.getElementById('btnEliminarCategoria').classList.add('hidden');
-            
-            document.getElementById('cat-nombre').value = "";      
-            document.getElementById('cat-descripcion').value = ""; 
-            document.getElementById('cat-estado').value = "activa";
-            
+            document.getElementById('cat-nombre').value = '';
+            document.getElementById('cat-descripcion').value = '';
+            document.getElementById('cat-estado').value = 'activa';
             abrirModal('modal-agregar-categoria');
         });
 
@@ -542,24 +496,294 @@
         const btnMenuCategorias = document.getElementById('menu-categorias');
         const sectionUsuarios = document.getElementById('section-usuarios');
         const sectionCategorias = document.getElementById('section-categorias');
+        const usuariosTableBody = document.getElementById('usuarios-table-body');
+        const userRoleSelect = document.getElementById('user-rol');
+
+        let rolesList = [];
+        let categoriasList = [];
+        let idActual = null;
+        let categoriasSeleccionadas = [];
+
+        async function fetchCategorias() {
+            try {
+                const response = await fetch('../backend/obtener_categorias.php');
+                const data = await response.json();
+                if (data.ok && data.categorias) {
+                    categoriasList = data.categorias;
+                    renderCategoriasCheckboxes();
+                }
+            } catch (error) {
+                console.error('Error cargando categorías:', error);
+            }
+        }
+
+        function renderCategoriasCheckboxes() {
+            const container = document.getElementById('user-materias-list');
+            if (!container) return;
+            container.innerHTML = '';
+            categoriasList.forEach(cat => {
+                const label = document.createElement('label');
+                label.className = 'flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-200 rounded';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = cat.id;
+                checkbox.checked = categoriasSeleccionadas.includes(cat.id);
+                checkbox.className = 'w-4 h-4';
+                label.append(checkbox, document.createTextNode(cat.nombre_categoria));
+                container.appendChild(label);
+            });
+        }
+
+        function toggleMateriasContainer() {
+            const rolId = parseInt(document.getElementById('user-rol').value, 10);
+            const rolObj = rolesList.find(r => r.id === rolId);
+            const container = document.getElementById('user-materias-container');
+            if (container && rolObj && rolObj.nombre.toLowerCase() === 'autor') {
+                container.classList.remove('hidden');
+            } else if (container) {
+                container.classList.add('hidden');
+            }
+        }
 
         btnMenuCategorias.addEventListener('click', (e) => {
             e.preventDefault();
-            btnMenuUsuarios.className = "flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition";
-            btnMenuCategorias.className = "flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium transition";
+            btnMenuUsuarios.className = 'flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition';
+            btnMenuCategorias.className = 'flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium transition';
             sectionUsuarios.classList.add('hidden');
             sectionCategorias.classList.remove('hidden');
         });
 
         btnMenuUsuarios.addEventListener('click', (e) => {
             e.preventDefault();
-            btnMenuCategorias.className = "flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition";
-            btnMenuUsuarios.className = "flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium transition";
+            btnMenuCategorias.className = 'flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition';
+            btnMenuUsuarios.className = 'flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium transition';
             sectionCategorias.classList.add('hidden');
             sectionUsuarios.classList.remove('hidden');
         });
 
-        function toggleDropdown(element) {
+        async function fetchRoles() {
+            try {
+                const response = await fetch('../backend/obtener_roles.php');
+                const data = await response.json();
+                if (!data.ok) {
+                    throw new Error(data.mensaje || 'No se pudieron cargar los roles');
+                }
+                rolesList = data.roles;
+                renderRoleOptions();
+            } catch (error) {
+                console.error(error);
+                alert('Error cargando roles. Asegúrate de iniciar sesión como administrador.');
+            }
+        }
+
+        function renderRoleOptions() {
+            if (!userRoleSelect) return;
+            userRoleSelect.innerHTML = rolesList.map(role => `<option value="${role.id}">${role.nombre}</option>`).join('');
+            userRoleSelect.addEventListener('change', toggleMateriasContainer);
+        }
+
+        async function fetchUsuarios() {
+            try {
+                const response = await fetch('../backend/obtener_usuarios.php');
+                const data = await response.json();
+                if (!data.ok) {
+                    throw new Error(data.mensaje || 'Error al cargar usuarios.');
+                }
+                renderUsuarios(data.usuarios);
+            } catch (error) {
+                console.error(error);
+                usuariosTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-gray-500">No se pudieron cargar los usuarios.</td></tr>';
+            }
+        }
+
+        function getRoleClasses(roleName) {
+            const name = roleName.toLowerCase();
+            switch (name) {
+                case 'administrador': return ['role-admin', 'dot-admin'];
+                case 'autor': return ['role-autor', 'dot-autor'];
+                case 'editor': return ['role-editor', 'dot-editor'];
+                default: return ['role-miembro', 'dot-miembro'];
+            }
+        }
+
+        function getRoleIdByName(roleName) {
+            const found = rolesList.find(role => role.nombre.toLowerCase() === roleName.toLowerCase());
+            return found ? found.id : (rolesList[0] ? rolesList[0].id : 1);
+        }
+
+        function renderUsuarios(usuarios) {
+            usuariosTableBody.innerHTML = '';
+            if (!usuarios || usuarios.length === 0) {
+                usuariosTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-gray-500">No hay usuarios registrados.</td></tr>';
+                return;
+            }
+
+            usuarios.forEach((usuario) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition';
+
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(usuario.nombre)}&background=random&color=fff`;
+
+                const nombreTd = document.createElement('td');
+                nombreTd.className = 'px-6 py-4 flex items-center gap-3';
+                const avatar = document.createElement('img');
+                avatar.src = avatarUrl;
+                avatar.alt = usuario.nombre;
+                avatar.className = 'w-10 h-10 rounded-full border';
+                const nombreSpan = document.createElement('span');
+                nombreSpan.className = 'font-medium text-gray-800';
+                nombreSpan.textContent = usuario.nombre;
+                nombreTd.append(avatar, nombreSpan);
+
+                const correoTd = document.createElement('td');
+                correoTd.className = 'px-6 py-4 text-gray-600 text-sm';
+                correoTd.textContent = usuario.correo;
+
+                const estadoTd = document.createElement('td');
+                estadoTd.className = 'px-6 py-4 text-gray-600 text-sm';
+                estadoTd.textContent = usuario.estado || 'Activo';
+
+                const rolTd = document.createElement('td');
+                rolTd.className = 'px-6 py-4';
+                const roleContainer = document.createElement('div');
+                roleContainer.className = 'role-container';
+                const [roleClass, dotClass] = getRoleClasses(usuario.rol);
+                const badge = document.createElement('div');
+                badge.className = `role-badge ${roleClass}`;
+                badge.onclick = (event) => toggleDropdown(badge, event);
+                const dot = document.createElement('div');
+                dot.className = `role-dot ${dotClass}`;
+                const roleText = document.createElement('span');
+                roleText.className = 'role-text';
+                roleText.textContent = usuario.rol;
+                const icon = document.createElement('span');
+                icon.className = 'material-symbols-outlined';
+                icon.style.fontSize = '16px';
+                icon.textContent = 'expand_more';
+                badge.append(dot, roleText, icon);
+
+                const dropdown = document.createElement('div');
+                dropdown.className = 'role-dropdown';
+                rolesList.forEach((role) => {
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    item.onclick = async () => {
+                        await selectRole(item, role.id, role.nombre, usuario.id);
+                    };
+                    const itemDot = document.createElement('div');
+                    itemDot.className = `role-dot ${getRoleClasses(role.nombre)[1]}`;
+                    item.append(itemDot, document.createTextNode(role.nombre));
+                    dropdown.append(item);
+                });
+
+                roleContainer.append(badge, dropdown);
+                rolTd.append(roleContainer);
+
+                const accionesTd = document.createElement('td');
+                accionesTd.className = 'px-6 py-4 text-center space-x-2';
+                const editarBtn = document.createElement('button');
+                editarBtn.className = 'bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition';
+                editarBtn.textContent = 'Editar';
+                editarBtn.onclick = () => abrirModalEdicionUsuario(usuario.id, usuario.nombre, usuario.correo, getRoleIdByName(usuario.rol));
+                const eliminarBtn = document.createElement('button');
+                eliminarBtn.className = 'bg-red-500 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-red-600 transition';
+                eliminarBtn.textContent = 'Eliminar';
+                eliminarBtn.onclick = () => eliminarUsuario(usuario.id, usuario.nombre);
+                accionesTd.append(editarBtn, eliminarBtn);
+
+                tr.append(nombreTd, correoTd, estadoTd, rolTd, accionesTd);
+                usuariosTableBody.appendChild(tr);
+            });
+        }
+
+        function abrirModalEdicionUsuario(id, nombre, email, rolId) {
+            idActual = id;
+            document.getElementById('modal-user-titulo').innerText = 'Editar Usuario';
+            document.getElementById('user-nombre').value = nombre;
+            document.getElementById('user-email').value = email;
+            document.getElementById('user-password').value = '';
+            document.getElementById('user-password').placeholder = 'Dejar vacío si no cambia';
+            document.getElementById('user-rol').value = rolId;
+            document.getElementById('btnPrincipalModalUser').innerText = 'Guardar Cambios';
+            
+            const rolObj = rolesList.find(r => r.id === rolId);
+            if (rolObj && rolObj.nombre.toLowerCase() === 'autor') {
+                fetchCategoriasAsignadas(id);
+            } else {
+                categoriasSeleccionadas = [];
+            }
+            
+            toggleMateriasContainer();
+            abrirModal('modal-agregar');
+        }
+
+        async function fetchCategoriasAsignadas(usuarioId) {
+            try {
+                const response = await fetch(`../backend/obtener_categorias_usuario.php?usuario_id=${usuarioId}`);
+                const data = await response.json();
+                if (data.ok && data.categorias) {
+                    categoriasSeleccionadas = data.categorias.map(c => c.id);
+                    renderCategoriasCheckboxes();
+                }
+            } catch (error) {
+                console.error('Error cargando categorías del usuario:', error);
+            }
+        }
+
+        async function selectRole(item, roleId, roleName, userId) {
+            const container = item.closest('.role-container');
+            const badge = container.querySelector('.role-badge');
+            const dot = badge.querySelector('.role-dot');
+            const text = badge.querySelector('.role-text');
+            const [roleClass, dotClass] = getRoleClasses(roleName);
+
+            badge.className = `role-badge ${roleClass}`;
+            dot.className = `role-dot ${dotClass}`;
+            text.textContent = roleName;
+            container.querySelector('.role-dropdown').classList.remove('show');
+
+            if (!userId) {
+                return;
+            }
+
+            try {
+                const payload = new URLSearchParams();
+                payload.append('id', userId);
+                payload.append('rol_id', roleId);
+                const response = await fetch('../backend/guardar_usuario.php', {
+                    method: 'POST',
+                    body: payload,
+                });
+                const data = await response.json();
+                if (!data.ok) {
+                    throw new Error(data.mensaje || 'Error al actualizar rol.');
+                }
+                await fetchUsuarios();
+            } catch (error) {
+                console.error(error);
+                alert('No se pudo actualizar el rol.');
+            }
+        }
+
+        async function eliminarUsuario(id, nombre) {
+            if (!confirm(`¿Estás seguro de eliminar "${nombre}"?`)) {
+                return;
+            }
+            try {
+                const response = await fetch(`../backend/eliminar_usuario.php?id=${id}`);
+                const data = await response.json();
+                if (!data.ok) {
+                    throw new Error(data.mensaje || 'Error al eliminar usuario.');
+                }
+                await fetchUsuarios();
+                alert(data.mensaje);
+            } catch (error) {
+                console.error(error);
+                alert('No se pudo eliminar el usuario.');
+            }
+        }
+
+        function toggleDropdown(element, event) {
             event.stopPropagation();
             const dropdown = element.nextElementSibling;
             document.querySelectorAll('.role-dropdown').forEach(d => {
@@ -568,33 +792,13 @@
             dropdown.classList.toggle('show');
         }
 
-        //Roles
-        function selectRole(item, roleName) {
-            const container = item.closest('.role-container');
-            const badge = container.querySelector('.role-badge');
-            const dot = badge.querySelector('.role-dot');
-            const text = badge.querySelector('.role-text');
-
-            // Mapeo para que coincida con el CSS y los nombres de la BD
-            let displayRole = roleName;
-            if(roleName.toLowerCase() === 'usuario') displayRole = 'Usuario';
-            if(roleName.toLowerCase() === 'administrador') displayRole = 'Administrador';
-            if(roleName.toLowerCase() === 'autor') displayRole = 'Autor';
-            if(roleName.toLowerCase() === 'editor') displayRole = 'Editor';
-
-            badge.className = 'role-badge role-' + roleName.toLowerCase();
-            dot.className = 'role-dot dot-' + roleName.toLowerCase();
-            
-            text.textContent = displayRole;
-            
-            container.querySelector('.role-dropdown').classList.remove('show');
-        }
-
         window.addEventListener('click', function(e) {
             if (!e.target.closest('.role-container')) {
                 document.querySelectorAll('.role-dropdown').forEach(d => d.classList.remove('show'));
             }
         });
+
+        fetchRoles().then(fetchUsuarios);
     </script>
 </body>
 </html>

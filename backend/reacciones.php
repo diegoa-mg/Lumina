@@ -3,6 +3,7 @@ session_start(); // Siempre primero
 include 'conexion_bd.php';
 
 if (!isset($_SESSION['usuario_id'])) {
+    http_response_code(401);
     echo "Error: Sesión no encontrada. Por favor, vuelve a loguearte.";
     exit;
 }

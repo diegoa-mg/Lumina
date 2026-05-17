@@ -70,7 +70,7 @@
 
             <div class="text-xl text-right">
                 <p class="font-bold">
-                    Mtro. fulanito de tal
+                    Mtro. <span id="autorNombre">cargando...</span>
                 </p>
 
                 <p class="text-gray-500">
@@ -220,6 +220,24 @@ const materiaActual = MATERIAS[archivoMateria] || MATERIAS['materia1.php'];
 
 document.title = `Lumina - ${materiaActual.nombre}`;
 document.getElementById('materiaNombre').textContent = materiaActual.nombre;
+
+// Obtener y cargar el autor de la categoría
+async function cargarAutorCategoria() {
+    try {
+        const response = await fetch(`../backend/obtener_autor_categoria.php?categoria_id=${materiaActual.id}`);
+        const data = await response.json();
+        if (data.ok && data.autor) {
+            document.getElementById('autorNombre').textContent = data.autor.nombre;
+        } else {
+            document.getElementById('autorNombre').textContent = 'Sin asignar';
+        }
+    } catch (error) {
+        console.error('Error al cargar el autor:', error);
+        document.getElementById('autorNombre').textContent = 'Error';
+    }
+}
+
+cargarAutorCategoria();
 
 
 // ============================================

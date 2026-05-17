@@ -17,20 +17,18 @@ if (strtolower($rolSesion) !== 'administrador') {
     exit;
 }
 
-$sql = "SELECT usuarios.id, usuarios.nombre, usuarios.correo, roles.nombre AS rol, usuarios.foto_url FROM usuarios JOIN roles ON usuarios.rol_id = roles.id ORDER BY usuarios.nombre ASC";
+$sql = "SELECT id, nombre FROM roles ORDER BY id ASC";
 $resultado = $conexion->query($sql);
 
 if (!$resultado) {
     http_response_code(500);
-    echo json_encode(['ok' => false, 'mensaje' => 'Error al obtener usuarios.']);
+    echo json_encode(['ok' => false, 'mensaje' => 'Error al obtener roles.']);
     exit;
 }
 
-$usuarios = [];
+$roles = [];
 while ($fila = $resultado->fetch_assoc()) {
-    $fila['estado'] = 'Activo';
-    $usuarios[] = $fila;
+    $roles[] = $fila;
 }
 
-echo json_encode(['ok' => true, 'usuarios' => $usuarios]);
-?>
+echo json_encode(['ok' => true, 'roles' => $roles]);
