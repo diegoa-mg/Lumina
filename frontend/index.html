@@ -9,7 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">  
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <link rel="preload" href="css/normalize.css" as="style">
@@ -26,9 +26,9 @@
 
     <link rel="preload" href="css/index.css" as="style">
     <link rel="stylesheet" href="css/index.css">
-
 </head>
 <body>
+
     <!-- Menú de Navegación -->
     <header>
         <div class="nav-bg">
@@ -36,10 +36,10 @@
             <!-- Logo -->
             <div class="logo">
                 <a href="index.html">
-                  <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
+                    <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
                 </a>
             </div>
-            
+
             <!-- Barra de búsqueda -->
             <div class="search-container">
                 <span class="search-icon material-symbols-outlined">search</span>
@@ -53,709 +53,217 @@
 
         </div>
     </header>
-    
-    <!-- Heading --> 
+
+    <!-- Heading -->
     <section class="uni">
         <section class="contenido-uni">
             <div class="ubicacion">
                 <h2>Bienvenido a<br>Lumina: <br><span>Claridad a la información académica.</span></h2>
                 <p>Plataforma de publicación digital para<br>instituciones académicas.</p>
-            </div> 
+            </div>
         </section>
     </section>
-    
+
     <!-- Contenido Principal -->
     <main>
-        <a href="calendario.html" class="group relative block h-16 w-3/4 mx-auto mt-8 overflow-hidden rounded-2xl bg-amber-200 shadow-md transition-all duration-200 cursor-pointer hover:bg-amber-300 hover:scale-105 hover:shadow-lg active:scale-95">
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-                 <h3 class="text-black text-xl font-black text-center px-4 ">
-                    ¡Atención! Semana de exámenes del 1 al 5 de mayo. Más detalles aquí.
-                </h3>
-            </div>
-        </a>
+        <div class="contenedor-principal">
 
-    <section class="ultimas-publi">
-     <h2 class="text-5xl font-medium text-center mt-4 pt-16">Material de clases</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-32 pt-16">
-            
-            <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia1.php" onclick="window.location.href=this.dataset.href">
-                <img src="img/materias/POO1.webp" alt="POO" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <a href="materia1.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-blue-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                        Programación Orientada a Objetos
-                        </h3>
-                            <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                            </div>
-                                <p class="text-blue-200 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                Ver Contenido
-                                </p>
-                    </a>
-            </div>
+            <!-- Banner aviso -->
+            <a href="calendario.html" class="group relative block h-16 w-3/4 mx-auto mt-8 overflow-hidden rounded-2xl bg-amber-200 shadow-md transition-all duration-200 cursor-pointer hover:bg-amber-300 hover:scale-105 hover:shadow-lg active:scale-95">
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <h3 class="text-black text-xl font-black text-center px-4">
+                        ¡Atención! Semana de exámenes del 1 al 5 de mayo. Más detalles aquí.
+                    </h3>
+                </div>
+            </a>
 
-            <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia2.php" onclick="window.location.href=this.dataset.href">
-                <img src="img/materias/INTERNETS.avif" alt="Internet" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <a href="materia2.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-indigo-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                         Servicios de Internet
-                        </h3>
-                            <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                            </div>
-                                <p class="text-indigo-200 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                Ver Contenido
-                                </p>
-                     </a>
-            </div>
+            <!-- Material de clases -->
+            <section class="ultimas-publi">
+                <h2 class="text-5xl font-medium text-center mt-4 pt-16">Material de clases</h2>
 
-            <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia3.php" onclick="window.location.href=this.dataset.href">
-                <img src="img/materias/DSOFTWARE.webp" alt="CVD" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <a href="materia3.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-cyan-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                        Ciclo de Vida del Software
-                        </h3>
-                            <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                            </div>
-                                <p class="text-cyan-100 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                Ver Contenido
-                                </p>
-                    </a>
-            </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-32 pt-16">
 
-            <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia4.php" onclick="window.location.href=this.dataset.href">
-                <img src="img/materias/MNUMERICOS.webp" alt="Metodos" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <a href="materia4.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-slate-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                        Métodos Numéricos
-                        </h3>
-                            <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                            </div>
-                                <p class="text-slate-300 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                Ver Contenido
-                                </p>
-                    </a>
-             </div>
+                    <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia1.php" onclick="window.location.href=this.dataset.href">
+                        <img src="img/materias/POO1.webp" alt="POO" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <a href="materia1.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-blue-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
+                                Programación Orientada a Objetos
+                            </h3>
+                            <div class="mt-2 w-12 h-1 bg-white rounded-full"></div>
+                            <p class="text-blue-200 text-xs mt-3 font-semibold uppercase tracking-widest">Ver Contenido</p>
+                        </a>
+                    </div>
 
-             <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia5.php" onclick="window.location.href=this.dataset.href">
-                <img src="img/materias/DESARROLLO.webp" alt="Metodos" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <a href="materia5.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-slate-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                        Desarrollo Emprendedor
-                        </h3>
-                            <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                            </div>
-                                <p class="text-slate-300 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                Ver Contenido
-                                </p>
-                    </a>
-             </div>
+                    <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia2.php" onclick="window.location.href=this.dataset.href">
+                        <img src="img/materias/INTERNETS.avif" alt="Internet" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <a href="materia2.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-indigo-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
+                                Servicios de Internet
+                            </h3>
+                            <div class="mt-2 w-12 h-1 bg-white rounded-full"></div>
+                            <p class="text-indigo-200 text-xs mt-3 font-semibold uppercase tracking-widest">Ver Contenido</p>
+                        </a>
+                    </div>
 
-             <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia6.php" onclick="window.location.href=this.dataset.href">
-                <img src="img/materias/SISTEMAS.webp" alt="CVD" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <a href="materia6.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-cyan-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                        Sistemas Digitales
-                        </h3>
-                            <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                            </div>
-                                <p class="text-cyan-100 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                Ver Contenido
-                                </p>
-                    </a>    
-            </div>
+                    <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia3.php" onclick="window.location.href=this.dataset.href">
+                        <img src="img/materias/DSOFTWARE.webp" alt="CVD" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <a href="materia3.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-cyan-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
+                                Ciclo de Vida del Software
+                            </h3>
+                            <div class="mt-2 w-12 h-1 bg-white rounded-full"></div>
+                            <p class="text-cyan-100 text-xs mt-3 font-semibold uppercase tracking-widest">Ver Contenido</p>
+                        </a>
+                    </div>
 
-            <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia7.php" onclick="window.location.href=this.dataset.href">
-                <img src="img/materias/INGLES.webp" alt="Internet" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <a href="materia7.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-indigo-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                         Inglés
-                        </h3>
-                            <div class="mt-2 w-12 h-1 bg-white rounded-full">
+                    <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia4.php" onclick="window.location.href=this.dataset.href">
+                        <img src="img/materias/MNUMERICOS.webp" alt="Metodos" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <a href="materia4.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-slate-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
+                                Métodos Numéricos
+                            </h3>
+                            <div class="mt-2 w-12 h-1 bg-white rounded-full"></div>
+                            <p class="text-slate-300 text-xs mt-3 font-semibold uppercase tracking-widest">Ver Contenido</p>
+                        </a>
+                    </div>
+
+                    <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia5.php" onclick="window.location.href=this.dataset.href">
+                        <img src="img/materias/DESARROLLO.webp" alt="Metodos" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <a href="materia5.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-slate-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
+                                Desarrollo Emprendedor
+                            </h3>
+                            <div class="mt-2 w-12 h-1 bg-white rounded-full"></div>
+                            <p class="text-slate-300 text-xs mt-3 font-semibold uppercase tracking-widest">Ver Contenido</p>
+                        </a>
+                    </div>
+
+                    <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia6.php" onclick="window.location.href=this.dataset.href">
+                        <img src="img/materias/SISTEMAS.webp" alt="CVD" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <a href="materia6.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-cyan-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
+                                Sistemas Digitales
+                            </h3>
+                            <div class="mt-2 w-12 h-1 bg-white rounded-full"></div>
+                            <p class="text-cyan-100 text-xs mt-3 font-semibold uppercase tracking-widest">Ver Contenido</p>
+                        </a>
+                    </div>
+
+                    <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia7.php" onclick="window.location.href=this.dataset.href">
+                        <img src="img/materias/INGLES.webp" alt="Internet" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <a href="materia7.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-indigo-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
+                                Inglés
+                            </h3>
+                            <div class="mt-2 w-12 h-1 bg-white rounded-full"></div>
+                            <p class="text-indigo-200 text-xs mt-3 font-semibold uppercase tracking-widest">Ver Contenido</p>
+                        </a>
+                    </div>
+
+                    <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia8.php" onclick="window.location.href=this.dataset.href">
+                        <img src="img/materias/ORIENTACION.avif" alt="POO" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <a href="materia8.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-blue-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
+                                Orientación y Tutoría
+                            </h3>
+                            <div class="mt-2 w-12 h-1 bg-white rounded-full"></div>
+                            <p class="text-blue-200 text-xs mt-3 font-semibold uppercase tracking-widest">Ver Contenido</p>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Últimas publicaciones -->
+                <section class="w-full rounded-3xl p-8 relative overflow-hidden">
+                    <h2 class="text-4xl font-bold text-slate-900 mb-6">Últimas Publicaciones</h2>
+
+                    <div class="flex gap-3 mb-8">
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">Recientes</button>
+                        <button class="bg-white px-4 py-2 rounded-lg shadow text-gray-500 cursor-default">Populares</button>
+                    </div>
+
+                    <div class="relative">
+
+                        <!-- Flecha izquierda -->
+                        <button id="carouselPrev" onclick="moveCarousel(-1)"
+                            class="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-blue-600 text-white shadow-xl rounded-full w-16 h-16 text-3xl flex items-center justify-center hover:scale-110 hover:bg-blue-700 transition">
+                            ❮
+                        </button>
+
+                        <!-- Carrusel -->
+                        <div id="carouselViewport" class="scrollbar-invisible overflow-x-auto overflow-y-hidden scroll-smooth px-16 pb-4">
+                            <div id="carousel" class="flex gap-6 transition-transform duration-700 ease-in-out">
                             </div>
-                                <p class="text-indigo-200 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                Ver Contenido
-                                </p>
-                     </a>
-            </div>
-            
-            <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer" data-href="materia8.php" onclick="window.location.href=this.dataset.href">
-                <img src="img/materias/ORIENTACION.avif" alt="POO" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <a href="materia8.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-blue-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                        Orientación y Tutoría
+                        </div>
+
+                        <!-- Flecha derecha -->
+                        <button id="carouselNext" onclick="moveCarousel(1)"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-blue-600 text-white shadow-xl rounded-full w-16 h-16 text-3xl flex items-center justify-center hover:scale-110 hover:bg-blue-700 transition">
+                            ❯
+                        </button>
+
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- Contador -->
+            <section class="py-20 flex justify-center items-center px-4">
+                <div id="counter-section"
+                    class="bg-[#7d8fe3] text-white rounded-xl shadow-xl w-full md:w-3/4 mx-auto flex flex-row items-stretch overflow-hidden">
+
+                    <div class="flex-1 text-center py-20 px-2 md:px-4 flex flex-col justify-center">
+                        <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
+                            +<span class="count" data-target="100">0</span>
                         </h3>
-                            <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                            </div>
-                                <p class="text-blue-200 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                Ver Contenido
-                                </p>
-                    </a>
-            </div>
+                        <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
+                            Casos de éxito
+                        </p>
+                    </div>
+
+                    <div class="flex items-center">
+                        <div class="w-[1px] h-24 bg-black/100"></div>
+                    </div>
+
+                    <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
+                        <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
+                            +<span class="count" data-target="200">0</span>
+                        </h3>
+                        <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
+                            Recursos disponibles
+                        </p>
+                    </div>
+
+                    <div class="flex items-center">
+                        <div class="w-[1px] h-24 bg-black/100"></div>
+                    </div>
+
+                    <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
+                        <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
+                            +<span class="count" data-target="100">0</span>
+                        </h3>
+                        <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
+                            Concursos semestrales
+                        </p>
+                    </div>
+
+                    <div class="flex items-center">
+                        <div class="w-[1px] h-24 bg-black/100"></div>
+                    </div>
+
+                    <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
+                        <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
+                            +<span class="count" data-target="100">0</span>
+                        </h3>
+                        <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
+                            Casos de éxito
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
         </div>
-
-        <section class="w-full rounded-3xl p-8 relative overflow-hidden">
-    <h2 class="text-4xl font-bold text-slate-900 mb-6">
-        Últimas Publicaciones
-    </h2>
-
-    <div class="flex gap-3 mb-8">
-        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
-            Recientes
-        </button>
-        <button class="bg-white px-4 py-2 rounded-lg shadow text-gray-500 cursor-default">
-            Populares
-        </button>
-    </div>
-
-    <div class="relative">
-
-        <!-- Flecha izquierda -->
-        <button id="carouselPrev" onclick="moveCarousel(-1)"
-            class="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-blue-600 text-white shadow-xl rounded-full w-16 h-16 text-3xl flex items-center justify-center hover:scale-110 hover:bg-blue-700 transition">
-            ❮
-        </button>
-
-        <!-- Carrusel -->
-        <div id="carouselViewport" class="scrollbar-invisible overflow-x-auto overflow-y-hidden scroll-smooth px-16 pb-4">
-            <div id="carousel" class="flex gap-6 transition-transform duration-700 ease-in-out">
-
-                <!-- CARD 1 -->
-                <article class="min-w-[300px] h-[500px] bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col">
-                    <img src="img/clases/clase2.webp" class="w-full h-48 object-cover">
-
-                    <div class="p-5 flex flex-col flex-1">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">
-                                Aviso
-                            </span>
-                            <span class="material-symbols-outlined text-gray-400 text-lg cursor-pointer hover:text-blue-500">
-                                bookmark
-                            </span>
-                        </div>
-
-                        <h3 class="text-lg font-bold text-gray-900 leading-tight mb-4">
-                            Concurso de programación en C++
-                        </h3>
-
-                        <div class="flex items-center gap-2 mb-4">
-                            <img src="img/usuarios/usuarios2.webp" class="w-8 h-8 rounded-full object-cover">
-                            <div>
-                                <p class="text-sm font-semibold">Mauricio Alvarado</p>
-                                <p class="text-xs text-gray-400">12/Febrero/2026</p>
-                            </div>
-                        </div>
-
-                        <p class="text-sm text-gray-600 leading-relaxed flex-1">
-                            Demuestra tus habilidades en C++ y compite por grandes premios.
-                        </p>
-
-                        <div class="pt-4 mt-4 border-t flex justify-between items-center">
-                            <button class="flex items-center gap-2 text-gray-500 hover:text-red-500 transition">
-                                <span class="material-symbols-outlined text-lg">favorite</span>
-                                Me gusta
-                            </button>
-                            <span class="text-sm text-gray-400">24</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="min-w-[300px] h-[500px] bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col">
-                    <img src="img/clases/clase2.webp" class="w-full h-48 object-cover">
-
-                    <div class="p-5 flex flex-col flex-1">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">
-                                Aviso
-                            </span>
-                            <span class="material-symbols-outlined text-gray-400 text-lg cursor-pointer hover:text-blue-500">
-                                bookmark
-                            </span>
-                        </div>
-
-                        <h3 class="text-lg font-bold text-gray-900 leading-tight mb-4">
-                            Concurso de programación en C++
-                        </h3>
-
-                        <div class="flex items-center gap-2 mb-4">
-                            <img src="img/usuarios/usuarios2.webp" class="w-8 h-8 rounded-full object-cover">
-                            <div>
-                                <p class="text-sm font-semibold">Mauricio Alvarado</p>
-                                <p class="text-xs text-gray-400">12/Febrero/2026</p>
-                            </div>
-                        </div>
-
-                        <p class="text-sm text-gray-600 leading-relaxed flex-1">
-                            Demuestra tus habilidades en C++ y compite por grandes premios.
-                        </p>
-
-                        <div class="pt-4 mt-4 border-t flex justify-between items-center">
-                            <button class="flex items-center gap-2 text-gray-500 hover:text-red-500 transition">
-                                <span class="material-symbols-outlined text-lg">favorite</span>
-                                Me gusta
-                            </button>
-                            <span class="text-sm text-gray-400">24</span>
-                        </div>
-                    </div>
-                </article>
-                <article class="min-w-[300px] h-[500px] bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col">
-                    <img src="img/clases/clase2.webp" class="w-full h-48 object-cover">
-
-                    <div class="p-5 flex flex-col flex-1">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">
-                                Aviso
-                            </span>
-                            <span class="material-symbols-outlined text-gray-400 text-lg cursor-pointer hover:text-blue-500">
-                                bookmark
-                            </span>
-                        </div>
-
-                        <h3 class="text-lg font-bold text-gray-900 leading-tight mb-4">
-                            Concurso de programación en C++
-                        </h3>
-
-                        <div class="flex items-center gap-2 mb-4">
-                            <img src="img/usuarios/usuarios2.webp" class="w-8 h-8 rounded-full object-cover">
-                            <div>
-                                <p class="text-sm font-semibold">Mauricio Alvarado</p>
-                                <p class="text-xs text-gray-400">12/Febrero/2026</p>
-                            </div>
-                        </div>
-
-                        <p class="text-sm text-gray-600 leading-relaxed flex-1">
-                            Demuestra tus habilidades en C++ y compite por grandes premios.
-                        </p>
-
-                        <div class="pt-4 mt-4 border-t flex justify-between items-center">
-                            <button class="flex items-center gap-2 text-gray-500 hover:text-red-500 transition">
-                                <span class="material-symbols-outlined text-lg">favorite</span>
-                                Me gusta
-                            </button>
-                            <span class="text-sm text-gray-400">24</span>
-                        </div>
-                    </div>
-                </article>
-                <article class="min-w-[300px] h-[500px] bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col">
-                    <img src="img/clases/clase2.webp" class="w-full h-48 object-cover">
-
-                    <div class="p-5 flex flex-col flex-1">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">
-                                Aviso
-                            </span>
-                            <span class="material-symbols-outlined text-gray-400 text-lg cursor-pointer hover:text-blue-500">
-                                bookmark
-                            </span>
-                        </div>
-
-                        <h3 class="text-lg font-bold text-gray-900 leading-tight mb-4">
-                            Concurso de programación en C++
-                        </h3>
-
-                        <div class="flex items-center gap-2 mb-4">
-                            <img src="img/usuarios/usuarios2.webp" class="w-8 h-8 rounded-full object-cover">
-                            <div>
-                                <p class="text-sm font-semibold">Mauricio Alvarado</p>
-                                <p class="text-xs text-gray-400">12/Febrero/2026</p>
-                            </div>
-                        </div>
-
-                        <p class="text-sm text-gray-600 leading-relaxed flex-1">
-                            Demuestra tus habilidades en C++ y compite por grandes premios.
-                        </p>
-
-                        <div class="pt-4 mt-4 border-t flex justify-between items-center">
-                            <button class="flex items-center gap-2 text-gray-500 hover:text-red-500 transition">
-                                <span class="material-symbols-outlined text-lg">favorite</span>
-                                Me gusta
-                            </button>
-                            <span class="text-sm text-gray-400">24</span>
-                        </div>
-                    </div>
-                </article>
-                <article class="min-w-[300px] h-[500px] bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col">
-                    <img src="img/clases/clase2.webp" class="w-full h-48 object-cover">
-
-                    <div class="p-5 flex flex-col flex-1">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">
-                                Aviso
-                            </span>
-                            <span class="material-symbols-outlined text-gray-400 text-lg cursor-pointer hover:text-blue-500">
-                                bookmark
-                            </span>
-                        </div>
-
-                        <h3 class="text-lg font-bold text-gray-900 leading-tight mb-4">
-                            Concurso de programación en C++
-                        </h3>
-
-                        <div class="flex items-center gap-2 mb-4">
-                            <img src="img/usuarios/usuarios2.webp" class="w-8 h-8 rounded-full object-cover">
-                            <div>
-                                <p class="text-sm font-semibold">Mauricio Alvarado</p>
-                                <p class="text-xs text-gray-400">12/Febrero/2026</p>
-                            </div>
-                        </div>
-
-                        <p class="text-sm text-gray-600 leading-relaxed flex-1">
-                            Demuestra tus habilidades en C++ y compite por grandes premios.
-                        </p>
-
-                        <div class="pt-4 mt-4 border-t flex justify-between items-center">
-                            <button class="flex items-center gap-2 text-gray-500 hover:text-red-500 transition">
-                                <span class="material-symbols-outlined text-lg">favorite</span>
-                                Me gusta
-                            </button>
-                            <span class="text-sm text-gray-400">24</span>
-                        </div>
-                    </div>
-                </article>
-
-
-
-            </div>
-        </div>
-        <!-- Flecha derecha -->
-        <button id="carouselNext" onclick="moveCarousel(1)"
-            class="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-blue-600 text-white shadow-xl rounded-full w-16 h-16 text-3xl flex items-center justify-center hover:scale-110 hover:bg-blue-700 transition">
-            ❯
-        </button>
-    </div>
-</section>
-
-<!-- Contador con movimiento -->
-<section class=" py-20 flex justify-center items-center px-4">
-  <div id="counter-section" 
-       class="bg-[#7d8fe3] text-white rounded-xl shadow-xl w-full md:w-3/4 mx-auto flex flex-row items-stretch  overflow-hidden">
-        <div class="flex-1 text-center py-20 px-2 md:px-4 flex flex-col justify-center">
-            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
-            +<span class="count" data-target="100">0</span>
-            </h3>
-            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
-            Casos de éxito
-            </p>
-        </div>
-
-            <div class="flex items-center">
-                <div class="w-[1px] h-24 bg-black/100"></div>
-            </div>
-
-        <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
-            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
-            +<span class="count" data-target="200">0</span>
-            </h3>
-            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
-             Recursos disponibles
-            </p>
-        </div>
-        
-            <div class="flex items-center">
-                <div class="w-[1px] h-24 bg-black/100"></div>
-            </div>
-
-    <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
-            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
-            +<span class="count" data-target="100">0</span>
-            </h3>
-            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
-            Concursos semestrales
-            </p>
-    </div>
-
-            <div class="flex items-center">
-                <div class="w-[1px] h-24 bg-black/100"></div>
-            </div>
-
-    <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
-            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
-            +<span class="count" data-target="100">0</span>
-            </h3>
-            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
-            Casos de éxito
-            </p>
-    </div>
-    
-  </div>
-</section>
-
-<script>
-  // Función para animar el conteo
-  const animateCount = (el) => {
-    const target = +el.getAttribute('data-target');
-    const count = +el.innerText;
-    const speed = 200; // A menor número, más rápido
-    const inc = target / speed;
-
-    if (count < target) {
-      el.innerText = Math.ceil(count + inc);
-      setTimeout(() => animateCount(el), 15);
-    } else {
-      el.innerText = target;
-    }
-  };
-
-  // Configuración del Observador
-  const observerOptions = {
-    threshold: 0.5 // Se activa cuando el 50% de la sección es visible
-  };
-
-  const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Seleccionamos todos los números y los animamos
-        const counters = entry.target.querySelectorAll('.count');
-        counters.forEach(counter => animateCount(counter));
-        // Dejamos de observar para que no se repita la animación cada vez que subas/bajes
-        observer.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  // Empezar a observar la sección
-  observer.observe(document.getElementById('counter-section'));
-</script>
-<script>
-let currentSlide = 0;
-
-function escapeHtml(valor) {
-    return String(valor ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
-
-function formatearFecha(fecha) {
-    if (!fecha) return '';
-
-    const fechaObj = new Date(fecha.replace(' ', 'T'));
-
-    if (Number.isNaN(fechaObj.getTime())) {
-        return fecha;
-    }
-
-    return fechaObj.toLocaleDateString('es-MX', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-    });
-}
-
-function descripcionCorta(texto) {
-    const limpio = String(texto ?? '');
-    return limpio.length > 125
-        ? `${limpio.substring(0, 125)}...`
-        : limpio;
-}
-
-const PREF_KEY = 'lumina_preferencias_contenido';
-const PREF_DEFAULTS = {
-    materias: {
-        1: true,
-        2: true,
-        3: true,
-        4: true,
-        5: true,
-        6: true,
-        7: true,
-        8: true
-    },
-    tipos: {
-        articulo: true,
-        video: true,
-        noticia: true,
-        recurso: true
-    }
-};
-
-function cargarPreferenciasContenido() {
-    try {
-        const guardadas = JSON.parse(localStorage.getItem(PREF_KEY) || '{}');
-
-        return {
-            materias: {
-                ...PREF_DEFAULTS.materias,
-                ...(guardadas.materias || {})
-            },
-            tipos: {
-                ...PREF_DEFAULTS.tipos,
-                ...(guardadas.tipos || {})
-            }
-        };
-    } catch (error) {
-        return JSON.parse(JSON.stringify(PREF_DEFAULTS));
-    }
-}
-
-function filtrarPorPreferencias(posts) {
-    const preferencias = cargarPreferenciasContenido();
-
-    return posts.filter((post) => {
-        const materiaId = String(post.categoria_id || '1');
-        const tipo = post.tipo || 'articulo';
-
-        return preferencias.materias[materiaId] !== false
-            && preferencias.tipos[tipo] !== false;
-    });
-}
-
-function renderPostReciente(post) {
-    const imagen = post.imagen_url || 'img/clases/clase2.webp';
-    const tipo = post.tipo || 'articulo';
-    const autor = post.autor || 'Autor desconocido';
-    const autorFoto = post.autor_foto || '';
-    const materia = post.materia || 'Materia sin asignar';
-    const fecha = formatearFecha(post.fecha_creacion);
-    const avatarAutor = autorFoto
-        ? `<img src="${escapeHtml(autorFoto)}" class="w-8 h-8 rounded-full object-cover" alt="Foto de ${escapeHtml(autor)}">`
-        : `<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                <span class="material-symbols-outlined text-gray-500 text-lg">person</span>
-           </div>`;
-
-    return `
-        <article class="min-w-[300px] h-[500px] bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col">
-            <img src="${escapeHtml(imagen)}" class="w-full h-48 object-cover" alt="Imagen publicacion">
-
-            <div class="p-5 flex flex-col flex-1">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">
-                        ${escapeHtml(tipo.toUpperCase())}
-                    </span>
-                    <span class="material-symbols-outlined text-gray-400 text-lg">
-                        bookmark
-                    </span>
-                </div>
-
-                <h3 class="text-lg font-bold text-gray-900 leading-tight mb-4">
-                    ${escapeHtml(post.titulo)}
-                </h3>
-
-                <div class="flex items-center gap-2 mb-4">
-                    ${avatarAutor}
-                    <div>
-                        <p class="text-sm font-semibold">${escapeHtml(autor)}</p>
-                        <p class="text-xs text-gray-400">${escapeHtml(fecha)}</p>
-                    </div>
-                </div>
-
-                <p class="text-sm text-gray-600 leading-relaxed flex-1">
-                    ${escapeHtml(descripcionCorta(post.descripcion))}
-                </p>
-
-                <div class="flex justify-end mt-3">
-                    <span class="max-w-full truncate bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
-                        ${escapeHtml(materia)}
-                    </span>
-                </div>
-
-                <div class="pt-4 mt-3 border-t flex justify-between items-center">
-                    <button type="button" class="flex items-center gap-2 text-gray-500 cursor-default">
-                        <span class="material-symbols-outlined text-lg">favorite</span>
-                        Me gusta
-                    </button>
-                    <span class="text-sm text-gray-400">0</span>
-                </div>
-            </div>
-        </article>
-    `;
-}
-
-async function cargarUltimasPublicaciones() {
-    const carousel = document.getElementById("carousel");
-    const viewport = document.getElementById("carouselViewport");
-    if (!carousel) return;
-
-    try {
-        carousel.innerHTML = `
-            <div class="min-w-full text-center py-12 text-gray-500">
-                Cargando publicaciones...
-            </div>
-        `;
-
-        const respuesta = await fetch('../backend/obtener_publicaciones.php');
-        const posts = await respuesta.json();
-
-        if (!Array.isArray(posts) || posts.length === 0) {
-            carousel.innerHTML = `
-                <div class="min-w-full text-center py-12">
-                    <h3 class="text-2xl font-bold text-gray-500">No hay publicaciones recientes</h3>
-                </div>
-            `;
-            return;
-        }
-
-        const postsFiltrados = filtrarPorPreferencias(posts);
-
-        if (postsFiltrados.length === 0) {
-            carousel.innerHTML = `
-                <div class="min-w-full text-center py-12">
-                    <h3 class="text-2xl font-bold text-gray-500">No hay publicaciones con tus preferencias activas</h3>
-                </div>
-            `;
-            requestAnimationFrame(actualizarFlechasCarousel);
-            return;
-        }
-
-        currentSlide = 0;
-        carousel.style.transform = 'none';
-        if (viewport) {
-            viewport.scrollLeft = 0;
-        }
-        carousel.innerHTML = postsFiltrados.map(renderPostReciente).join('');
-        requestAnimationFrame(actualizarFlechasCarousel);
-    } catch (error) {
-        console.error('Error cargando publicaciones recientes:', error);
-        carousel.innerHTML = `
-            <div class="min-w-full text-center py-12">
-                <h3 class="text-2xl font-bold text-gray-500">No se pudieron cargar las publicaciones</h3>
-            </div>
-        `;
-    }
-}
-
-function actualizarFlechasCarousel() {
-    const viewport = document.getElementById("carouselViewport");
-    const prev = document.getElementById("carouselPrev");
-    const next = document.getElementById("carouselNext");
-
-    if (!viewport || !prev || !next) return;
-
-    const maxScroll = Math.max(viewport.scrollWidth - viewport.clientWidth, 0);
-    const enInicio = viewport.scrollLeft <= 4;
-    const enFinal = viewport.scrollLeft >= maxScroll - 4;
-
-    prev.classList.toggle('hidden', enInicio || maxScroll === 0);
-    next.classList.toggle('hidden', enFinal || maxScroll === 0);
-}
-
-function moveCarousel(direction) {
-    const viewport = document.getElementById("carouselViewport");
-    if (!viewport) return;
-
-    const distancia = Math.min(680, viewport.clientWidth * 0.85);
-
-    viewport.scrollBy({
-        left: direction * distancia,
-        behavior: 'smooth'
-    });
-
-    window.setTimeout(actualizarFlechasCarousel, 350);
-}
-
-document.addEventListener('DOMContentLoaded', cargarUltimasPublicaciones);
-document.addEventListener('DOMContentLoaded', () => {
-    const viewport = document.getElementById("carouselViewport");
-
-    if (viewport) {
-        viewport.addEventListener('scroll', actualizarFlechasCarousel, { passive: true });
-    }
-
-    window.addEventListener('resize', actualizarFlechasCarousel);
-    actualizarFlechasCarousel();
-});
-</script>
-        
-
     </main>
 
     <footer class="footer">
@@ -767,19 +275,246 @@ document.addEventListener('DOMContentLoaded', () => {
     </footer>
 
     <script>
+        const animateCount = (el) => {
+            const target = +el.getAttribute('data-target');
+            const count = +el.innerText;
+            const speed = 200;
+            const inc = target / speed;
+
+            if (count < target) {
+                el.innerText = Math.ceil(count + inc);
+                setTimeout(() => animateCount(el), 15);
+            } else {
+                el.innerText = target;
+            }
+        };
+
+        const observerOptions = { threshold: 0.5 };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.count');
+                    counters.forEach(counter => animateCount(counter));
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        observer.observe(document.getElementById('counter-section'));
+    </script>
+
+    <script>
+        let currentSlide = 0;
+
+        function escapeHtml(valor) {
+            return String(valor ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        function formatearFecha(fecha) {
+            if (!fecha) return '';
+            const fechaObj = new Date(fecha.replace(' ', 'T'));
+            if (Number.isNaN(fechaObj.getTime())) return fecha;
+            return fechaObj.toLocaleDateString('es-MX', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        function descripcionCorta(texto) {
+            const limpio = String(texto ?? '');
+            return limpio.length > 125 ? `${limpio.substring(0, 125)}...` : limpio;
+        }
+
+        const PREF_KEY = 'lumina_preferencias_contenido';
+        const PREF_DEFAULTS = {
+            materias: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true },
+            tipos: { articulo: true, video: true, noticia: true, recurso: true }
+        };
+
+        function cargarPreferenciasContenido() {
+            try {
+                const guardadas = JSON.parse(localStorage.getItem(PREF_KEY) || '{}');
+                return {
+                    materias: { ...PREF_DEFAULTS.materias, ...(guardadas.materias || {}) },
+                    tipos: { ...PREF_DEFAULTS.tipos, ...(guardadas.tipos || {}) }
+                };
+            } catch (error) {
+                return JSON.parse(JSON.stringify(PREF_DEFAULTS));
+            }
+        }
+
+        function filtrarPorPreferencias(posts) {
+            const preferencias = cargarPreferenciasContenido();
+            return posts.filter((post) => {
+                const materiaId = String(post.categoria_id || '1');
+                const tipo = post.tipo || 'articulo';
+                return preferencias.materias[materiaId] !== false
+                    && preferencias.tipos[tipo] !== false;
+            });
+        }
+
+        function renderPostReciente(post) {
+            const imagen = post.imagen_url || 'img/clases/clase2.webp';
+            const tipo = post.tipo || 'articulo';
+            const autor = post.autor || 'Autor desconocido';
+            const autorFoto = post.autor_foto || '';
+            const materia = post.materia || 'Materia sin asignar';
+            const fecha = formatearFecha(post.fecha_creacion);
+            const avatarAutor = autorFoto
+                ? `<img src="${escapeHtml(autorFoto)}" class="w-8 h-8 rounded-full object-cover" alt="Foto de ${escapeHtml(autor)}">`
+                : `<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-gray-500 text-lg">person</span>
+                    </div>`;
+
+            return `
+                <article class="min-w-[300px] h-[500px] bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col">
+                    <img src="${escapeHtml(imagen)}" class="w-full h-48 object-cover" alt="Imagen publicacion">
+
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">
+                                ${escapeHtml(tipo.toUpperCase())}
+                            </span>
+                            <span class="material-symbols-outlined text-gray-400 text-lg">bookmark</span>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-gray-900 leading-tight mb-4">
+                            ${escapeHtml(post.titulo)}
+                        </h3>
+
+                        <div class="flex items-center gap-2 mb-4">
+                            ${avatarAutor}
+                            <div>
+                                <p class="text-sm font-semibold">${escapeHtml(autor)}</p>
+                                <p class="text-xs text-gray-400">${escapeHtml(fecha)}</p>
+                            </div>
+                        </div>
+
+                        <p class="text-sm text-gray-600 leading-relaxed flex-1">
+                            ${escapeHtml(descripcionCorta(post.descripcion))}
+                        </p>
+
+                        <div class="flex justify-end mt-3">
+                            <span class="max-w-full truncate bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+                                ${escapeHtml(materia)}
+                            </span>
+                        </div>
+
+                        <div class="pt-4 mt-3 border-t flex justify-between items-center">
+                            <button type="button" class="flex items-center gap-2 text-gray-500 cursor-default">
+                                <span class="material-symbols-outlined text-lg">favorite</span>
+                                Me gusta
+                            </button>
+                            <span class="text-sm text-gray-400">0</span>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        async function cargarUltimasPublicaciones() {
+            const carousel = document.getElementById('carousel');
+            const viewport = document.getElementById('carouselViewport');
+            if (!carousel) return;
+
+            try {
+                carousel.innerHTML = `
+                    <div class="min-w-full text-center py-12 text-gray-500">
+                        Cargando publicaciones...
+                    </div>
+                `;
+
+                const respuesta = await fetch('../backend/obtener_publicaciones.php');
+                const posts = await respuesta.json();
+
+                if (!Array.isArray(posts) || posts.length === 0) {
+                    carousel.innerHTML = `
+                        <div class="min-w-full text-center py-12">
+                            <h3 class="text-2xl font-bold text-gray-500">No hay publicaciones recientes</h3>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const postsFiltrados = filtrarPorPreferencias(posts);
+
+                if (postsFiltrados.length === 0) {
+                    carousel.innerHTML = `
+                        <div class="min-w-full text-center py-12">
+                            <h3 class="text-2xl font-bold text-gray-500">No hay publicaciones con tus preferencias activas</h3>
+                        </div>
+                    `;
+                    requestAnimationFrame(actualizarFlechasCarousel);
+                    return;
+                }
+
+                currentSlide = 0;
+                carousel.style.transform = 'none';
+                if (viewport) viewport.scrollLeft = 0;
+                carousel.innerHTML = postsFiltrados.map(renderPostReciente).join('');
+                requestAnimationFrame(actualizarFlechasCarousel);
+
+            } catch (error) {
+                console.error('Error cargando publicaciones recientes:', error);
+                carousel.innerHTML = `
+                    <div class="min-w-full text-center py-12">
+                        <h3 class="text-2xl font-bold text-gray-500">No se pudieron cargar las publicaciones</h3>
+                    </div>
+                `;
+            }
+        }
+
+        function actualizarFlechasCarousel() {
+            const viewport = document.getElementById('carouselViewport');
+            const prev = document.getElementById('carouselPrev');
+            const next = document.getElementById('carouselNext');
+            if (!viewport || !prev || !next) return;
+
+            const maxScroll = Math.max(viewport.scrollWidth - viewport.clientWidth, 0);
+            const enInicio = viewport.scrollLeft <= 4;
+            const enFinal = viewport.scrollLeft >= maxScroll - 4;
+
+            prev.classList.toggle('hidden', enInicio || maxScroll === 0);
+            next.classList.toggle('hidden', enFinal || maxScroll === 0);
+        }
+
+        function moveCarousel(direction) {
+            const viewport = document.getElementById('carouselViewport');
+            if (!viewport) return;
+            const distancia = Math.min(680, viewport.clientWidth * 0.85);
+            viewport.scrollBy({ left: direction * distancia, behavior: 'smooth' });
+            window.setTimeout(actualizarFlechasCarousel, 350);
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarUltimasPublicaciones);
+        document.addEventListener('DOMContentLoaded', () => {
+            const viewport = document.getElementById('carouselViewport');
+            if (viewport) {
+                viewport.addEventListener('scroll', actualizarFlechasCarousel, { passive: true });
+            }
+            window.addEventListener('resize', actualizarFlechasCarousel);
+            actualizarFlechasCarousel();
+        });
+    </script>
+
+    <script>
         document.querySelectorAll('.materia-card').forEach(card => {
             card.addEventListener('click', () => {
                 const link = card.querySelector('a[href^="materia"]');
-                if (link) {
-                    window.location.href = link.getAttribute('href');
-                }
+                if (link) window.location.href = link.getAttribute('href');
             });
         });
     </script>
+
     <script src="js/auth.js"></script>
     <script src="js/menu_ui.js"></script>
 
-
 </body>
-
 </html>

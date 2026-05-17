@@ -10,7 +10,6 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-// Solo admins pueden ver la lista de usuarios
 $rolSesion = $_SESSION['rol'] ?? '';
 if (strtolower($rolSesion) !== 'administrador') {
     http_response_code(403);
