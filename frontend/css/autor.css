@@ -251,6 +251,12 @@
     text-transform: uppercase;
 }
 
+.etiqueta-borrador.etiqueta-rechazado {
+    background-color: #e94141;
+    color: #ffffff;
+    border: none;
+}
+
 /* Sección de botones en la esquina inferior derecha */
 .footer-card-autor {
     display: flex;

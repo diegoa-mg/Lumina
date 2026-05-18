@@ -22,6 +22,7 @@ $nombre = trim($_POST['nombre'] ?? '');
 $correo = trim($_POST['email'] ?? '');
 $password = trim($_POST['password'] ?? '');
 $rol_id = isset($_POST['rol_id']) ? intval($_POST['rol_id']) : 0;
+$usuario = trim($_POST['usuario'] ?? '');
 $categorias = isset($_POST['categorias']) ? json_decode($_POST['categorias'], true) : [];
 
 if ($id <= 0) {
@@ -44,22 +45,43 @@ if ($id <= 0) {
         exit;
     }
 
-    $usernameBase = preg_replace('/[^a-z0-9\.\-_]/', '', strtolower(strtok($correo, '@')));
-    $username = $usernameBase ?: 'usuario' . rand(10000, 99999);
-    $counter = 1;
-    while (true) {
+    if ($usuario !== '') {
+        $username = preg_replace('/[^a-zA-Z0-9\.\-_]/', '', $usuario);
+        if ($username === '') {
+            http_response_code(400);
+            echo json_encode(['ok' => false, 'mensaje' => 'El nombre de usuario no es válido.']);
+            exit;
+        }
+
         $check = $conexion->prepare('SELECT id FROM usuarios WHERE usuarios = ? LIMIT 1');
         $check->bind_param('s', $username);
         $check->execute();
-        $existing = $check->get_result();
+        $existeUsuario = $check->get_result()->num_rows > 0;
         $check->close();
 
-        if ($existing && $existing->num_rows === 0) {
-            break;
+        if ($existeUsuario) {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'mensaje' => 'Ya existe un usuario con ese nombre de usuario.']);
+            exit;
         }
+    } else {
+        $usernameBase = preg_replace('/[^a-z0-9\.\-_]/', '', strtolower(strtok($correo, '@')));
+        $username = $usernameBase ?: 'usuario' . rand(10000, 99999);
+        $counter = 1;
+        while (true) {
+            $check = $conexion->prepare('SELECT id FROM usuarios WHERE usuarios = ? LIMIT 1');
+            $check->bind_param('s', $username);
+            $check->execute();
+            $existing = $check->get_result();
+            $check->close();
 
-        $username = $usernameBase . $counter;
-        $counter++;
+            if ($existing && $existing->num_rows === 0) {
+                break;
+            }
+
+            $username = $usernameBase . $counter;
+            $counter++;
+        }
     }
 
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
@@ -121,6 +143,36 @@ if ($correo !== '') {
     if (!$stmt->execute()) {
         http_response_code(500);
         echo json_encode(['ok' => false, 'mensaje' => 'Error al actualizar el correo.']);
+        exit;
+    }
+    $updated = true;
+}
+
+if ($usuario !== '') {
+    $username = preg_replace('/[^a-zA-Z0-9\.\-_]/', '', $usuario);
+    if ($username === '') {
+        http_response_code(400);
+        echo json_encode(['ok' => false, 'mensaje' => 'El nombre de usuario no es válido.']);
+        exit;
+    }
+
+    $stmt = $conexion->prepare('SELECT COUNT(*) AS total FROM usuarios WHERE usuarios = ? AND id <> ?');
+    $stmt->bind_param('si', $username, $id);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if ($row['total'] > 0) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'mensaje' => 'Ya existe otro usuario con ese nombre de usuario.']);
+        exit;
+    }
+
+    $stmt = $conexion->prepare('UPDATE usuarios SET usuarios = ? WHERE id = ?');
+    $stmt->bind_param('si', $username, $id);
+    if (!$stmt->execute()) {
+        http_response_code(500);
+        echo json_encode(['ok' => false, 'mensaje' => 'Error al actualizar el nombre de usuario.']);
         exit;
     }
     $updated = true;

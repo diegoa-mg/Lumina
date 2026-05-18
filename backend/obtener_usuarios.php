@@ -17,7 +17,7 @@ if (strtolower($rolSesion) !== 'administrador') {
     exit;
 }
 
-$sql = "SELECT usuarios.id, usuarios.nombre, usuarios.correo, roles.nombre AS rol, usuarios.foto_url FROM usuarios JOIN roles ON usuarios.rol_id = roles.id ORDER BY usuarios.nombre ASC";
+$sql = "SELECT usuarios.id, usuarios.nombre, usuarios.usuarios AS usuario, usuarios.correo, roles.nombre AS rol, usuarios.foto_url FROM usuarios JOIN roles ON usuarios.rol_id = roles.id ORDER BY usuarios.nombre ASC";
 $resultado = $conexion->query($sql);
 
 if (!$resultado) {
