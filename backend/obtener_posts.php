@@ -18,6 +18,28 @@ $tipo_select = publicaciones_tiene_columna($conexion, 'tipo')
     ? "tipo"
     : "'articulo' AS tipo";
 
+$observaciones_select = publicaciones_tiene_columna($conexion, 'observaciones_editor')
+    ? 'publicaciones.observaciones_editor AS observaciones'
+    : "NULL AS observaciones";
+$seccion_select = publicaciones_tiene_columna($conexion, 'seccion')
+    ? 'publicaciones.seccion'
+    : "'post' AS seccion";
+$tipo_aviso_select = publicaciones_tiene_columna($conexion, 'tipo_aviso')
+    ? 'publicaciones.tipo_aviso'
+    : "'academico' AS tipo_aviso";
+$urgente_select = publicaciones_tiene_columna($conexion, 'urgente')
+    ? 'publicaciones.urgente'
+    : "0 AS urgente";
+$importante_select = publicaciones_tiene_columna($conexion, 'importante')
+    ? 'publicaciones.importante'
+    : "0 AS importante";
+$youtube_select = publicaciones_tiene_columna($conexion, 'youtube_url')
+    ? 'publicaciones.youtube_url'
+    : "NULL AS youtube_url";
+$noticia_select = publicaciones_tiene_columna($conexion, 'noticia_url')
+    ? 'publicaciones.noticia_url'
+    : "NULL AS noticia_url";
+
 $query = "
 SELECT
     publicaciones.id,
@@ -26,9 +48,16 @@ SELECT
     publicaciones.imagen_url,
     publicaciones.status,
     $tipo_select,
+    $seccion_select,
+    $tipo_aviso_select,
+    $urgente_select,
+    $importante_select,
+    $youtube_select,
+    $noticia_select,
     publicaciones.categoria_id,
     categorias.nombre_categoria AS materia,
-    publicaciones.fecha_creacion
+    publicaciones.fecha_creacion,
+    $observaciones_select
 FROM publicaciones
 LEFT JOIN categorias
 ON publicaciones.categoria_id = categorias.id

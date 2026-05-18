@@ -24,8 +24,8 @@
     <link rel="preload" href="css/navbar.css" as="style">
     <link rel="stylesheet" href="css/navbar.css">
 
-    <link rel="preload" href="css/editor.css" as="style">
-    <link rel="stylesheet" href="css/editor.css">
+    <link rel="preload" href="css/editor.css?v=2" as="style">
+    <link rel="stylesheet" href="css/editor.css?v=2">
 </head>
 
 <body>
@@ -135,15 +135,78 @@
 
     <script src="js/auth.js"></script>
     <script src="js/menu_ui.js"></script>
-    <script src="js/crear.js"></script>
+    <script src="js/crear.js?v=10"></script>
     <script>
+
+    const CONFIG_AVISOS_EDITOR = {
+        academico: {
+            texto: 'Academico',
+            icono: 'school'
+        },
+        plataforma: {
+            texto: 'Plataforma',
+            icono: 'language'
+        }
+    };
+
+    function escapeHtmlEditor(valor) {
+        return String(valor ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
+
+    function resolveImageSrcEditor(ruta) {
+        if (!ruta) return '';
+        if (ruta.startsWith('http') || ruta.startsWith('data:') || ruta.startsWith('../')) {
+            return ruta;
+        }
+        return `../frontend/${ruta}`;
+    }
+
+    function renderMediaRevision(post) {
+        const seccion = post.seccion || 'post';
+        const importante = Number(post.importante || 0) === 1;
+        const imagen = resolveImageSrcEditor(post.imagen_url || '');
+
+        if (seccion === 'aviso' && !importante) {
+            const tipoAviso = post.tipo_aviso || 'academico';
+            const config = CONFIG_AVISOS_EDITOR[tipoAviso] || CONFIG_AVISOS_EDITOR.academico;
+
+            return `
+                <div class="editor-aviso-media">
+                    <span class="material-symbols-outlined">${escapeHtmlEditor(config.icono)}</span>
+                </div>
+            `;
+        }
+
+        if (!imagen) {
+            return `
+                <div class="editor-aviso-media">
+                    <span class="material-symbols-outlined">image</span>
+                </div>
+            `;
+        }
+
+        return `
+            <img
+                src="${escapeHtmlEditor(imagen)}"
+                class="w-full h-72 object-cover rounded-xl mb-5"
+                alt="Preview"
+            >
+        `;
+    }
 
     async function cargarPostsRevision() {
 
         try {
 
             const respuesta =
-                await fetch('../backend/obtener_revision.php');
+                await fetch('../backend/obtener_revision.php', {
+                    credentials: 'include'
+                });
 
             const posts = await respuesta.json();
 
@@ -166,30 +229,48 @@
             }
 
             posts.forEach(post => {
+                const seccion = post.seccion || 'post';
+                const tipoAviso = post.tipo_aviso || 'academico';
+                const urgente = Number(post.urgente || 0) === 1;
+                const importante = Number(post.importante || 0) === 1;
+                const configAviso = CONFIG_AVISOS_EDITOR[tipoAviso] || CONFIG_AVISOS_EDITOR.academico;
+                const detalles = seccion === 'aviso'
+                    ? `
+                        <p class="text-sm">Publicacion: Aviso</p>
+                        <p class="text-sm">Tipo de aviso: ${escapeHtmlEditor(configAviso.texto)}</p>
+                        <p class="text-sm">Urgencia: ${urgente ? 'Urgente' : 'No urgente'}</p>
+                        <p class="text-sm">Importante: ${importante ? 'Si' : 'No'}</p>
+                    `
+                    : `<p class="text-sm">Tipo: ${escapeHtmlEditor(post.tipo || 'articulo')}</p>`;
 
                 const tarjeta = `
                 
                 <div class="bg-white rounded-2xl shadow p-6"
                     data-post-id="${post.id}"
-                    data-titulo="${(post.titulo || '').replace(/"/g, '&quot;')}"
-                    data-descripcion="${(post.descripcion || '').replace(/"/g, '&quot;')}"
-                    data-imagen="${(post.imagen_url || '').replace(/"/g, '&quot;')}"
-                    data-tipo="${post.tipo || 'articulo'}"
+                    data-titulo="${escapeHtmlEditor(post.titulo || '')}"
+                    data-descripcion="${escapeHtmlEditor(post.descripcion || '')}"
+                    data-imagen="${escapeHtmlEditor(post.imagen_url || '')}"
+                    data-tipo="${escapeHtmlEditor(post.tipo || 'articulo')}"
+                    data-seccion="${escapeHtmlEditor(seccion)}"
+                    data-tipo-aviso="${escapeHtmlEditor(tipoAviso)}"
+                    data-urgente="${urgente ? '1' : '0'}"
+                    data-importante="${importante ? '1' : '0'}"
                     data-categoria-id="${post.categoria_id || 1}"
                 >
 
-                    <img
-                        src="../frontend/${post.imagen_url}"
-                        class="w-full h-72 object-cover rounded-xl mb-5"
-                    >
+                    ${renderMediaRevision(post)}
 
                     <h2 class="text-3xl font-bold mb-3">
-                        ${post.titulo}
+                        ${escapeHtmlEditor(post.titulo)}
                     </h2>
 
                     <p class="text-gray-600 mb-6">
-                        ${post.descripcion}
+                        ${escapeHtmlEditor(post.descripcion)}
                     </p>
+
+                    <div class="mb-6">
+                        ${detalles}
+                    </div>
 
                     <div class="flex gap-4">
 
@@ -243,6 +324,7 @@
                 await fetch('../backend/cambiar_estado_post.php', {
 
                     method: 'POST',
+                    credentials: 'include',
 
                     headers: {
                         'Content-Type': 'application/json'
@@ -282,12 +364,23 @@
 
     async function rechazarPost(id) {
 
+        const observaciones = prompt('Ingrese la observación o motivo de rechazo para el autor:');
+        if (observaciones === null) {
+            return;
+        }
+
+        if (observaciones.trim() === '') {
+            alert('Debes ingresar una observación para rechazar.');
+            return;
+        }
+
         try {
 
             const respuesta =
                 await fetch('../backend/cambiar_estado_post.php', {
 
                     method: 'POST',
+                    credentials: 'include',
 
                     headers: {
                         'Content-Type': 'application/json'
@@ -296,7 +389,8 @@
                     body: JSON.stringify({
 
                         post_id: id,
-                        status: 'rechazado'
+                        status: 'rechazado',
+                        observaciones: observaciones.trim()
 
                     })
 
@@ -309,6 +403,10 @@
                 alert('❌ Post rechazado');
 
                 cargarPostsRevision();
+
+            } else {
+
+                alert(resultado.error || 'Error al rechazar el post');
 
             }
 
