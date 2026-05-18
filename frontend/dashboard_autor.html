@@ -14,22 +14,21 @@
 
     <link rel="preload" href="css/normalize.css" as="style">
     <link rel="stylesheet" href="css/normalize.css">
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preload" href="css/base.css" as="style">
     <link rel="stylesheet" href="css/base.css">
-    <link rel="preload" href="css/styles.css?v=4" as="style">
-    <link rel="stylesheet" href="css/styles.css?v=4">
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="stylesheet" href="css/styles.css">
 
-    <link rel="preload" href="css/navbar.css?v=5" as="style">
-    <link rel="stylesheet" href="css/navbar.css?v=5">
+    <link rel="preload" href="css/navbar.css" as="style">
+    <link rel="stylesheet" href="css/navbar.css">
 
-    <link rel="preload" href="css/autor.css?v=7" as="style">
-    <link rel="stylesheet" href="css/autor.css?v=7">
+    <link rel="preload" href="css/autor.css?v=2" as="style">
+    <link rel="stylesheet" href="css/autor.css?v=2">
 
 </head>
 <body>
-        <header>
+    <header>
         <div class="nav-bg">
 
             <!-- Logo -->
@@ -38,8 +37,8 @@
                   <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
                 </a>
             </div>
-            
-            <!-- Barra de busqueda -->
+    
+            <!-- Barra de búsqueda -->
             <div class="search-container">
                 <span class="search-icon material-symbols-outlined">search</span>
                 <input class="search" type="search" placeholder="Buscar...">
@@ -47,10 +46,11 @@
 
             <nav class="nav-principal">
                 <a href="index.html">Inicio</a>
-                <a href="login.html">Iniciar Sesion</a>
+                <a href="login.html">Iniciar Sesión</a>
             </nav>
 
         </div>
+    
     </header>
 
     <main>
@@ -98,34 +98,10 @@
 
         <!-- Empieza la ventana modal -->
         <div class="modal-overlay" id="modalAdmin">
-            <input type="file" id="fileInput" hidden accept="image/*">
-            <!-- PANTALLA 0: ELEGIR TIPO DE PUBLICACION -->
-            <div class="modal-content" id="pantallaSelector">
+            <!-- PANTALLA 1: SUBIR -->
+            <div class="modal-content" id="pantalla1">
                 <span class="close-modal" id="btnCerrar">&times;</span>
                 <h1 class="modal-title">Crear</h1>
-
-                <div class="selector-publicacion">
-                    <button class="opcion-publicacion" type="button" id="btnCrearPost">
-                        <span class="material-symbols-outlined">article</span>
-                        <strong>Subir post</strong>
-                        <small>Publicacion para materias, recursos o noticias academicas.</small>
-                    </button>
-
-                    <button class="opcion-publicacion" type="button" id="btnCrearAviso">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <strong>Subir aviso</strong>
-                        <small>Anuncio para la seccion de avisos.</small>
-                    </button>
-                </div>
-            </div>
-
-            <div class="modal-content d-none" id="pantalla1">
-                <span class="close-modal btnCerrarSecundario">&times;</span>
-                <a class="btnVolverSelector">
-                    <span class="material-symbols-outlined icono">arrow_back_ios</span>
-                    <span>Volver</span>
-                </a>
-                <h1 class="modal-title">Crear post</h1>
                 
                 <div class="upload-box" id="dropZone">
                     <div class="cloud-icon">
@@ -134,6 +110,7 @@
                     <p class="text-main">Arrastra y suelta archivos para subirlos</p>
                     <p class="text-sub">Tus publicaciones serán privadas hasta que el editor las apruebe.</p>
                     
+                    <input type="file" id="fileInput" hidden accept="image/*">
                     <button class="btn-select" onclick="document.getElementById('fileInput').click()">
                         Seleccionar Archivos
                     </button>
@@ -173,19 +150,19 @@
 
         <select id="postTipo">
 
-            <option value="articulo">
+            <option value="Articulo">
                 Artículo
             </option>
 
-            <option value="video">
+            <option value="Video">
                 Video
             </option>
 
-            <option value="noticia">
+            <option value="Noticia">
                 Noticia
             </option>
 
-            <option value="recurso">
+            <option value="Recurso">
                 Recurso
             </option>
 
@@ -212,142 +189,57 @@
 
     </div>
 
-    </div>
+</div>
 
-    <div class="field campo-youtube d-none">
-        <label>URL de YouTube</label>
-        <input type="url" id="youtubeUrl" placeholder="https://youtube.com/watch?v=...">
-    </div>
+<!-- NUEVOS CAMPOS -->
 
-    <div class="field campo-noticia d-none">
-        <label>URL de la noticia</label>
-        <input type="url" id="noticiaUrl" placeholder="https://sitio.com/noticia">
-    </div>
+<div class="field campo-youtube d-none">
 
+    <label>URL de YouTube</label>
+
+    <input
+        type="url"
+        id="youtubeUrl"
+        placeholder="https://youtube.com/watch?v=..."
+    >
+
+</div>
+
+<div class="field campo-noticia d-none">
+
+    <label>URL de la noticia</label>
+
+    <input
+        type="url"
+        id="noticiaUrl"
+        placeholder="https://sitio.com/noticia"
+    >
+
+</div>
+     
+    
 </div>
 
                     <!-- Preview -->
                     <div class="preview-side">
-                        <div class="aviso-imagen-preview post-imagen-preview">
-                            <div class="post-imagen-box" onclick="document.getElementById('fileInput').click()">
-                                <img id="imgPreview" src="" alt="Imagen del post">
-                                <div class="aviso-imagen-placeholder" id="postImagenPlaceholder">
-                                    <span class="material-symbols-outlined">add_photo_alternate</span>
-                                    <p>Imagen del post</p>
-                                </div>
+                        <div class="preview-card">
+                            <img id="imgPreview" src="" alt="Preview">
+                            <div class="file-info">
+                                <p class="label">Nombre del archivo</p>
+                                <p class="filename" id="fileNameDisplay">highlights.mp4</p>
                             </div>
-                            <p class="filename aviso-imagen-nombre" id="fileNameDisplay">Selecciona una imagen</p>
                         </div>
                         <button
                             type="button"
                             class="btn-cambiar-imagen"
-                            id="btnCambiarImagenPost"
                             onclick="document.getElementById('fileInput').click()"
                         >
                             <span class="material-symbols-outlined">photo_camera</span>
-                            <span id="btnTextoImagenPost">Subir imagen</span>
+                            Cambiar imagen
                         </button>
                         <div class="actions">
                             <button class="btn-save" id="btnGuardarBorrador">Guardar</button>
                             <button class="btn-revision" id="btnEnviarRevision">Enviar a revisión</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PANTALLA 3: AVISO -->
-            <div class="modal-content d-none" id="pantallaAviso">
-                <span class="close-modal btnCerrarSecundario">&times;</span>
-
-                <a class="btnVolverSelector">
-                    <span class="material-symbols-outlined icono">arrow_back_ios</span>
-                    <span>Volver</span>
-                </a>
-
-                <h1 class="modal-title">Crear aviso</h1>
-
-                <div class="admin-grid">
-                    <div class="form-side">
-                        <h2>Detalles</h2>
-
-                        <div class="field">
-                            <label>Titulo</label>
-                            <input type="text" id="avisoTitle" required>
-                        </div>
-
-                        <div class="field">
-                            <label class="field-titulo">Descripcion</label>
-                            <textarea id="avisoDesc" required></textarea>
-                        </div>
-
-                        <label class="check-importante">
-                            <input type="checkbox" id="avisoImportante">
-                            <span>Marcar como Importante</span>
-                        </label>
-
-                        <div class="tipo-materia-row">
-                            <div class="field">
-                                <label>Tipo de aviso</label>
-                                <select id="avisoTipo">
-                                    <option value="academico">Academico</option>
-                                    <option value="plataforma">Plataforma</option>
-                                </select>
-                            </div>
-
-                            <div class="field">
-                                <label>Urgencia</label>
-                                <select id="avisoUrgente">
-                                    <option value="0">No urgente</option>
-                                    <option value="1">Urgente</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="preview-side">
-                        <div class="preview-aviso" id="avisoPreviewNormal">
-                            <div class="preview-aviso-header">
-                                <div class="icono-principal bg-rojo" id="avisoIconoPreview">
-                                    <span class="material-symbols-outlined" id="avisoIconoTexto">school</span>
-                                </div>
-                                <div>
-                                    <h3 id="avisoPreviewTitulo">Titulo del aviso</h3>
-                                    <p id="avisoPreviewFecha">Vista previa</p>
-                                </div>
-                                <span class="badge-urgente d-none" id="avisoPreviewUrgente">Urgente</span>
-                            </div>
-                            <p id="avisoPreviewDesc">La descripcion del aviso aparecera aqui.</p>
-                            <div class="preview-aviso-footer">
-                                <div class="linea-negra"></div>
-                                <span class="material-symbols-outlined" id="avisoFooterIcono">school</span>
-                                <span class="etiqueta-blanca" id="avisoPreviewTipo">Academico</span>
-                            </div>
-                        </div>
-
-                        <div class="aviso-imagen-preview d-none" id="avisoPreviewImportante">
-                            <div class="aviso-imagen-box" onclick="document.getElementById('fileInput').click()">
-                                <img id="avisoImgPreview" src="" alt="Imagen del aviso importante">
-                                <div class="aviso-imagen-placeholder" id="avisoImagenPlaceholder">
-                                    <span class="material-symbols-outlined">add_photo_alternate</span>
-                                    <p>Imagen del aviso</p>
-                                </div>
-                            </div>
-                            <p class="filename aviso-imagen-nombre" id="avisoFileNameDisplay">Selecciona una imagen</p>
-                        </div>
-
-                        <button
-                            type="button"
-                            class="btn-cambiar-imagen d-none"
-                            id="btnCambiarImagenAviso"
-                            onclick="document.getElementById('fileInput').click()"
-                        >
-                            <span class="material-symbols-outlined">photo_camera</span>
-                            <span id="btnTextoImagenAviso">Subir imagen</span>
-                        </button>
-
-                        <div class="actions">
-                            <button class="btn-save" id="btnGuardarAviso">Guardar</button>
-                            <button class="btn-revision" id="btnEnviarAvisoRevision">Enviar a revision</button>
                         </div>
                     </div>
                 </div>
@@ -364,9 +256,9 @@
         <p class="copy">© 2026 Lumina: Claridad a la información</p>
     </footer>
 
-    <script src="js/auth.js?v=5"></script>
-    <script src="js/menu_ui.js?v=5"></script>
-    <script src="js/crear.js?v=10"></script>
-    <script src="js/subir_post.js?v=8"></script>
+    <script src="js/auth.js?v=2"></script>
+    <script src="js/menu_ui.js?v=2"></script>
+    <script src="js/crear.js?v=3"></script>
+    <script src="js/subir_post.js?v=3"></script>
 </body>
 </html>

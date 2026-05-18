@@ -18,8 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const nombreFoto = document.getElementById('nombre-foto-perfil');
     const btnCancelarFoto = document.getElementById('btn-cancelar-foto');
     const btnGuardarFoto = document.getElementById('btn-guardar-foto');
-    const totalLikes = document.getElementById('cuenta-total-likes');
-    const totalGuardados = document.getElementById('cuenta-total-guardados');
 
     let fotoSeleccionada = null;
     let fotoBase64 = null;
@@ -281,29 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const cargarResumenReacciones = async () => {
-        if (!totalLikes && !totalGuardados) return;
-
-        try {
-            const respuesta = await fetch('../backend/obtener_reacciones_usuario.php', {
-                credentials: 'include'
-            });
-            const datos = await respuesta.json();
-
-            if (!respuesta.ok || !datos.success || !Array.isArray(datos.reacciones)) {
-                throw new Error('No se pudo cargar el resumen de reacciones.');
-            }
-
-            const likes = datos.reacciones.filter((reaccion) => reaccion.tipo === 'like').length;
-            const guardados = datos.reacciones.filter((reaccion) => reaccion.tipo === 'guardado').length;
-
-            if (totalLikes) totalLikes.textContent = String(likes);
-            if (totalGuardados) totalGuardados.textContent = String(guardados);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     const abrirModalFoto = () => {
         if (!modalFoto) return;
         modalFoto.classList.add('visible');
@@ -430,5 +405,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderizarPreferencias();
     cargarCuenta();
-    cargarResumenReacciones();
 });
