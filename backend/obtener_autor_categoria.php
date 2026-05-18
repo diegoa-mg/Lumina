@@ -11,10 +11,11 @@ if ($categoria_id <= 0) {
 }
 
 $query = "
-    SELECT u.id, u.nombre
+    SELECT u.id, u.nombre, u.foto_url
     FROM usuarios u
     INNER JOIN autor_categoria ac ON u.id = ac.autor_id
     WHERE ac.categoria_id = ? AND u.rol_id = (SELECT id FROM roles WHERE nombre = 'Autor')
+    ORDER BY u.nombre ASC
     LIMIT 1
 ";
 

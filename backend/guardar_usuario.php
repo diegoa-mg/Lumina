@@ -24,6 +24,81 @@ $password = trim($_POST['password'] ?? '');
 $rol_id = isset($_POST['rol_id']) ? intval($_POST['rol_id']) : 0;
 $usuario = trim($_POST['usuario'] ?? '');
 $categorias = isset($_POST['categorias']) ? json_decode($_POST['categorias'], true) : [];
+$foto = trim($_POST['foto'] ?? '');
+
+function rol_es_autor($conexion, $rol_id) {
+    if ($rol_id <= 0) {
+        return false;
+    }
+
+    $stmt = $conexion->prepare('SELECT nombre FROM roles WHERE id = ? LIMIT 1');
+    $stmt->bind_param('i', $rol_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $rol = $result ? $result->fetch_assoc() : null;
+    $stmt->close();
+
+    return $rol && strtolower($rol['nombre']) === 'autor';
+}
+
+function guardar_foto_usuario_admin($conexion, $usuarioId, $imagen) {
+    if ($imagen === '') {
+        return true;
+    }
+
+    if (strpos($imagen, 'data:image') !== 0 || !preg_match('/^data:image\/(\w+);base64,(.*)$/', $imagen, $matches)) {
+        http_response_code(400);
+        echo json_encode(['ok' => false, 'mensaje' => 'La foto seleccionada no es valida.']);
+        exit;
+    }
+
+    $formato = strtolower($matches[1]);
+    $base64 = $matches[2];
+    $formatosPermitidos = ['jpg', 'jpeg', 'png', 'webp'];
+
+    if (!in_array($formato, $formatosPermitidos, true)) {
+        http_response_code(400);
+        echo json_encode(['ok' => false, 'mensaje' => 'Formato de foto no permitido.']);
+        exit;
+    }
+
+    if ((strlen($base64) * 0.75) / 1024 > 5120) {
+        http_response_code(400);
+        echo json_encode(['ok' => false, 'mensaje' => 'La foto es demasiado pesada.']);
+        exit;
+    }
+
+    $directorio = __DIR__ . '/../frontend/uploads/perfiles/';
+    if (!is_dir($directorio) && !mkdir($directorio, 0777, true)) {
+        http_response_code(500);
+        echo json_encode(['ok' => false, 'mensaje' => 'No se pudo crear la carpeta de perfiles.']);
+        exit;
+    }
+
+    $contenido = base64_decode($base64, true);
+    if ($contenido === false) {
+        http_response_code(400);
+        echo json_encode(['ok' => false, 'mensaje' => 'No se pudo procesar la foto.']);
+        exit;
+    }
+
+    $nombreArchivo = 'perfil_' . $usuarioId . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $formato;
+    $rutaArchivo = $directorio . $nombreArchivo;
+
+    if (file_put_contents($rutaArchivo, $contenido) === false) {
+        http_response_code(500);
+        echo json_encode(['ok' => false, 'mensaje' => 'No se pudo guardar la foto.']);
+        exit;
+    }
+
+    $fotoUrl = 'uploads/perfiles/' . $nombreArchivo;
+    $stmt = $conexion->prepare('UPDATE usuarios SET foto_url = ? WHERE id = ?');
+    $stmt->bind_param('si', $fotoUrl, $usuarioId);
+    $ok = $stmt->execute();
+    $stmt->close();
+
+    return $ok;
+}
 
 if ($id <= 0) {
     if ($nombre === '' || $correo === '' || $rol_id <= 0 || $password === '') {
@@ -90,14 +165,17 @@ if ($id <= 0) {
 
     if ($insert->execute()) {
         $nuevoId = $conexion->insert_id;
+        guardar_foto_usuario_admin($conexion, $nuevoId, $foto);
         
         // Guardar categorías si es autor
-        if (!empty($categorias) && is_array($categorias)) {
+        if (rol_es_autor($conexion, $rol_id) && !empty($categorias) && is_array($categorias)) {
             $insertAutorCat = $conexion->prepare('INSERT INTO autor_categoria (autor_id, categoria_id) VALUES (?, ?)');
             foreach ($categorias as $cat_id) {
                 $cat_id = intval($cat_id);
-                $insertAutorCat->bind_param('ii', $nuevoId, $cat_id);
-                $insertAutorCat->execute();
+                if ($cat_id > 0) {
+                    $insertAutorCat->bind_param('ii', $nuevoId, $cat_id);
+                    $insertAutorCat->execute();
+                }
             }
             $insertAutorCat->close();
         }
@@ -202,7 +280,24 @@ if ($password !== '') {
 }
 
 // Guardar/actualizar categorías si es autor
-if (!empty($categorias) && is_array($categorias)) {
+if ($foto !== '') {
+    if (!guardar_foto_usuario_admin($conexion, $id, $foto)) {
+        http_response_code(500);
+        echo json_encode(['ok' => false, 'mensaje' => 'No se pudo actualizar la foto.']);
+        exit;
+    }
+    $updated = true;
+}
+
+if ($rol_id > 0 && !rol_es_autor($conexion, $rol_id)) {
+    $deleteStmt = $conexion->prepare('DELETE FROM autor_categoria WHERE autor_id = ?');
+    $deleteStmt->bind_param('i', $id);
+    $deleteStmt->execute();
+    $deleteStmt->close();
+    $updated = true;
+}
+
+if ($rol_id > 0 && rol_es_autor($conexion, $rol_id) && is_array($categorias)) {
     // Eliminar categorías anteriores
     $deleteStmt = $conexion->prepare('DELETE FROM autor_categoria WHERE autor_id = ?');
     $deleteStmt->bind_param('i', $id);
@@ -213,8 +308,10 @@ if (!empty($categorias) && is_array($categorias)) {
     $insertAutorCat = $conexion->prepare('INSERT INTO autor_categoria (autor_id, categoria_id) VALUES (?, ?)');
     foreach ($categorias as $cat_id) {
         $cat_id = intval($cat_id);
-        $insertAutorCat->bind_param('ii', $id, $cat_id);
-        $insertAutorCat->execute();
+        if ($cat_id > 0) {
+            $insertAutorCat->bind_param('ii', $id, $cat_id);
+            $insertAutorCat->execute();
+        }
     }
     $insertAutorCat->close();
     $updated = true;

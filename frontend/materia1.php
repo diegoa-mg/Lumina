@@ -10,6 +10,9 @@
     <link rel="preload" href="css/normalize.css" as="style">
     <link rel="stylesheet" href="css/normalize.css">
 
+    <link rel="preload" href="css/base.css?v=3" as="style">
+    <link rel="stylesheet" href="css/base.css?v=3">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -19,9 +22,10 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="stylesheet" href="css/recursos.css">
-    <link rel="stylesheet" href="css/navbar.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/recursos.css?v=4">
+    <link rel="stylesheet" href="css/navbar.css?v=6">
+    <link rel="stylesheet" href="css/styles.css?v=17">
+    <link rel="stylesheet" href="css/comentarios_materia.css?v=2">
 </head>
 
 <body class="bg-gray-100">
@@ -68,14 +72,17 @@
                 </h1> 
             </div>
 
-            <div class="text-xl text-right">
-                <p class="font-bold">
-                    Mtro. <span id="autorNombre">cargando...</span>
-                </p>
+            <div class="materia-autor-card">
+                <img id="autorFoto" src="" alt="Foto del autor" class="materia-autor-foto">
+                <div class="text-xl text-right">
+                    <p class="font-bold">
+                        Mtro. <span id="autorNombre">cargando...</span>
+                    </p>
 
-                <p class="text-gray-500">
-                    12/09/2025
-                </p>
+                    <p class="text-gray-500">
+                        12/09/2025
+                    </p>
+                </div>
             </div>
 
         </section>
@@ -137,15 +144,25 @@
                 Comentarios
             </h3>
 
-            <div class="flex gap-3 mb-6">
+            <div class="comentario-form flex gap-3 mb-6">
 
-                <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                <div class="comentario-avatar-form">
+                    <span class="material-symbols-outlined comentario-avatar-icon">person</span>
+                </div>
 
-                <input type="text"
-                       placeholder="Añadir comentario..."
-                       class="flex-1 bg-white border rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <textarea id="inputComentarioMateria"
+                          placeholder="Anadir comentario..."
+                          class="flex-1 bg-white border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+
+                <button id="btnPublicarComentarioMateria"
+                        type="button"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-bold transition">
+                    Publicar
+                </button>
 
             </div>
+
+            <div id="listaComentariosMateria" class="space-y-4"></div>
 
         </section>
 
@@ -160,11 +177,33 @@
 
     <section class="contenido-footer">
 
-        <h1>Lumina</h1>
+        <div class="footer-brand">
+            <h1>Lumina</h1>
 
         <p>
             Plataforma de difusión digital académica
         </p>
+            </div>
+            <nav class="footer-links" aria-label="Enlaces del sitio">
+                <div class="footer-link-group">
+                    <a href="index.html">Inicio</a>
+                    <a href="avisos.html">Avisos</a>
+                    <a href="recursos.html">Recursos</a>
+                    <a href="calendario.html">Calendario</a>
+                </div>
+                <div class="footer-link-group">
+                    <a href="materia1.php">POO</a>
+                    <a href="materia2.php">Servicios de Internet</a>
+                    <a href="materia3.php">Ciclo de Vida</a>
+                    <a href="materia4.php">Métodos Numéricos</a>
+                </div>
+                <div class="footer-link-group">
+                    <a href="materia5.php">Desarrollo Emprendedor</a>
+                    <a href="materia6.php">Sistemas Digitales</a>
+                    <a href="materia7.php">Inglés</a>
+                    <a href="materia8.php">Orientación y Tutoría</a>
+                </div>
+            </nav>
 
     </section>
 
@@ -221,19 +260,42 @@ const materiaActual = MATERIAS[archivoMateria] || MATERIAS['materia1.php'];
 document.title = `Lumina - ${materiaActual.nombre}`;
 document.getElementById('materiaNombre').textContent = materiaActual.nombre;
 
-// Obtener y cargar el autor de la categoría
+function getAutorFallback(nombre) {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre || 'Autor')}&background=2D50D1&color=fff`;
+}
+
+function resolverFotoAutor(fotoUrl, nombre) {
+    if (!fotoUrl) {
+        return getAutorFallback(nombre);
+    }
+    if (/^(https?:)?\/\//.test(fotoUrl) || fotoUrl.startsWith('data:image')) {
+        return fotoUrl;
+    }
+    return fotoUrl.replace(/^(\.\.\/)+/, '').replace(/^frontend\//, '');
+}
+
+// Obtener y cargar el autor de la categoria
 async function cargarAutorCategoria() {
+    const autorNombre = document.getElementById('autorNombre');
+    const autorFoto = document.getElementById('autorFoto');
+
     try {
         const response = await fetch(`../backend/obtener_autor_categoria.php?categoria_id=${materiaActual.id}`);
         const data = await response.json();
         if (data.ok && data.autor) {
-            document.getElementById('autorNombre').textContent = data.autor.nombre;
+            autorNombre.textContent = data.autor.nombre;
+            autorFoto.src = resolverFotoAutor(data.autor.foto_url, data.autor.nombre);
+            autorFoto.onerror = () => {
+                autorFoto.src = getAutorFallback(data.autor.nombre);
+            };
         } else {
-            document.getElementById('autorNombre').textContent = 'Sin asignar';
+            autorNombre.textContent = 'Sin asignar';
+            autorFoto.src = getAutorFallback('Sin asignar');
         }
     } catch (error) {
         console.error('Error al cargar el autor:', error);
-        document.getElementById('autorNombre').textContent = 'Error';
+        autorNombre.textContent = 'Error';
+        autorFoto.src = getAutorFallback('Autor');
     }
 }
 
@@ -600,6 +662,7 @@ document.addEventListener(
 
 <script src="js/auth.js"></script>
 <script src="js/menu_ui.js"></script>
+<script src="js/comentarios_materia.js?v=2"></script>
 
 </body>
 </html>
