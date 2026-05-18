@@ -112,44 +112,6 @@
     border: none;
     cursor: pointer;
 }
-
-.btn-icon {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #6b7280;
-    padding: 0.5rem;
-}
-
-.animar-click {
-    animation: pop-click 0.3s ease-out;
-}
-
-@keyframes pop-click {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.25); }
-    100% { transform: scale(1); }
-}
-
-.like-activo .material-symbols-outlined {
-    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    color: #ef4444 !important;
-}
-
-.save-activo .material-symbols-outlined {
-    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    color: #256cc9 !important;
-}
-
-.seccion-vacia {
-    background: #fafbfd;
-    border: 1px dashed #d1d5db;
-    border-radius: 1.2rem;
-    color: #6b7280;
-    padding: 3rem 2rem;
-    text-align: center;
-    font-size: 1.4rem;
-}
 .contenedor-volver {
     max-width: 1500px; /* Ajusta esto al ancho de tu diseño */
     margin: 20px auto 0 auto;

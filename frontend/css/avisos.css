@@ -1,38 +1,24 @@
-.lista-avisos {
-    width: 100%;
-}
-
-.avisos-vacio {
-    width: 100%;
-    max-width: 80rem;
-    background-color: rgb(250, 251, 253);
-    border: 1px dashed #d1d5db;
-    border-radius: 1rem;
-    padding: 3rem 2rem;
-    color: #6b7280;
-    text-align: center;
-    font-size: 1.4rem;
-}
-
+/* Corrección a tu tarjeta principal */
 .tarjeta-aviso {
-    background-color: rgb(250, 251, 253);
+    background-color: rgb(250, 251, 253); /* Usamos el gris clarito */
     border-radius: 1rem;
     padding: 1.5rem 2rem;
     width: 100%;
     max-width: 80rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.5rem; /* Separación si agregas más tarjetas */
     font-family: 'Inter', sans-serif;
 }
 
+/* Estilos internos de la tarjeta */
 .tarjeta-header {
     display: flex;
-    align-items: center;
-    gap: 1.5rem;
+    align-items: center; /* Centra todo verticalmente */
+    gap: 1.5rem; /* Espacio exacto entre el círculo rojo y el texto */
     width: 100%;
 }
 
 .icono-principal {
-    min-width: 60px;
+    min-width: 60px; /* Usar min-width evita que el círculo se aplaste como un óvalo */
     height: 60px;
     border-radius: 50%;
     display: flex;
@@ -40,86 +26,81 @@
     align-items: center;
     color: white;
 }
-
 .icono-principal .material-symbols-outlined {
     font-size: 32px;
 }
-
 .bg-rojo {
-    background-color: #f75555;
+    background-color: #f75555; /* Color del círculo rojo */
 }
 
-.bg-rojo2 {
+.bg-rojo2{
     background-color: #0f3ab5;
 }
 
-.bg-rojo3 {
+.bg-rojo3{
     background-color: #e9b141;
 }
 
 .titulos {
-    flex-grow: 1;
+    flex-grow: 1; /* Esto es la magia: empuja el botón "Urgente" todo hacia la derecha */
     display: flex;
     flex-direction: column;
 }
-
 .titulos h2 {
     margin: 0;
     color: var(--azul-logo);
     font-weight: 500;
     font-size: 2rem;
 }
-
 .titulos .fecha {
-    margin: 0.2rem 0 0;
+    margin: 0;
     color: #777;
     font-size: 1rem;
+    margin-top: .2rem;
 }
 
 .badge-urgente {
     background-color: #ff474c;
     color: white;
     padding: 0.6rem 1.5rem;
-    border-radius: 8px;
+    border-radius: 8px; /* Ligeramente redondeado */
     font-size: 1.1rem;
 }
 
 .tarjeta-body {
-    margin-left: calc(60px + 1.5rem);
+    margin-left: calc(60px + 1.5rem); /* Se salta el ancho del círculo rojo + el gap */
     margin-top: 1rem;
     color: #333;
 }
+
 
 .tarjeta-footer {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-left: calc(60px + 1.5rem);
+    margin-left: calc(60px + 1.5rem); /* Misma alineación que el cuerpo */
     margin-top: 1.5rem;
 }
 
 .linea-negra {
-    flex-grow: 1;
+    flex-grow: 1; /* Hace que la línea se estire todo lo posible */
     height: 2px;
     background-color: black;
 }
 
-.icono-etiqueta,
-.material-simbolo-linea {
+.icono-etiqueta {
     color: var(--celeste);
     display: flex;
     align-items: center;
-    font-size: 28px !important;
-    line-height: 1;
-    overflow: hidden;
 }
 
+/* Pastilla SOLO para el texto "Académico" */
 .etiqueta-blanca {
     display: inline-flex;
     align-items: center;
     background-color: #e5e7eb;
     color: var(--negro);
-    padding: 0.35rem 1rem;
+    padding: 0.35rem 1.0rem;
     border-radius: 9999px;
     font-weight: 600;
     font-size: 1.2rem;
@@ -127,17 +108,8 @@
     white-space: nowrap;
 }
 
-@media (max-width: 640px) {
-    .tarjeta-header {
-        align-items: flex-start;
-    }
-
-    .badge-urgente {
-        padding: 0.5rem 0.9rem;
-    }
-
-    .tarjeta-body,
-    .tarjeta-footer {
-        margin-left: 0;
-    }
+.material-simbolo-linea {
+    font-size:28 !important;
+    line-height: 1;
+    overflow: hidden;
 }

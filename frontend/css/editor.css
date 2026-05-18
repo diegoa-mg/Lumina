@@ -189,24 +189,6 @@
     border-radius: 1.2rem;
 }
 
-.editor-aviso-media,
-.aviso-lateral {
-    width: 100%;
-    min-height: 17rem;
-    margin-bottom: 1.25rem;
-    border-radius: 1.2rem;
-    background: #eef3ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.editor-aviso-media .material-symbols-outlined,
-.aviso-lateral .material-symbols-outlined {
-    color: var(--azul-logo);
-    font-size: 5rem;
-}
-
 /* Contenedor de info */
 .contenido-derecha {
     flex: 1; /* Esto hace que tome el espacio sobrante sin empujar de más */
