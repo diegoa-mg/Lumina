@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 07-05-2026 a las 14:30:24
+-- Tiempo de generación: 18-05-2026 a las 06:52:09
 -- Versión del servidor: 10.11.16-MariaDB
 -- Versión de PHP: 8.4.20
 
@@ -20,6 +20,18 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `lumina_bd`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `autor_categoria`
+--
+
+CREATE TABLE `autor_categoria` (
+  `id` int(11) NOT NULL,
+  `autor_id` int(11) NOT NULL,
+  `categoria_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -50,6 +62,20 @@ INSERT INTO `categorias` (`id`, `nombre_categoria`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `comentarios_materia`
+--
+
+CREATE TABLE `comentarios_materia` (
+  `id` int(11) NOT NULL,
+  `categoria_id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `comentario` text NOT NULL,
+  `fecha_creacion` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `publicaciones`
 --
 
@@ -59,14 +85,31 @@ CREATE TABLE `publicaciones` (
   `descripcion` text NOT NULL,
   `imagen_url` varchar(500) DEFAULT NULL,
   `tipo` enum('articulo','video','noticia','recurso') NOT NULL DEFAULT 'articulo',
+  `youtube_url` varchar(500) DEFAULT NULL,
+  `noticia_url` varchar(500) DEFAULT NULL,
   `categoria_id` int(11) DEFAULT NULL,
-  `observaciones_editor` text DEFAULT NULL,
   `status` enum('borrador','revision','publicado','rechazado') DEFAULT 'borrador',
   `autor_id` int(11) NOT NULL,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
   `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `fecha_publicacion` timestamp NULL DEFAULT NULL
+  `fecha_publicacion` timestamp NULL DEFAULT NULL,
+  `observaciones_editor` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `publicaciones`
+--
+
+INSERT INTO `publicaciones` (`id`, `titulo`, `descripcion`, `imagen_url`, `tipo`, `youtube_url`, `noticia_url`, `categoria_id`, `status`, `autor_id`, `fecha_creacion`, `fecha_actualizacion`, `fecha_publicacion`, `observaciones_editor`) VALUES
+(13, 'asfasdfasdfadf', 'asdfasdfasdfasdfad', 'uploads/posts/post_1_1779064539_ef9471d7.jpeg', 'articulo', '', '', 1, 'publicado', 1, '2026-05-18 00:35:39', '2026-05-18 02:08:43', '2026-05-18 02:08:43', NULL),
+(15, 'sfasfasdfasdf', 'asfasdfasdfasdfasdfadf', 'uploads/posts/aviso_1_1779070094_3466f509.jpeg', 'articulo', '', '', 1, 'publicado', 1, '2026-05-18 02:08:14', '2026-05-18 02:08:26', '2026-05-18 02:08:26', NULL),
+(16, 'pRUEBA', 'asdf;kajsdflkajs;lfa', 'uploads/posts/post_1_1779075042_716c77a1.jpeg', 'articulo', '', '', 1, 'revision', 1, '2026-05-18 03:30:42', '2026-05-18 03:30:45', NULL, NULL),
+(20, 'asdlkñfjañlksdfjañlksdf', 'añlksdjfñlasdjfñlaksdjfla', 'uploads/posts/aviso_1_1779078977_03cfced9.jpeg', 'articulo', '', '', 1, 'publicado', 1, '2026-05-18 04:36:17', '2026-05-18 04:36:26', '2026-05-18 04:36:26', NULL),
+(22, 'aaaaas', 'asfadsfasdfadf', 'uploads/posts/post_1_1779081451_e3a6dfda.jpeg', 'articulo', '', '', 4, 'revision', 1, '2026-05-18 05:17:31', '2026-05-18 05:29:14', NULL, NULL),
+(24, 'adfasdfasdfasdf', 'asdflaksdflakjsdfasdfa', NULL, 'articulo', '', '', 9, 'publicado', 1, '2026-05-18 05:26:58', '2026-05-18 05:27:03', '2026-05-18 05:27:03', NULL),
+(25, 'AVISO IMPORTANTE PRUEBA', 'ASÑLFJASLKFJASÑLKDFJADS', 'uploads/posts/aviso_1_1779082169_30d267a0.jpeg', 'articulo', '', '', 9, 'publicado', 1, '2026-05-18 05:29:29', '2026-05-18 05:29:34', '2026-05-18 05:29:34', NULL),
+(26, 'Aviso prueba', 'asdfasdfadsf', NULL, 'articulo', '', '', 9, 'revision', 1, '2026-05-18 05:46:37', '2026-05-18 05:46:37', NULL, NULL),
+(27, 'Tarea de programación - Método Numérico Bisección', 'OSTÍAS CHAVAL', 'uploads/posts/post_1_1779084488_75d8a9d4.jpeg', 'articulo', '', '', 4, 'publicado', 1, '2026-05-18 06:08:08', '2026-05-18 06:08:13', '2026-05-18 06:08:13', NULL);
 
 -- --------------------------------------------------------
 
@@ -88,15 +131,8 @@ CREATE TABLE `reacciones` (
 --
 
 INSERT INTO `reacciones` (`id`, `usuario_id`, `elemento_id`, `seccion`, `tipo_reaccion`, `fecha`) VALUES
-(1, 1, 1, 'recursos', 'guardado', '2026-04-23 17:43:59'),
-(2, 1, 1, 'recursos', 'guardado', '2026-04-23 17:44:02'),
-(3, 1, 1, 'recursos', 'guardado', '2026-04-23 17:44:02'),
-(4, 1, 1, 'recursos', 'like', '2026-04-30 19:35:06'),
-(5, 1, 1, 'recursos', 'guardado', '2026-04-30 19:35:08'),
-(6, 1, 1, 'recursos', 'like', '2026-04-30 19:35:14'),
-(7, 1, 1, 'recursos', 'like', '2026-04-30 19:35:14'),
-(8, 1, 1, 'recursos', 'guardado', '2026-04-30 19:35:15'),
-(9, 1, 1, 'recursos', 'guardado', '2026-04-30 19:35:16');
+(11, 1, 20, 'recursos', 'like', '2026-05-18 05:15:57'),
+(12, 1, 20, 'recursos', 'guardado', '2026-05-18 05:21:54');
 
 -- --------------------------------------------------------
 
@@ -117,7 +153,7 @@ INSERT INTO `roles` (`id`, `nombre`) VALUES
 (4, 'Administrador'),
 (2, 'Autor'),
 (3, 'Editor'),
-(1, 'Usuario');
+(1, 'Visitante');
 
 -- --------------------------------------------------------
 
@@ -139,12 +175,24 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `usuarios`, `correo`, `password`, `rol_id`) VALUES
-(1, 'Diego Morales', 'diegoa.mg', 'ddiegoa.mg@gmail.com', '$2y$10$cJnOP7UJxdJAAlUFAE9ZFe2L5CWeKhw.Y6OwgY/OkkIs3bYZxkAUu', 4);
+INSERT INTO `usuarios` (`id`, `nombre`, `usuarios`, `correo`, `password`, `foto_url`, `rol_id`) VALUES
+(1, 'Diego Morales', 'diegoa.mg', 'ddiegoa.mg@gmail.com', '$2y$10$cJnOP7UJxdJAAlUFAE9ZFe2L5CWeKhw.Y6OwgY/OkkIs3bYZxkAUu', 'uploads/perfiles/perfil_1_1778769079_e7b2bbba.jpeg', 4),
+(2, 'Cristiano Ronaldo', 'cr7', 'cr7@gmail.com', '$2y$10$.aJDxAWXWAjd6eUWt09Nw.qZfmDMvIahrcXTY46LfJLyJ9ihfIX7u', NULL, 2),
+(3, 'Ernesto', 'ecarmona2', 'ernestocame07@gmail.com', '$2y$10$tUwVoSDmr3k6SE7dlBvgDO6ZoOvOvtg5V5dsvNTOTPz/gQUksbTN.', NULL, 4),
+(4, 'Lionel Messi', 'messi', 'messi@gmail.com', '$2y$12$l3/phdZI8oK8HdAy9jFcROlW1spa0ehwRf6LsT.Bs/aKRMNjgVG5m', NULL, 1),
+(5, 'Luis Fernando', 'luisfer', 'Fernandoramirez9137@gmail.com', '$2y$12$b9NVczZi8xYHx5sO215tWu7GG74BDlfTi/r5SKUOeXTT8QJrzqgyi', NULL, 4);
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `autor_categoria`
+--
+ALTER TABLE `autor_categoria`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_autor_categoria` (`autor_id`,`categoria_id`),
+  ADD KEY `categoria_id` (`categoria_id`);
 
 --
 -- Indices de la tabla `categorias`
@@ -152,6 +200,14 @@ INSERT INTO `usuarios` (`id`, `nombre`, `usuarios`, `correo`, `password`, `rol_i
 ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nombre_categoria` (`nombre_categoria`);
+
+--
+-- Indices de la tabla `comentarios_materia`
+--
+ALTER TABLE `comentarios_materia`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_comentarios_materia_categoria` (`categoria_id`),
+  ADD KEY `idx_comentarios_materia_usuario` (`usuario_id`);
 
 --
 -- Indices de la tabla `publicaciones`
@@ -189,22 +245,34 @@ ALTER TABLE `usuarios`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `autor_categoria`
+--
+ALTER TABLE `autor_categoria`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
+-- AUTO_INCREMENT de la tabla `comentarios_materia`
+--
+ALTER TABLE `comentarios_materia`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `publicaciones`
 --
 ALTER TABLE `publicaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `reacciones`
 --
 ALTER TABLE `reacciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -216,11 +284,25 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `autor_categoria`
+--
+ALTER TABLE `autor_categoria`
+  ADD CONSTRAINT `autor_categoria_ibfk_1` FOREIGN KEY (`autor_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `autor_categoria_ibfk_2` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `comentarios_materia`
+--
+ALTER TABLE `comentarios_materia`
+  ADD CONSTRAINT `fk_comentarios_materia_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_comentarios_materia_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `publicaciones`
