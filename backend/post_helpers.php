@@ -7,7 +7,11 @@ function publicaciones_tiene_columna($conexion, $columna) {
         'tipo' => true,
         'youtube_url' => true,
         'noticia_url' => true,
-        'observaciones_editor' => true
+        'observaciones_editor' => true,
+        'seccion' => true,
+        'tipo_aviso' => true,
+        'urgente' => true,
+        'importante' => true
     ];
 
     if (!isset($columnas_permitidas[$columna])) {
@@ -78,6 +82,35 @@ function normalizar_status_post($status) {
     return in_array($status, $status_permitidos, true)
         ? $status
         : null;
+}
+
+function normalizar_seccion_publicacion($seccion) {
+    $seccion = trim(strtolower($seccion ?: 'post'));
+    return in_array($seccion, ['post', 'aviso'], true)
+        ? $seccion
+        : 'post';
+}
+
+function normalizar_tipo_aviso($tipo_aviso) {
+    $tipo_aviso = trim(strtolower($tipo_aviso ?: 'academico'));
+    return in_array($tipo_aviso, ['academico', 'plataforma'], true)
+        ? $tipo_aviso
+        : 'academico';
+}
+
+function normalizar_booleano($valor) {
+    if (is_bool($valor)) {
+        return $valor ? 1 : 0;
+    }
+
+    if (is_numeric($valor)) {
+        return intval($valor) ? 1 : 0;
+    }
+
+    $texto = trim(strtolower((string) $valor));
+    return in_array($texto, ['1', 'true', 'si', 'yes', 'on'], true)
+        ? 1
+        : 0;
 }
 
 function guardar_imagen_post_base64($imagen, $prefijo = 'post') {

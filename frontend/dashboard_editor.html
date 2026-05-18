@@ -24,8 +24,8 @@
     <link rel="preload" href="css/navbar.css" as="style">
     <link rel="stylesheet" href="css/navbar.css">
 
-    <link rel="preload" href="css/editor.css" as="style">
-    <link rel="stylesheet" href="css/editor.css">
+    <link rel="preload" href="css/editor.css?v=2" as="style">
+    <link rel="stylesheet" href="css/editor.css?v=2">
 </head>
 
 <body>
@@ -135,29 +135,71 @@
 
     <script src="js/auth.js"></script>
     <script src="js/menu_ui.js"></script>
-    <script src="js/crear.js"></script>
+    <script src="js/crear.js?v=10"></script>
     <script>
 
-    function formatearFecha(fechaStr) {
-        if (!fechaStr) return 'Sin fecha';
-        const fecha = new Date(String(fechaStr).replace(' ', 'T'));
-        if (isNaN(fecha)) return fechaStr;
-        return fecha.toLocaleDateString('es-MX', {
-            day: 'numeric', month: 'short', year: 'numeric'
-        });
+    const CONFIG_AVISOS_EDITOR = {
+        academico: {
+            texto: 'Academico',
+            icono: 'school'
+        },
+        plataforma: {
+            texto: 'Plataforma',
+            icono: 'language'
+        }
+    };
+
+    function escapeHtmlEditor(valor) {
+        return String(valor ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
+
+    function resolveImageSrcEditor(ruta) {
+        if (!ruta) return '';
+        if (ruta.startsWith('http') || ruta.startsWith('data:') || ruta.startsWith('../')) {
+            return ruta;
+        }
+        return `../frontend/${ruta}`;
+    }
+
+    function renderMediaRevision(post) {
+        const seccion = post.seccion || 'post';
+        const importante = Number(post.importante || 0) === 1;
+        const imagen = resolveImageSrcEditor(post.imagen_url || '');
+
+        if (seccion === 'aviso' && !importante) {
+            const tipoAviso = post.tipo_aviso || 'academico';
+            const config = CONFIG_AVISOS_EDITOR[tipoAviso] || CONFIG_AVISOS_EDITOR.academico;
+
+            return `
+                <div class="editor-aviso-media">
+                    <span class="material-symbols-outlined">${escapeHtmlEditor(config.icono)}</span>
+                </div>
+            `;
+        }
+
+        if (!imagen) {
+            return `
+                <div class="editor-aviso-media">
+                    <span class="material-symbols-outlined">image</span>
+                </div>
+            `;
+        }
+
+        return `
+            <img
+                src="${escapeHtmlEditor(imagen)}"
+                class="w-full h-72 object-cover rounded-xl mb-5"
+                alt="Preview"
+            >
+        `;
     }
 
     async function cargarPostsRevision() {
-
-        const contenedor =
-            document.getElementById('contenedorPosts');
-
-        contenedor.innerHTML = `
-            <div class="bg-white p-8 rounded-2xl shadow flex items-center gap-3">
-                <span class="material-symbols-outlined animate-spin text-[#2643d4]">progress_activity</span>
-                <h2 class="text-2xl font-bold text-gray-500">Cargando posts…</h2>
-            </div>
-        `;
 
         try {
 
@@ -167,6 +209,9 @@
                 });
 
             const posts = await respuesta.json();
+
+            const contenedor =
+                document.getElementById('contenedorPosts');
 
             contenedor.innerHTML = '';
 
@@ -184,25 +229,39 @@
             }
 
             posts.forEach(post => {
+                const seccion = post.seccion || 'post';
+                const tipoAviso = post.tipo_aviso || 'academico';
+                const urgente = Number(post.urgente || 0) === 1;
+                const importante = Number(post.importante || 0) === 1;
+                const configAviso = CONFIG_AVISOS_EDITOR[tipoAviso] || CONFIG_AVISOS_EDITOR.academico;
+                const detalles = seccion === 'aviso'
+                    ? `
+                        <p class="text-sm">Publicacion: Aviso</p>
+                        <p class="text-sm">Tipo de aviso: ${escapeHtmlEditor(configAviso.texto)}</p>
+                        <p class="text-sm">Urgencia: ${urgente ? 'Urgente' : 'No urgente'}</p>
+                        <p class="text-sm">Importante: ${importante ? 'Si' : 'No'}</p>
+                    `
+                    : `<p class="text-sm">Tipo: ${escapeHtmlEditor(post.tipo || 'articulo')}</p>`;
 
                 const tarjeta = `
                 
                 <div class="bg-white rounded-2xl shadow p-6"
                     data-post-id="${post.id}"
-                    data-titulo="${(post.titulo || '').replace(/"/g, '&quot;')}"
-                    data-descripcion="${(post.descripcion || '').replace(/"/g, '&quot;')}"
-                    data-imagen="${(post.imagen_url || '').replace(/"/g, '&quot;')}"
-                    data-tipo="${post.tipo || 'articulo'}"
+                    data-titulo="${escapeHtmlEditor(post.titulo || '')}"
+                    data-descripcion="${escapeHtmlEditor(post.descripcion || '')}"
+                    data-imagen="${escapeHtmlEditor(post.imagen_url || '')}"
+                    data-tipo="${escapeHtmlEditor(post.tipo || 'articulo')}"
+                    data-seccion="${escapeHtmlEditor(seccion)}"
+                    data-tipo-aviso="${escapeHtmlEditor(tipoAviso)}"
+                    data-urgente="${urgente ? '1' : '0'}"
+                    data-importante="${importante ? '1' : '0'}"
                     data-categoria-id="${post.categoria_id || 1}"
                 >
 
-                    <img
-                        src="../frontend/${post.imagen_url}"
-                        class="w-full h-72 object-cover rounded-xl mb-5"
-                    >
+                    ${renderMediaRevision(post)}
 
                     <h2 class="text-3xl font-bold mb-3">
-                        ${post.titulo}
+                        ${escapeHtmlEditor(post.titulo)}
                     </h2>
 
                     <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 mb-4">
@@ -225,28 +284,32 @@
                     </div>
 
                     <p class="text-gray-600 mb-6">
-                        ${post.descripcion}
+                        ${escapeHtmlEditor(post.descripcion)}
                     </p>
+
+                    <div class="mb-6">
+                        ${detalles}
+                    </div>
 
                     <div class="flex gap-4">
 
                         <button
                             onclick="aprobarPost(${post.id})"
-                            class="bg-[#2643d4] hover:bg-[#0f3ab5] text-white px-6 py-3 rounded-xl font-bold transition"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold"
                         >
                             Aprobar
                         </button>
 
                         <button
                             onclick="rechazarPost(${post.id})"
-                            class="bg-[#e94141] hover:bg-[#c62f2f] text-white px-6 py-3 rounded-xl font-bold transition"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold"
                         >
                             Rechazar
                         </button>
 
                         <button
                             onclick="abrirModalEdicion(this)"
-                            class="bg-[#e9e9f1] hover:bg-[#d8d8e4] text-[#001430] px-6 py-3 rounded-xl font-bold transition"
+                            class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-bold"
                         >
                             Editar
                         </button>
@@ -266,14 +329,6 @@
         } catch(error) {
 
             console.error(error);
-
-            contenedor.innerHTML = `
-                <div class="bg-white p-8 rounded-2xl shadow">
-                    <h2 class="text-2xl font-bold text-red-500">
-                        Error al cargar los posts. Intenta recargar la página.
-                    </h2>
-                </div>
-            `;
 
         }
 

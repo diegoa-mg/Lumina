@@ -29,6 +29,18 @@ if ($rol_id !== 3 && $rol_id !== 4) {
 $tipo_select = publicaciones_tiene_columna($conexion, 'tipo')
     ? "publicaciones.tipo"
     : "'articulo' AS tipo";
+$seccion_select = publicaciones_tiene_columna($conexion, 'seccion')
+    ? "publicaciones.seccion"
+    : "'post' AS seccion";
+$tipo_aviso_select = publicaciones_tiene_columna($conexion, 'tipo_aviso')
+    ? "publicaciones.tipo_aviso"
+    : "'academico' AS tipo_aviso";
+$urgente_select = publicaciones_tiene_columna($conexion, 'urgente')
+    ? "publicaciones.urgente"
+    : "0 AS urgente";
+$importante_select = publicaciones_tiene_columna($conexion, 'importante')
+    ? "publicaciones.importante"
+    : "0 AS importante";
 
 $sql = "
 SELECT
@@ -38,6 +50,10 @@ SELECT
     publicaciones.imagen_url,
     publicaciones.status,
     $tipo_select,
+    $seccion_select,
+    $tipo_aviso_select,
+    $urgente_select,
+    $importante_select,
     publicaciones.categoria_id,
     categorias.nombre_categoria AS materia,
     publicaciones.fecha_creacion,

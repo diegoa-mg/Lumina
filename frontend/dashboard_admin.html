@@ -462,9 +462,133 @@
                         <button type="button" id="btnPrincipalModal" class="btn-modal-guardar">Crear Categoría</button>
                     </div>
                 </div>
+                <div class="flex items-center border-b border-gray-400 pb-12"><label class="w-32 text-xl text-gray-700 font-medium">Rol</label><select id="user-rol" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white cursor-pointer appearance-none"></select></div>
+                <div id="user-materias-container" class="hidden border-b border-gray-400 pb-12">
+                    <label class="w-32 text-xl text-gray-700 font-medium block mb-4">Materias Asignadas</label>
+                    <div id="user-materias-list" class="grid grid-cols-2 gap-3">
+                    </div>
+                </div>
+                <div class="flex justify-end items-center pt-4 gap-6">
+                    <button type="button" onclick="cerrarModales()" class="text-red-500 font-semibold hover:underline">Cancelar</button>
+                    <button type="button" id="btnPrincipalModalUser" class="bg-[#2D50D1] text-white px-10 py-3 rounded-xl text-xl font-medium hover:bg-blue-800 transition shadow-lg">Guardar Usuario</button>
+                </div>
             </form>
         </div>
     </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/menu_ui.js"></script>
+    <script>
+        const mainContent = document.getElementById('main-content');
+        let nombreActual = "";
+
+        function abrirModal(idModal) {
+            document.getElementById(idModal).classList.remove('hidden');
+            mainContent.classList.add('blur-md');
+        }
+
+        function cerrarModales() {
+            document.querySelectorAll('.fixed').forEach(modal => modal.classList.add('hidden'));
+            mainContent.classList.remove('blur-md');
+        }
+
+        // --- LÃ“GICA USUARIOS ---
+
+        // --- LÃ“GICA CATEGORÃAS ---
+        function abrirModalEdicion(id, nombre, descripcion, imagen) {
+            idActual = id;
+            nombreActual = nombre;
+            document.getElementById('modal-cat-titulo').innerText = 'Editar CategorÃ­a';
+            document.getElementById('cat-nombre').value = nombre;
+            document.getElementById('cat-descripcion').value = descripcion;
+            document.getElementById('btnPrincipalModal').innerText = 'Guardar Cambios';
+            document.getElementById('btnEliminarCategoria').classList.remove('hidden');
+            // Preseleccionar la imagen correspondiente
+            if (imagen) {
+                document.querySelectorAll('input[name="icon-choice"]').forEach(radio => {
+                    radio.checked = (radio.value === imagen);
+                });
+            }
+            abrirModal('modal-agregar-categoria');
+        }
+
+        function confirmarEliminacion(id, nombre) {
+            if (confirm(`Â¿EstÃ¡s seguro de eliminar "${nombre}"?`)) {
+                alert("CategorÃ­a eliminada");
+                cerrarModales();
+            }
+        }
+
+        // --- EVENTOS ---
+        document.getElementById('btn-abrir-agregar').addEventListener('click', async () => {
+            idActual = null;
+            document.getElementById('modal-user-titulo').innerText = 'Agregar Usuario';
+            document.getElementById('btnPrincipalModalUser').innerText = 'Guardar Usuario';
+            document.getElementById('user-nombre').value = '';
+            document.getElementById('user-email').value = '';
+            document.getElementById('user-password').value = '';
+            document.getElementById('user-password').placeholder = 'ContraseÃ±a para el usuario';
+            categoriasSeleccionadas = [];
+            userFotoBase64 = '';
+            userFotoActual = '';
+            userFotoInput.value = '';
+            btnUserFoto.textContent = 'Subir foto';
+            setPreviewFotoUsuario('', '');
+            if (!rolesList.length) {
+                await fetchRoles();
+            }
+            if (!categoriasList.length) {
+                await fetchCategorias();
+            }
+            document.getElementById('user-rol').value = rolesList.length ? rolesList[0].id : '';
+            toggleMateriasContainer();
+            abrirModal('modal-agregar');
+        });
+
+        document.getElementById('btnPrincipalModalUser').addEventListener('click', async () => {
+            const nombre = document.getElementById('user-nombre').value.trim();
+            const email = document.getElementById('user-email').value.trim();
+            const password = document.getElementById('user-password').value;
+            const rolId = parseInt(document.getElementById('user-rol').value, 10);
+
+            if (!nombre || !email || !rolId) {
+                alert('Por favor completa nombre, correo y rol.');
+                return;
+            }
+
+            if (!idActual && password.trim() === '') {
+                alert('Debes ingresar una contraseÃ±a para el nuevo usuario.');
+                return;
+            }
+
+            const rolObj = rolesList.find(r => r.id === rolId);
+            const esAutor = rolObj && rolObj.nombre.toLowerCase() === 'autor';
+            
+            if (esAutor) {
+                const checkboxes = Array.from(document.querySelectorAll('#user-materias-list input[type="checkbox"]:checked'));
+                categoriasSeleccionadas = checkboxes.map(cb => parseInt(cb.value, 10));
+                if (categoriasSeleccionadas.length === 0) {
+                    alert('Debe asignar al menos una materia al autor.');
+                    return;
+                }
+            }
+
+            const payload = new URLSearchParams();
+            payload.append('nombre', nombre);
+            payload.append('email', email);
+            payload.append('rol_id', rolId);
+            if (password.trim() !== '') {
+                payload.append('password', password);
+            }
+            if (idActual) {
+                payload.append('id', idActual);
+            }
+            if (categoriasSeleccionadas.length > 0) {
+                payload.append('categorias', JSON.stringify(categoriasSeleccionadas));
+            }
+            if (userFotoBase64) {
+                payload.append('foto', userFotoBase64);
+            }
 
     <div id="modal-agregar" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="modal-overlay absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
@@ -510,9 +634,8 @@
         const mainContent = document.getElementById('main-content');
         let nombreActual = "";
 
-        function abrirModal(idModal) {
-            document.getElementById(idModal).classList.remove('hidden');
-            mainContent.classList.add('blur-md');
+        function getAvatarUrl(nombre) {
+            return `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre || 'Usuario')}&background=random&color=fff`;
         }
 
         function cerrarModales() {

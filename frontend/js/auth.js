@@ -14,7 +14,7 @@ function renderNav() {
         const userRole = getUserRole();
         const panelLinks = [];
 
-        if (userRole === 'Autor' || userRole === 'Editor' || userRole === 'Administrador') {
+        if (userRole === 'Autor' || userRole === 'Administrador') {
             panelLinks.push('<a href="dashboard_autor.html" class="autor-opt">Panel Autor</a>');
         }
         if (userRole === 'Editor' || userRole === 'Administrador') {
@@ -71,7 +71,9 @@ function redirectIfNotAllowed() {
     const role = getUserRole();
     const accessMap = {
         'cuenta.html': ['Usuario', 'Autor', 'Editor', 'Administrador'],
-        'dashboard_autor.html': ['Autor', 'Editor', 'Administrador'],
+        'likes.html': ['Usuario', 'Autor', 'Editor', 'Administrador'],
+        'saved.html': ['Usuario', 'Autor', 'Editor', 'Administrador'],
+        'dashboard_autor.html': ['Autor', 'Administrador'],
         'dashboard_editor.html': ['Editor', 'Administrador'],
         'dashboard_admin.html': ['Administrador'],
     };
@@ -110,7 +112,7 @@ function disableVisitorInteractions() {
         input.classList.add('cursor-not-allowed', 'opacity-50');
     });
 
-    const restrictedButtons = document.querySelectorAll('button[id^="btnGuardar"], button[id^="btnPrincipalModalUser"], button[id^="btn-guardar-foto"], button[data-role="admin-action"], button[data-role="author-action"]');
+    const restrictedButtons = document.querySelectorAll('button[id^="btnGuardar"], button[id^="btnPrincipalModalUser"], button[id^="btn-guardar-foto"], #btnPublicarComentarioMateria, button[data-role="admin-action"], button[data-role="author-action"]');
     restrictedButtons.forEach(button => {
         button.disabled = true;
         button.classList.add('opacity-50', 'cursor-not-allowed');
