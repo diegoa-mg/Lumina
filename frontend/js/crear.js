@@ -180,7 +180,7 @@ function obtenerCamposActuales() {
             titulo: document.getElementById('avisoTitle').value.trim(),
             descripcion: document.getElementById('avisoDesc').value.trim(),
             tipo: 'articulo',
-            categoria_id: '1',
+            categoria_id: '9',
             seccion: 'aviso',
             tipo_aviso: document.getElementById('avisoTipo').value || 'academico',
             urgente: document.getElementById('avisoUrgente').value === '1',

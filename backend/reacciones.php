@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 session_start();
 
 include 'conexion_bd.php';
+include 'post_helpers.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401);
@@ -31,8 +32,12 @@ if ($seccion === '') {
     $seccion = 'recursos';
 }
 
+$seccion_select = publicaciones_tiene_columna($conexion, 'seccion')
+    ? "CASE WHEN seccion = 'aviso' OR categoria_id = 9 THEN 'aviso' ELSE seccion END AS seccion_publicacion"
+    : "CASE WHEN categoria_id = 9 THEN 'aviso' ELSE 'post' END AS seccion_publicacion";
+
 $stmt_publicacion = $conexion->prepare("
-    SELECT id
+    SELECT id, $seccion_select
     FROM publicaciones
     WHERE id = ?
     AND status = 'publicado'
@@ -47,12 +52,18 @@ if (!$stmt_publicacion) {
 
 $stmt_publicacion->bind_param('i', $elemento_id);
 $stmt_publicacion->execute();
-$existe_publicacion = $stmt_publicacion->get_result()->num_rows > 0;
+$publicacion = $stmt_publicacion->get_result()->fetch_assoc();
 $stmt_publicacion->close();
 
-if (!$existe_publicacion) {
+if (!$publicacion) {
     http_response_code(404);
     echo json_encode(['success' => false, 'error' => 'Publicacion no encontrada']);
+    exit;
+}
+
+if ($tipo === 'like' && ($publicacion['seccion_publicacion'] ?? 'post') === 'aviso') {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Los avisos no pueden recibir me gusta']);
     exit;
 }
 

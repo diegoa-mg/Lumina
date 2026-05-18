@@ -17,6 +17,9 @@ $busqueda = '%' . $q . '%';
 $tipo_select = publicaciones_tiene_columna($conexion, 'tipo')
     ? "publicaciones.tipo"
     : "'articulo' AS tipo";
+$where_posts = publicaciones_tiene_columna($conexion, 'seccion')
+    ? "AND publicaciones.seccion = 'post' AND (publicaciones.categoria_id <> 9 OR publicaciones.categoria_id IS NULL)"
+    : "AND (publicaciones.categoria_id <> 9 OR publicaciones.categoria_id IS NULL)";
 
 $sql = "
     SELECT
@@ -34,6 +37,7 @@ $sql = "
     INNER JOIN usuarios ON publicaciones.autor_id = usuarios.id
     LEFT JOIN categorias ON publicaciones.categoria_id = categorias.id
     WHERE publicaciones.status = 'publicado'
+    $where_posts
     AND (publicaciones.titulo LIKE ? OR publicaciones.descripcion LIKE ?)
     ORDER BY publicaciones.fecha_creacion DESC
 ";

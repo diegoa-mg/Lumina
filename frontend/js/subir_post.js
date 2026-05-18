@@ -23,6 +23,31 @@ function resolveImageSrc(ruta) {
     return ruta;
 }
 
+function obtenerIconoAviso(post) {
+    const tipoAviso = post.tipo_aviso || 'academico';
+
+    return tipoAviso === 'plataforma' ? 'language' : 'school';
+}
+
+function renderMediaPanel(post, imagenFinal, titulo) {
+    const esAviso = (post.seccion || 'post') === 'aviso';
+    const tieneImagen = Boolean(post.imagen);
+
+    if (esAviso && !tieneImagen) {
+        return `
+        <div class="imagen-lateral aviso-lateral aviso-lateral-${escapeHtml(post.tipo_aviso || 'academico')}">
+            <span class="material-symbols-outlined">${obtenerIconoAviso(post)}</span>
+        </div>
+        `;
+    }
+
+    return `
+        <div class="imagen-lateral">
+            <img src="${imagenFinal}" alt="${titulo}">
+        </div>
+    `;
+}
+
 const MATERIAS_POST = {
     1: 'POO',
     2: 'Servicios de Internet',
@@ -57,6 +82,10 @@ function renderizarTarjetaEnPanel(post) {
     const descripcion = escapeHtml(post.descripcion);
     const imagen = escapeHtml(post.imagen);
     const tipo = escapeHtml(post.tipo || 'articulo');
+    const seccion = escapeHtml(post.seccion || 'post');
+    const tipoAviso = escapeHtml(post.tipo_aviso || 'academico');
+    const urgente = Number(post.urgente || 0);
+    const importante = Number(post.importante || 0);
     const categoriaId = Number(post.categoria_id || 1);
     const materia = escapeHtml(post.materia || MATERIAS_POST[categoriaId] || 'POO');
     const imagenFinal = escapeHtml(resolveImageSrc(post.imagen));
@@ -76,6 +105,10 @@ function renderizarTarjetaEnPanel(post) {
         data-descripcion="${descripcion}"
         data-imagen="${imagen}"
         data-tipo="${tipo}"
+        data-seccion="${seccion}"
+        data-tipo-aviso="${tipoAviso}"
+        data-urgente="${urgente}"
+        data-importante="${importante}"
         data-categoria-id="${categoriaId}"
     >
         <button
@@ -86,9 +119,7 @@ function renderizarTarjetaEnPanel(post) {
             <span class="material-symbols-outlined">delete</span>
         </button>
 
-        <div class="imagen-lateral">
-            <img src="${imagenFinal}" alt="Preview">
-        </div>
+        ${renderMediaPanel(post, imagenFinal, titulo)}
 
         <div class="contenido-derecha">
             <div class="header-card-autor">
@@ -101,8 +132,10 @@ function renderizarTarjetaEnPanel(post) {
 
             <p class="extracto">${descripcion}</p>
 
-            <p class="text-sm">Tipo: ${tipo}</p>
-            <p class="text-sm">Materia: ${materia}</p>
+            <p class="text-sm">Publicacion: ${seccion === 'aviso' ? 'Aviso' : 'Post'}</p>
+            <p class="text-sm">${seccion === 'aviso' ? `Tipo de aviso: ${tipoAviso === 'plataforma' ? 'Plataforma' : 'Academico'}` : `Tipo: ${tipo}`}</p>
+            <p class="text-sm">${seccion === 'aviso' ? `Urgencia: ${urgente ? 'Urgente' : 'Normal'}` : `Materia: ${materia}`}</p>
+            ${seccion === 'aviso' ? `<p class="text-sm">Importante: ${importante ? 'Si' : 'No'}</p>` : ''}
             ${status === 'rechazado' && observaciones ? `<p class="text-sm text-red-600 mt-3"><strong>Observación:</strong> ${observaciones}</p>` : ''}
         </div>
 
@@ -190,6 +223,10 @@ async function cargarPostsDelAutor() {
                 descripcion: post.descripcion,
                 imagen: post.imagen_url,
                 tipo: post.tipo || 'articulo',
+                seccion: post.seccion || 'post',
+                tipo_aviso: post.tipo_aviso || 'academico',
+                urgente: post.urgente || 0,
+                importante: post.importante || 0,
                 categoria_id: post.categoria_id || 1,
                 materia: post.materia || '',
                 status: post.status || 'borrador',

@@ -151,7 +151,7 @@ async function cargarImportanteIndex() {
     if (!contenedor) return;
 
     try {
-        const respuesta = await fetch('../backend/obtener_publicaciones.php');
+        const respuesta = await fetch('../backend/obtener_publicaciones.php?seccion=aviso&importante=1');
         const posts = await respuesta.json();
         const postsFiltrados = Array.isArray(posts)
             ? filtrarPostsIndex(posts).filter((post) => {
@@ -204,24 +204,21 @@ function renderImportanteActualIndex() {
 function actualizarBotonesImportanteIndex() {
     const prev = document.getElementById('importantePrev');
     const next = document.getElementById('importanteNext');
-    const ocultar = postsImportantesIndex.length <= 1;
+    const sinCarrusel = postsImportantesIndex.length <= 1;
+    const enInicio = postImportanteActualIndex <= 0;
+    const enFinal = postImportanteActualIndex >= postsImportantesIndex.length - 1;
 
-    if (prev) prev.classList.toggle('hidden', ocultar);
-    if (next) next.classList.toggle('hidden', ocultar);
+    if (prev) prev.classList.toggle('hidden', sinCarrusel || enInicio);
+    if (next) next.classList.toggle('hidden', sinCarrusel || enFinal);
 }
 
 function moveImportanteIndex(direction) {
     if (postsImportantesIndex.length <= 1) return;
 
-    postImportanteActualIndex += direction;
-
-    if (postImportanteActualIndex < 0) {
-        postImportanteActualIndex = postsImportantesIndex.length - 1;
-    }
-
-    if (postImportanteActualIndex >= postsImportantesIndex.length) {
-        postImportanteActualIndex = 0;
-    }
+    postImportanteActualIndex = Math.min(
+        Math.max(postImportanteActualIndex + direction, 0),
+        postsImportantesIndex.length - 1
+    );
 
     renderImportanteActualIndex();
 }

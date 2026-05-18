@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 session_start();
 
 include 'conexion_bd.php';
+include 'post_helpers.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode(['success' => true, 'reacciones' => []]);
@@ -11,6 +12,9 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 $usuario_id = intval($_SESSION['usuario_id']);
+$where_like_solo_posts = publicaciones_tiene_columna($conexion, 'seccion')
+    ? "AND (reacciones.tipo_reaccion <> 'like' OR (publicaciones.seccion = 'post' AND (publicaciones.categoria_id <> 9 OR publicaciones.categoria_id IS NULL)))"
+    : "AND (reacciones.tipo_reaccion <> 'like' OR (publicaciones.categoria_id <> 9 OR publicaciones.categoria_id IS NULL))";
 
 $stmt = $conexion->prepare("
     SELECT reacciones.elemento_id, reacciones.seccion, reacciones.tipo_reaccion
@@ -19,6 +23,7 @@ $stmt = $conexion->prepare("
     ON publicaciones.id = reacciones.elemento_id
     WHERE reacciones.usuario_id = ?
     AND publicaciones.status = 'publicado'
+    $where_like_solo_posts
 ");
 
 if (!$stmt) {

@@ -1,3 +1,51 @@
+.bloque-cuenta {
+    background: var(--blanco);
+    border: 1px solid #e5e7eb;
+    border-radius: 1.2rem;
+    margin: 2.4rem 0;
+    padding: 2.4rem;
+}
+
+.bloque-header {
+    margin-bottom: 1.6rem;
+}
+
+.bloque-header h2,
+.form-side h2 {
+    font-family: var(--fuente-principal);
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 0.6rem;
+}
+
+.bloque-header p {
+    color: #6b7280;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.form-side h2 {
+    color: var(--azul-logo);
+    margin-bottom: 1.8rem;
+}
+
+.upload-box .text-main {
+    color: var(--azul-logo);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.upload-box .text-sub {
+    color: #6b7280;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
 .seccion-vacia {
     background-color: var(--blanco);
     border-radius: 1.2rem;
@@ -9,22 +57,34 @@
 }
 
 .boton-crear{
-    background-color: var(--blanco);
-    font-size: 3rem;
-    padding: 1rem 8rem;
-    text-transform: uppercase;
-    font-weight: 600;
+    align-items: center;
+    background-color: #2563eb;
+    border: none;
     border-radius: 1.2rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    color: var(--blanco);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: var(--fuente-principal);
+    font-size: 1.6rem;
+    font-weight: 600;
+    gap: 0.8rem;
+    justify-content: center;
+    line-height: 1;
+    margin-bottom: 0.8rem;
+    padding: 1rem 2rem;
     text-align: center;
-
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: inline-block;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .boton-crear:hover{
-    transform: translateY(-.2rem);
-    box-shadow: 0 5px 10px rgba(0,0,0,0.2);   
-    cursor: pointer;
+    background-color: #1d4ed8;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+    transform: translateY(-0.1rem);
+}
+
+.boton-crear .material-symbols-outlined {
+    font-size: 2rem;
 }
 
 /* Overlay del fondo */
@@ -474,6 +534,18 @@
 .aviso-lateral .material-symbols-outlined {
     color: var(--azul-logo);
     font-size: 5rem;
+}
+
+.aviso-lateral-academico {
+    background: #eef3ff;
+}
+
+.aviso-lateral-plataforma {
+    background: #eefbf7;
+}
+
+.aviso-lateral-plataforma .material-symbols-outlined {
+    color: #0f766e;
 }
 
 /* Contenedor de info */

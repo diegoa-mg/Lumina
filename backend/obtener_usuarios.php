@@ -21,6 +21,7 @@ $sql = "
     SELECT
         usuarios.id,
         usuarios.nombre,
+        usuarios.usuarios AS usuario,
         usuarios.correo,
         roles.nombre AS rol,
         usuarios.foto_url,
@@ -30,7 +31,7 @@ $sql = "
     JOIN roles ON usuarios.rol_id = roles.id
     LEFT JOIN autor_categoria ON autor_categoria.autor_id = usuarios.id
     LEFT JOIN categorias ON categorias.id = autor_categoria.categoria_id
-    GROUP BY usuarios.id, usuarios.nombre, usuarios.correo, roles.nombre, usuarios.foto_url
+    GROUP BY usuarios.id, usuarios.nombre, usuarios.usuarios, usuarios.correo, roles.nombre, usuarios.foto_url
     ORDER BY usuarios.nombre ASC
 ";
 $resultado = $conexion->query($sql);

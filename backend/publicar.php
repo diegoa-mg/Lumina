@@ -30,6 +30,10 @@ $status = normalizar_status_post($data['status'] ?? 'borrador');
 $youtube_url = trim($data['youtube_url'] ?? '');
 $noticia_url = trim($data['noticia_url'] ?? '');
 
+if ($seccion === 'aviso') {
+    $categoria_id = 9;
+}
+
 if (!$status) {
     echo json_encode(['success' => false, 'error' => 'Estado de publicacion no valido']);
     exit;

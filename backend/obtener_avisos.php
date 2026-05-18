@@ -5,12 +5,7 @@ header('Content-Type: application/json');
 include 'conexion_bd.php';
 include 'post_helpers.php';
 
-if (!publicaciones_tiene_columna($conexion, 'seccion')) {
-    echo json_encode([]);
-    $conexion->close();
-    exit;
-}
-
+$tiene_seccion = publicaciones_tiene_columna($conexion, 'seccion');
 $tipo_aviso_select = publicaciones_tiene_columna($conexion, 'tipo_aviso')
     ? "publicaciones.tipo_aviso"
     : "'academico' AS tipo_aviso";
@@ -20,6 +15,12 @@ $urgente_select = publicaciones_tiene_columna($conexion, 'urgente')
 $orden_urgente = publicaciones_tiene_columna($conexion, 'urgente')
     ? "publicaciones.urgente DESC,"
     : "";
+$where_aviso = $tiene_seccion
+    ? "(publicaciones.seccion = 'aviso' OR publicaciones.categoria_id = 9 OR categorias.nombre_categoria = 'Avisos Generales')"
+    : "(publicaciones.categoria_id = 9 OR categorias.nombre_categoria = 'Avisos Generales')";
+$where_no_importante = publicaciones_tiene_columna($conexion, 'importante')
+    ? "AND publicaciones.importante <> 1"
+    : "AND (publicaciones.imagen_url IS NULL OR publicaciones.imagen_url = '')";
 
 $sql = "
 SELECT
@@ -35,8 +36,11 @@ SELECT
 FROM publicaciones
 INNER JOIN usuarios
 ON publicaciones.autor_id = usuarios.id
+LEFT JOIN categorias
+ON publicaciones.categoria_id = categorias.id
 WHERE publicaciones.status = 'publicado'
-AND publicaciones.seccion = 'aviso'
+AND $where_aviso
+$where_no_importante
 ORDER BY
     $orden_urgente
     COALESCE(publicaciones.fecha_publicacion, publicaciones.fecha_creacion) DESC

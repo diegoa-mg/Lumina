@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 session_start();
 
 include 'conexion_bd.php';
+include 'comentarios_materia_helpers.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401);
@@ -19,6 +20,18 @@ if (!is_array($data)) {
 $categoria_id = intval($data['categoria_id'] ?? 0);
 $comentario = trim($data['comentario'] ?? '');
 $usuario_id = intval($_SESSION['usuario_id']);
+
+try {
+    if (!asegurar_tabla_comentarios_materia($conexion)) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'No se pudo preparar la tabla de comentarios']);
+        exit;
+    }
+} catch (Throwable $error) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => 'No se pudo preparar la tabla de comentarios']);
+    exit;
+}
 
 if ($categoria_id <= 0) {
     http_response_code(400);

@@ -49,7 +49,23 @@ function renderAvatarComentario(comentario) {
     return '<span class="material-symbols-outlined comentario-avatar-icon">person</span>';
 }
 
+let puedeEliminarComentariosMateria = false;
+let categoriaComentariosActual = 1;
+
 function renderComentarioMateria(comentario) {
+    const botonEliminar = puedeEliminarComentariosMateria
+        ? `
+                <button
+                    class="comentario-eliminar"
+                    type="button"
+                    onclick="eliminarComentarioMateria(${Number(comentario.id || 0)})"
+                    title="Eliminar comentario"
+                >
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+        `
+        : '';
+
     return `
         <article class="comentario-card">
             <div class="comentario-avatar">
@@ -57,8 +73,11 @@ function renderComentarioMateria(comentario) {
             </div>
             <div class="comentario-contenido">
                 <div class="comentario-header">
-                    <strong>${escapeHtmlComentario(comentario.nombre || 'Usuario')}</strong>
-                    <span>${escapeHtmlComentario(formatearFechaComentario(comentario.fecha_creacion))}</span>
+                    <div>
+                        <strong>${escapeHtmlComentario(comentario.nombre || 'Usuario')}</strong>
+                        <span>${escapeHtmlComentario(formatearFechaComentario(comentario.fecha_creacion))}</span>
+                    </div>
+                    ${botonEliminar}
                 </div>
                 <p>${escapeHtmlComentario(comentario.comentario || '')}</p>
             </div>
@@ -70,6 +89,7 @@ async function cargarComentariosMateria(categoriaId) {
     const lista = document.getElementById('listaComentariosMateria');
     if (!lista) return;
 
+    categoriaComentariosActual = categoriaId;
     lista.innerHTML = '<div class="comentarios-vacio">Cargando comentarios...</div>';
 
     try {
@@ -83,6 +103,7 @@ async function cargarComentariosMateria(categoriaId) {
         const comentarios = Array.isArray(resultado.comentarios)
             ? resultado.comentarios
             : [];
+        puedeEliminarComentariosMateria = resultado.puede_eliminar === true;
 
         if (comentarios.length === 0) {
             lista.innerHTML = '<div class="comentarios-vacio">Todavia no hay comentarios en esta materia.</div>';
@@ -93,6 +114,34 @@ async function cargarComentariosMateria(categoriaId) {
     } catch (error) {
         console.error(error);
         lista.innerHTML = '<div class="comentarios-vacio">No se pudieron cargar los comentarios.</div>';
+    }
+}
+
+async function eliminarComentarioMateria(comentarioId) {
+    if (!comentarioId) return;
+    if (!confirm('¿Eliminar este comentario? Esta accion no se puede deshacer.')) return;
+
+    try {
+        const respuesta = await fetch('../backend/eliminar_comentario_materia.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                comentario_id: comentarioId
+            })
+        });
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.success) {
+            throw new Error(resultado.error || 'No se pudo eliminar el comentario');
+        }
+
+        await cargarComentariosMateria(categoriaComentariosActual);
+    } catch (error) {
+        console.error(error);
+        alert(error.message || 'No se pudo eliminar el comentario');
     }
 }
 

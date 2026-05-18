@@ -21,9 +21,13 @@ $tipo_select = publicaciones_tiene_columna($conexion, 'tipo')
 $observaciones_select = publicaciones_tiene_columna($conexion, 'observaciones_editor')
     ? 'publicaciones.observaciones_editor AS observaciones'
     : "NULL AS observaciones";
-$seccion_select = publicaciones_tiene_columna($conexion, 'seccion')
+$tiene_seccion = publicaciones_tiene_columna($conexion, 'seccion');
+$seccion_select = $tiene_seccion
     ? 'publicaciones.seccion'
     : "'post' AS seccion";
+$materia_select = $tiene_seccion
+    ? "CASE WHEN publicaciones.seccion = 'aviso' OR publicaciones.categoria_id = 9 THEN NULL ELSE categorias.nombre_categoria END AS materia"
+    : "CASE WHEN publicaciones.categoria_id = 9 THEN NULL ELSE categorias.nombre_categoria END AS materia";
 $tipo_aviso_select = publicaciones_tiene_columna($conexion, 'tipo_aviso')
     ? 'publicaciones.tipo_aviso'
     : "'academico' AS tipo_aviso";
@@ -40,10 +44,6 @@ $noticia_select = publicaciones_tiene_columna($conexion, 'noticia_url')
     ? 'publicaciones.noticia_url'
     : "NULL AS noticia_url";
 
-$observaciones_select = publicaciones_tiene_columna($conexion, 'observaciones_editor')
-    ? 'publicaciones.observaciones_editor AS observaciones'
-    : "NULL AS observaciones";
-
 $query = "
 SELECT
     publicaciones.id,
@@ -59,7 +59,7 @@ SELECT
     $youtube_select,
     $noticia_select,
     publicaciones.categoria_id,
-    categorias.nombre_categoria AS materia,
+    $materia_select,
     publicaciones.fecha_creacion,
     $observaciones_select
 FROM publicaciones

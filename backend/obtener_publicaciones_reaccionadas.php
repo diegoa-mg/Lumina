@@ -23,9 +23,15 @@ $usuario_id = intval($_SESSION['usuario_id']);
 $tipo_select = publicaciones_tiene_columna($conexion, 'tipo')
     ? "publicaciones.tipo"
     : "'articulo' AS tipo";
-$seccion_select = publicaciones_tiene_columna($conexion, 'seccion')
+$tiene_seccion = publicaciones_tiene_columna($conexion, 'seccion');
+$seccion_select = $tiene_seccion
     ? "publicaciones.seccion"
     : "'post' AS seccion";
+$where_like_solo_posts = $tipo_reaccion === 'like'
+    ? ($tiene_seccion
+        ? "AND publicaciones.seccion = 'post' AND (publicaciones.categoria_id <> 9 OR publicaciones.categoria_id IS NULL)"
+        : "AND (publicaciones.categoria_id <> 9 OR publicaciones.categoria_id IS NULL)")
+    : "";
 $importante_select = publicaciones_tiene_columna($conexion, 'importante')
     ? "publicaciones.importante"
     : "0 AS importante";
@@ -64,6 +70,7 @@ ON categorias.id = publicaciones.categoria_id
 WHERE reacciones.usuario_id = ?
 AND reacciones.tipo_reaccion = ?
 AND publicaciones.status = 'publicado'
+$where_like_solo_posts
 ORDER BY reacciones.fecha DESC
 ";
 

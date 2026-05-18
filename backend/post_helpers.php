@@ -58,7 +58,7 @@ function normalizar_tipo_post($tipo) {
 
 function normalizar_categoria_post($categoria_id) {
     $categoria_id = intval($categoria_id ?: 1);
-    $categorias_permitidas = [1, 2, 3, 4, 5, 6, 7, 8];
+    $categorias_permitidas = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     return in_array($categoria_id, $categorias_permitidas, true)
         ? $categoria_id
@@ -86,14 +86,18 @@ function normalizar_status_post($status) {
 
 function normalizar_seccion_publicacion($seccion) {
     $seccion = trim(strtolower($seccion ?: 'post'));
-    return in_array($seccion, ['post', 'aviso'], true)
+    $secciones_permitidas = ['post', 'aviso'];
+
+    return in_array($seccion, $secciones_permitidas, true)
         ? $seccion
         : 'post';
 }
 
 function normalizar_tipo_aviso($tipo_aviso) {
     $tipo_aviso = trim(strtolower($tipo_aviso ?: 'academico'));
-    return in_array($tipo_aviso, ['academico', 'plataforma'], true)
+    $tipos_permitidos = ['academico', 'plataforma'];
+
+    return in_array($tipo_aviso, $tipos_permitidos, true)
         ? $tipo_aviso
         : 'academico';
 }
@@ -108,6 +112,7 @@ function normalizar_booleano($valor) {
     }
 
     $texto = trim(strtolower((string) $valor));
+
     return in_array($texto, ['1', 'true', 'si', 'yes', 'on'], true)
         ? 1
         : 0;

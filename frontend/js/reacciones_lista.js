@@ -43,10 +43,18 @@ function etiquetaPublicacionLista(post) {
 
 function renderPublicacionReaccionada(post, tipoPagina) {
     const id = Number(post.id || 0);
+    const esAviso = (post.seccion || 'post') === 'aviso';
     const imagen = resolveImageLista(post.imagen_url);
     const autorFoto = resolveImageLista(post.autor_foto || 'img/usuarios/usuarios1.webp');
     const likeActivo = tipoPagina === 'like' ? 'like-activo' : '';
     const guardadoActivo = tipoPagina === 'guardado' ? 'save-activo' : '';
+    const botonLike = esAviso
+        ? ''
+        : `
+                    <button class="btn-invisible ${likeActivo}" data-reaccion-id="${id}" data-reaccion-seccion="recursos" data-reaccion-tipo="like">
+                        <span class="material-symbols-outlined">favorite</span> Me gusta
+                    </button>
+        `;
 
     return `
         <article class="tarjeta-horizontal">
@@ -75,9 +83,7 @@ function renderPublicacionReaccionada(post, tipoPagina) {
                 <p class="extracto">${escapeHtmlLista(post.descripcion || '')}</p>
 
                 <div class="footer-card">
-                    <button class="btn-invisible ${likeActivo}" data-reaccion-id="${id}" data-reaccion-seccion="recursos" data-reaccion-tipo="like">
-                        <span class="material-symbols-outlined">favorite</span> Me gusta
-                    </button>
+                    ${botonLike}
                 </div>
             </div>
         </article>

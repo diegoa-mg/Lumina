@@ -29,9 +29,13 @@ if ($rol_id !== 3 && $rol_id !== 4) {
 $tipo_select = publicaciones_tiene_columna($conexion, 'tipo')
     ? "publicaciones.tipo"
     : "'articulo' AS tipo";
-$seccion_select = publicaciones_tiene_columna($conexion, 'seccion')
+$tiene_seccion = publicaciones_tiene_columna($conexion, 'seccion');
+$seccion_select = $tiene_seccion
     ? "publicaciones.seccion"
     : "'post' AS seccion";
+$materia_select = $tiene_seccion
+    ? "CASE WHEN publicaciones.seccion = 'aviso' OR publicaciones.categoria_id = 9 THEN NULL ELSE categorias.nombre_categoria END AS materia"
+    : "CASE WHEN publicaciones.categoria_id = 9 THEN NULL ELSE categorias.nombre_categoria END AS materia";
 $tipo_aviso_select = publicaciones_tiene_columna($conexion, 'tipo_aviso')
     ? "publicaciones.tipo_aviso"
     : "'academico' AS tipo_aviso";
@@ -55,7 +59,7 @@ SELECT
     $urgente_select,
     $importante_select,
     publicaciones.categoria_id,
-    categorias.nombre_categoria AS materia,
+    $materia_select,
     publicaciones.fecha_creacion,
     usuarios.nombre AS autor
 FROM publicaciones

@@ -32,6 +32,10 @@ $youtube_url = trim($data['youtube_url'] ?? '');
 $noticia_url = trim($data['noticia_url'] ?? '');
 $imagen = $data['imagen'] ?? null;
 
+if ($seccion === 'aviso') {
+    $categoria_id = 9;
+}
+
 if (!$post_id || $titulo === '' || $descripcion === '') {
     echo json_encode(['success' => false, 'error' => 'Campos incompletos']);
     exit;
