@@ -14,7 +14,7 @@ function renderNav() {
         const userRole = getUserRole();
         const panelLinks = [];
 
-        if (userRole === 'Autor' || userRole === 'Administrador') {
+        if (userRole === 'Autor' || userRole === 'Editor' || userRole === 'Administrador') {
             panelLinks.push('<a href="dashboard_autor.html" class="autor-opt">Panel Autor</a>');
         }
         if (userRole === 'Editor' || userRole === 'Administrador') {
@@ -71,7 +71,7 @@ function redirectIfNotAllowed() {
     const role = getUserRole();
     const accessMap = {
         'cuenta.html': ['Usuario', 'Autor', 'Editor', 'Administrador'],
-        'dashboard_autor.html': ['Autor', 'Administrador'],
+        'dashboard_autor.html': ['Autor', 'Editor', 'Administrador'],
         'dashboard_editor.html': ['Editor', 'Administrador'],
         'dashboard_admin.html': ['Administrador'],
     };

@@ -138,7 +138,26 @@
     <script src="js/crear.js"></script>
     <script>
 
+    function formatearFecha(fechaStr) {
+        if (!fechaStr) return 'Sin fecha';
+        const fecha = new Date(String(fechaStr).replace(' ', 'T'));
+        if (isNaN(fecha)) return fechaStr;
+        return fecha.toLocaleDateString('es-MX', {
+            day: 'numeric', month: 'short', year: 'numeric'
+        });
+    }
+
     async function cargarPostsRevision() {
+
+        const contenedor =
+            document.getElementById('contenedorPosts');
+
+        contenedor.innerHTML = `
+            <div class="bg-white p-8 rounded-2xl shadow flex items-center gap-3">
+                <span class="material-symbols-outlined animate-spin text-[#2643d4]">progress_activity</span>
+                <h2 class="text-2xl font-bold text-gray-500">Cargando posts…</h2>
+            </div>
+        `;
 
         try {
 
@@ -148,9 +167,6 @@
                 });
 
             const posts = await respuesta.json();
-
-            const contenedor =
-                document.getElementById('contenedorPosts');
 
             contenedor.innerHTML = '';
 
@@ -189,6 +205,25 @@
                         ${post.titulo}
                     </h2>
 
+                    <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 mb-4">
+                        <span class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-base">person</span>
+                            ${post.autor || 'Autor desconocido'}
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-base">school</span>
+                            ${post.materia || 'Sin materia'}
+                        </span>
+                        <span class="flex items-center gap-1.5 capitalize">
+                            <span class="material-symbols-outlined text-base">sell</span>
+                            ${post.tipo || 'articulo'}
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-base">calendar_today</span>
+                            ${formatearFecha(post.fecha_creacion)}
+                        </span>
+                    </div>
+
                     <p class="text-gray-600 mb-6">
                         ${post.descripcion}
                     </p>
@@ -197,21 +232,21 @@
 
                         <button
                             onclick="aprobarPost(${post.id})"
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold"
+                            class="bg-[#2643d4] hover:bg-[#0f3ab5] text-white px-6 py-3 rounded-xl font-bold transition"
                         >
                             Aprobar
                         </button>
 
                         <button
                             onclick="rechazarPost(${post.id})"
-                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold"
+                            class="bg-[#e94141] hover:bg-[#c62f2f] text-white px-6 py-3 rounded-xl font-bold transition"
                         >
                             Rechazar
                         </button>
 
                         <button
                             onclick="abrirModalEdicion(this)"
-                            class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-bold"
+                            class="bg-[#e9e9f1] hover:bg-[#d8d8e4] text-[#001430] px-6 py-3 rounded-xl font-bold transition"
                         >
                             Editar
                         </button>
@@ -231,6 +266,14 @@
         } catch(error) {
 
             console.error(error);
+
+            contenedor.innerHTML = `
+                <div class="bg-white p-8 rounded-2xl shadow">
+                    <h2 class="text-2xl font-bold text-red-500">
+                        Error al cargar los posts. Intenta recargar la página.
+                    </h2>
+                </div>
+            `;
 
         }
 
