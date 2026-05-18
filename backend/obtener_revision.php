@@ -56,10 +56,13 @@ SELECT
     $importante_select,
     publicaciones.categoria_id,
     categorias.nombre_categoria AS materia,
-    publicaciones.fecha_creacion
+    publicaciones.fecha_creacion,
+    usuarios.nombre AS autor
 FROM publicaciones
 LEFT JOIN categorias
 ON publicaciones.categoria_id = categorias.id
+LEFT JOIN usuarios
+ON publicaciones.autor_id = usuarios.id
 WHERE publicaciones.status = 'revision'
 ORDER BY publicaciones.fecha_creacion DESC
 ";

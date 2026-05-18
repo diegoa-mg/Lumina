@@ -264,6 +264,25 @@
                         ${escapeHtmlEditor(post.titulo)}
                     </h2>
 
+                    <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 mb-4">
+                        <span class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-base">person</span>
+                            ${post.autor || 'Autor desconocido'}
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-base">school</span>
+                            ${post.materia || 'Sin materia'}
+                        </span>
+                        <span class="flex items-center gap-1.5 capitalize">
+                            <span class="material-symbols-outlined text-base">sell</span>
+                            ${post.tipo || 'articulo'}
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-base">calendar_today</span>
+                            ${formatearFecha(post.fecha_creacion)}
+                        </span>
+                    </div>
+
                     <p class="text-gray-600 mb-6">
                         ${escapeHtmlEditor(post.descripcion)}
                     </p>

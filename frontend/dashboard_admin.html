@@ -29,9 +29,9 @@
         .role-badge {
             display: inline-flex;
             align-items: center;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 14px;
             font-weight: 600;
             gap: 6px;
             cursor: pointer;
@@ -120,6 +120,126 @@
         .tooltip-container:hover .tooltip-text {
             visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0);
         }
+
+        /* Modal de usuario - estilo Lumina (igual al de crear post) */
+        .lumina-modal-card {
+            background: var(--blanco);
+            padding: 4rem;
+            border-radius: 1.2rem;
+            width: min(560px, 95%);
+            position: relative;
+            font-family: var(--fuente-principal);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .lumina-modal-card .modal-titulo {
+            text-align: center;
+            font-size: 3rem;
+            margin: 0 0 3rem;
+            font-weight: 500;
+            color: var(--azul-logo);
+        }
+
+        .lumina-modal-card .cerrar-modal {
+            position: absolute;
+            top: 1.8rem;
+            right: 2.2rem;
+            font-size: 3rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: color 0.2s ease;
+        }
+
+        .lumina-modal-card .cerrar-modal:hover { color: #374151; }
+
+        .lumina-field { margin-bottom: 1.8rem; }
+
+        .lumina-field label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .lumina-field input,
+        .lumina-field select,
+        .lumina-field textarea {
+            width: 100%;
+            background: var(--gris-claro);
+            border: none;
+            border-radius: 0.8rem;
+            padding: 1.2rem;
+            font-size: 1.4rem;
+            font-family: var(--fuente-principal);
+            outline: none;
+        }
+
+        .lumina-field textarea {
+            resize: none;
+            min-height: 7rem;
+        }
+
+        .lumina-field input:focus,
+        .lumina-field select:focus,
+        .lumina-field textarea:focus {
+            box-shadow: 0 0 0 2px var(--boton-azul);
+        }
+
+        .lumina-modal-card.wide { width: min(640px, 95%); }
+
+        .btn-modal-eliminar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1.4rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--fuente-principal);
+        }
+
+        .btn-modal-eliminar:hover { color: #b91c1c; }
+
+        .lumina-modal-acciones {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .btn-modal-cancelar {
+            background: none;
+            border: none;
+            color: #6b7280;
+            font-size: 1.4rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--fuente-principal);
+        }
+
+        .btn-modal-cancelar:hover { text-decoration: underline; }
+
+        .btn-modal-guardar {
+            background: #2b4cd1;
+            color: var(--blanco);
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 0.8rem;
+            font-size: 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: var(--fuente-principal);
+            transition: background 0.2s ease;
+        }
+
+        .btn-modal-guardar:hover { background: var(--secundario); }
     </style>
 </head>
 <body class="relative">
@@ -138,55 +258,50 @@
                 </div>
                 <nav class="nav-principal">
                     <a href="index.html">Inicio</a>
-                    <a href="login.html">Iniciar SesiÃ³n</a>
+                    <a href="login.html">Iniciar Sesión</a>
                 </nav>
             </div>
         </header>
 
-        <main class="min-h-screen bg-slate-100 p-8 pt-24">
-            <div class="mb-8">
-                <h1 class="text-5xl font-bold text-gray-800">Panel de administraciÃ³n</h1>
-                <p class="text-gray-500">Control total del sistema</p>
-            </div>
-
-            <div class="relative w-1/3 mb-10">
-                <span class="absolute inset-y-0 left-4 flex items-center text-gray-400">
-                    <span class="material-symbols-outlined">search</span>
-                </span>
-                <input type="text" placeholder="Buscar opciÃ³n..." 
-                       class="w-full pl-14 pr-4 py-3 rounded-full border-none shadow-sm focus:ring-2 focus:ring-blue-500 outline-none">
+        <main class="min-h-screen bg-slate-100 px-4 pt-24 pb-8">
+        <div class="contenedor-principal">
+            <div class="encabezado-pagina">
+                <h1>Panel de administración</h1>
+                <p>Control total del sistema</p>
             </div>
 
             <div class="flex gap-8">
                 <aside class="w-64">
-                    <h2 class="text-2xl font-semibold mb-4">GestiÃ³n</h2>
+                    <h2 class="text-2xl font-semibold mb-6 h-12 flex items-center">Gestión</h2>
                     <nav class="bg-white rounded-2xl shadow-sm p-4 space-y-1">
                         <a href="#" id="menu-usuarios" class="flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium transition">
                             <span class="material-symbols-outlined">group</span> Usuarios
                         </a>
                         <a href="#" id="menu-categorias" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition">
-                            <span class="material-symbols-outlined">category</span> CategorÃ­as
+                            <span class="material-symbols-outlined">category</span> Categorías
                         </a>
                     </nav>
                 </aside>
 
                 <section id="section-usuarios" class="flex-1">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-semibold text-gray-700">GestiÃ³n de usuarios</h2>
-                        <button id="btn-abrir-agregar" class="flex items-center justify-center p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition">
-                            <span class="material-symbols-outlined text-3xl">person_add</span>
+                    <div class="flex justify-between items-center mb-6 h-12">
+                        <h2 class="text-2xl font-semibold text-gray-700">Gestión de usuarios</h2>
+                        <button id="btn-abrir-agregar" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-base font-medium transition shadow-sm">
+                            <span class="material-symbols-outlined">person_add</span>
+                            Agregar usuario
                         </button>
                     </div>
 
-                    <div class="bg-white rounded-2xl shadow-sm tabla-contenedor-fix">
+                    <div class="bg-white rounded-3xl shadow-sm tabla-contenedor-fix">
                         <table class="w-full text-left border-collapse">
-                            <thead class="bg-gray-200 text-gray-600 uppercase text-xs font-bold">
+                            <thead class="bg-gray-200 text-gray-600 uppercase text-sm font-bold">
                                 <tr>
-                                    <th class="px-6 py-4">Nombre</th>
-                                    <th class="px-6 py-4">Email</th>
-                                    <th class="px-6 py-4">Estado</th>
-                                    <th class="px-6 py-4">Rol</th>
-                                    <th class="px-6 py-4 text-center">Acciones</th>
+                                    <th class="px-8 py-5 rounded-tl-3xl">Nombre</th>
+                                    <th class="px-8 py-5">Usuario</th>
+                                    <th class="px-8 py-5">Email</th>
+                                    <th class="px-8 py-5">Estado</th>
+                                    <th class="px-8 py-5">Rol</th>
+                                    <th class="px-8 py-5 text-center rounded-tr-3xl">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="usuarios-table-body" class="divide-y divide-gray-100"></tbody>
@@ -195,10 +310,11 @@
                 </section>
 
                 <section id="section-categorias" class="flex-1 hidden">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-semibold text-gray-700">GestiÃ³n de categorÃ­as</h2>
-                        <button id="btn-abrir-categoria" class="flex items-center justify-center p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition">
-                            <span class="material-symbols-outlined text-3xl">add_circle</span>
+                    <div class="flex justify-between items-center mb-6 h-12">
+                        <h2 class="text-2xl font-semibold text-gray-700">Gestión de categorías</h2>
+                        <button id="btn-abrir-categoria" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-base font-medium transition shadow-sm">
+                            <span class="material-symbols-outlined">add</span>
+                            Agregar categoría
                         </button>
                     </div>
 
@@ -207,14 +323,14 @@
                             <div class="absolute top-4 right-4 px-2 py-1 bg-green-100 text-green-600 text-[10px] font-bold rounded-full uppercase">Activa</div>
                             <div class="mb-4">
                                 <div class="w-20 h-20 rounded-2xl overflow-hidden shadow-sm">
-                                    <img src="img/materias/POO1.webp" alt="ProgramaciÃ³n Orientada a Objetos" class="w-full h-full object-cover">
+                                    <img src="img/materias/POO1.webp" alt="Programación Orientada a Objetos" class="w-full h-full object-cover">
                                 </div>
                             </div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-1">ProgramaciÃ³n Orientada a Objetos</h3>
+                            <h3 class="text-xl font-bold text-gray-800 mb-1">Programación Orientada a Objetos</h3>
                             <p class="text-gray-400 text-xs mb-6">ID en BD: 1</p>
                             <div class="w-full flex gap-2">
-                                <button onclick="abrirModalEdicion('1', 'ProgramaciÃ³n Orientada a Objetos', 'DescripciÃ³n tÃ©cnica', 'img/materias/POO1.webp')" class="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded-lg text-sm transition">Editar</button>
-                                <button onclick="confirmarEliminacion('1', 'ProgramaciÃ³n Orientada a Objetos')" class="p-2 text-red-400 hover:text-red-600 transition"><span class="material-symbols-outlined">delete</span></button>
+                                <button onclick="abrirModalEdicion('1', 'Programación Orientada a Objetos', 'Descripción técnica', 'img/materias/POO1.webp')" class="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded-lg text-sm transition">Editar</button>
+                                <button onclick="confirmarEliminacion('1', 'Programación Orientada a Objetos')" class="p-2 text-red-400 hover:text-red-600 transition"><span class="material-symbols-outlined">delete</span></button>
                             </div>
                         </div>
 
@@ -222,41 +338,55 @@
                             <div class="absolute top-4 right-4 px-2 py-1 bg-green-100 text-green-600 text-[10px] font-bold rounded-full uppercase">Activa</div>
                             <div class="mb-4">
                                 <div class="w-20 h-20 rounded-2xl overflow-hidden shadow-sm">
-                                    <img src="img/materias/MNUMERICOS.webp" alt="MÃ©todos NumÃ©ricos" class="w-full h-full object-cover">
+                                    <img src="img/materias/MNUMERICOS.webp" alt="Métodos Numéricos" class="w-full h-full object-cover">
                                 </div>
                             </div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-1">MÃ©todos NumÃ©ricos</h3>
+                            <h3 class="text-xl font-bold text-gray-800 mb-1">Métodos Numéricos</h3>
                             <p class="text-gray-400 text-xs mb-6">ID en BD: 4</p>
                             <div class="w-full flex gap-2">
-                                <button onclick="abrirModalEdicion('4', 'MÃ©todos NumÃ©ricos', 'DescripciÃ³n de la materia', 'img/materias/MNUMERICOS.webp')" class="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded-lg text-sm transition">Editar</button>
-                                <button onclick="confirmarEliminacion('4', 'MÃ©todos NumÃ©ricos')" class="p-2 text-red-400 hover:text-red-600 transition"><span class="material-symbols-outlined">delete</span></button>
+                                <button onclick="abrirModalEdicion('4', 'Métodos Numéricos', 'Descripción de la materia', 'img/materias/MNUMERICOS.webp')" class="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded-lg text-sm transition">Editar</button>
+                                <button onclick="confirmarEliminacion('4', 'Métodos Numéricos')" class="p-2 text-red-400 hover:text-red-600 transition"><span class="material-symbols-outlined">delete</span></button>
                             </div>
                         </div>
                     </div>
                 </section>
             </div>
+        </div>
         </main>
 
         <footer class="footer">
             <section class="contenido-footer">
                 <h1>Lumina</h1>
-                <p>Plataforma de difusiÃ³n digital acadÃ©mica</p>
+                <p>Plataforma de difusión digital académica</p>
             </section>
-            <p class="copy">Â© 2026 Lumina: Claridad a la informaciÃ³n</p>
+            <p class="copy">© 2026 Lumina: Claridad a la información</p>
         </footer>
     </div>
 
     <div id="modal-agregar-categoria" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="modal-overlay absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
-        <div class="relative bg-[#D9D9D9] w-full max-w-2xl rounded-3xl shadow-2xl p-10 m-4 overflow-y-auto max-h-[90vh]">
-            <h2 id="modal-cat-titulo" class="text-4xl font-medium text-center mb-10 text-gray-800 font-['Libre_Baskerville']">Nueva CategorÃ­a</h2>
-            <form class="space-y-6">
-                <div class="flex items-center"><label class="w-32 text-xl text-gray-700 font-medium">Nombre</label><input type="text" id="cat-nombre" placeholder="Ej. MatemÃ¡ticas" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white"></div>
-                <div class="flex items-start"><label class="w-32 text-xl text-gray-700 font-medium pt-2">DescripciÃ³n</label><textarea id="cat-descripcion" placeholder="Breve descripciÃ³n..." rows="2" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white resize-none"></textarea></div>
-                <div class="flex items-center"><label class="w-32 text-xl text-gray-700 font-medium">Estado</label><select id="cat-estado" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white appearance-none cursor-pointer"><option value="activa">Activa</option><option value="inactiva">Inactiva</option></select></div>
-                <div>
-                    <label class="block text-xl text-gray-700 font-medium mb-4">Selecciona una imagen</label>
-                    <div class="grid grid-cols-4 gap-4 bg-white/50 p-6 rounded-2xl shadow-inner max-h-64 overflow-y-auto">
+        <div class="lumina-modal-card wide">
+            <span class="cerrar-modal" onclick="cerrarModales()">&times;</span>
+            <h2 id="modal-cat-titulo" class="modal-titulo">Nueva Categoría</h2>
+            <form onsubmit="return false;">
+                <div class="lumina-field">
+                    <label>Nombre</label>
+                    <input type="text" id="cat-nombre" placeholder="Ej. Matemáticas">
+                </div>
+                <div class="lumina-field">
+                    <label>Descripción</label>
+                    <textarea id="cat-descripcion" placeholder="Breve descripción..." rows="2"></textarea>
+                </div>
+                <div class="lumina-field">
+                    <label>Estado</label>
+                    <select id="cat-estado">
+                        <option value="activa">Activa</option>
+                        <option value="inactiva">Inactiva</option>
+                    </select>
+                </div>
+                <div class="lumina-field">
+                    <label>Selecciona una imagen</label>
+                    <div class="grid grid-cols-4 gap-4 bg-slate-100 p-6 rounded-2xl shadow-inner max-h-64 overflow-y-auto">
                         <label class="cursor-pointer group" title="D. Emprendedor">
                             <input type="radio" name="icon-choice" value="img/materias/DEMPRENDEDOR.webp" class="hidden peer" checked>
                             <div class="aspect-square bg-white rounded-xl overflow-hidden border-4 border-transparent peer-checked:border-blue-600 transition hover:scale-105 shadow-sm">
@@ -278,12 +408,12 @@
                             </div>
                             <p class="text-center text-[10px] text-gray-500 mt-1 truncate">D. Software</p>
                         </label>
-                        <label class="cursor-pointer group" title="InglÃ©s">
+                        <label class="cursor-pointer group" title="Inglés">
                             <input type="radio" name="icon-choice" value="img/materias/INGLES.webp" class="hidden peer">
                             <div class="aspect-square bg-white rounded-xl overflow-hidden border-4 border-transparent peer-checked:border-blue-600 transition hover:scale-105 shadow-sm">
-                                <img src="img/materias/INGLES.webp" alt="InglÃ©s" class="w-full h-full object-cover">
+                                <img src="img/materias/INGLES.webp" alt="Inglés" class="w-full h-full object-cover">
                             </div>
-                            <p class="text-center text-[10px] text-gray-500 mt-1 truncate">InglÃ©s</p>
+                            <p class="text-center text-[10px] text-gray-500 mt-1 truncate">Inglés</p>
                         </label>
                         <label class="cursor-pointer group" title="Internet">
                             <input type="radio" name="icon-choice" value="img/materias/INTERNETS.avif" class="hidden peer">
@@ -292,19 +422,19 @@
                             </div>
                             <p class="text-center text-[10px] text-gray-500 mt-1 truncate">Internet</p>
                         </label>
-                        <label class="cursor-pointer group" title="M. NumÃ©ricos">
+                        <label class="cursor-pointer group" title="M. Numéricos">
                             <input type="radio" name="icon-choice" value="img/materias/MNUMERICOS.webp" class="hidden peer">
                             <div class="aspect-square bg-white rounded-xl overflow-hidden border-4 border-transparent peer-checked:border-blue-600 transition hover:scale-105 shadow-sm">
-                                <img src="img/materias/MNUMERICOS.webp" alt="M. NumÃ©ricos" class="w-full h-full object-cover">
+                                <img src="img/materias/MNUMERICOS.webp" alt="M. Numéricos" class="w-full h-full object-cover">
                             </div>
-                            <p class="text-center text-[10px] text-gray-500 mt-1 truncate">M. NumÃ©ricos</p>
+                            <p class="text-center text-[10px] text-gray-500 mt-1 truncate">M. Numéricos</p>
                         </label>
-                        <label class="cursor-pointer group" title="OrientaciÃ³n">
+                        <label class="cursor-pointer group" title="Orientación">
                             <input type="radio" name="icon-choice" value="img/materias/ORIENTACION.avif" class="hidden peer">
                             <div class="aspect-square bg-white rounded-xl overflow-hidden border-4 border-transparent peer-checked:border-blue-600 transition hover:scale-105 shadow-sm">
-                                <img src="img/materias/ORIENTACION.avif" alt="OrientaciÃ³n" class="w-full h-full object-cover">
+                                <img src="img/materias/ORIENTACION.avif" alt="Orientación" class="w-full h-full object-cover">
                             </div>
-                            <p class="text-center text-[10px] text-gray-500 mt-1 truncate">OrientaciÃ³n</p>
+                            <p class="text-center text-[10px] text-gray-500 mt-1 truncate">Orientación</p>
                         </label>
                         <label class="cursor-pointer group" title="POO">
                             <input type="radio" name="icon-choice" value="img/materias/POO1.webp" class="hidden peer">
@@ -322,30 +452,15 @@
                         </label>
                     </div>
                 </div>
-                <div class="flex justify-between items-center mt-6 border-t border-gray-400 pt-8">
-                    <button type="button" id="btnEliminarCategoria" onclick="confirmarEliminacion(idActual, nombreActual)" class="hidden text-red-500 hover:text-red-700 text-sm flex items-center gap-1 font-bold"><span class="material-symbols-outlined text-base">delete</span>Eliminar CategorÃ­a</button>
-                    <div class="flex gap-3 ml-auto">
-                        <button type="button" onclick="cerrarModales()" class="text-gray-500 font-semibold px-4 hover:underline">Cancelar</button>
-                        <button type="button" id="btnPrincipalModal" class="bg-[#2D50D1] text-white px-10 py-3 rounded-xl text-xl font-medium shadow-lg hover:bg-blue-800 transition">Crear CategorÃ­a</button>
+                <div class="lumina-modal-acciones" style="justify-content: space-between;">
+                    <button type="button" id="btnEliminarCategoria" onclick="confirmarEliminacion(idActual, nombreActual)" class="hidden btn-modal-eliminar">
+                        <span class="material-symbols-outlined" style="font-size: 1.8rem;">delete</span>
+                        Eliminar
+                    </button>
+                    <div style="display: flex; gap: 1.5rem; align-items: center; margin-left: auto;">
+                        <button type="button" onclick="cerrarModales()" class="btn-modal-cancelar">Cancelar</button>
+                        <button type="button" id="btnPrincipalModal" class="btn-modal-guardar">Crear Categoría</button>
                     </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="modal-agregar" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-        <div class="modal-overlay absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
-        <div class="relative bg-[#D9D9D9] w-full max-w-2xl rounded-3xl shadow-2xl p-12 m-4">
-            <h2 id="modal-user-titulo" class="text-4xl font-medium text-center mb-12 text-gray-800 font-['Libre_Baskerville']">Agregar Usuario</h2>
-            <form class="space-y-8">
-                <div class="flex items-center"><label class="w-32 text-xl text-gray-700 font-medium">Nombre</label><input type="text" id="user-nombre" placeholder="Ej. Juan PÃ©rez" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white"></div>
-                <div class="flex items-center"><label class="w-32 text-xl text-gray-700 font-medium">Email</label><input type="email" id="user-email" placeholder="ejemplo@correo.com" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white"></div>
-                <div class="flex items-center"><label class="w-32 text-xl text-gray-700 font-medium">ContraseÃ±a</label><input type="password" id="user-password" placeholder="ContraseÃ±a para el usuario" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white"></div>
-                <div class="flex items-center gap-4">
-                    <label class="w-32 text-xl text-gray-700 font-medium">Foto</label>
-                    <img id="user-foto-preview" src="" alt="Foto del usuario" class="w-16 h-16 rounded-full object-cover bg-white border border-gray-300">
-                    <input type="file" id="user-foto" accept="image/png,image/jpeg,image/webp" class="hidden">
-                    <button type="button" id="btn-user-foto" class="bg-white text-gray-700 px-4 py-2 rounded-lg shadow-inner hover:bg-gray-50 transition">Subir foto</button>
                 </div>
                 <div class="flex items-center border-b border-gray-400 pb-12"><label class="w-32 text-xl text-gray-700 font-medium">Rol</label><select id="user-rol" class="flex-1 p-3 rounded-md border-none shadow-inner outline-none bg-white cursor-pointer appearance-none"></select></div>
                 <div id="user-materias-container" class="hidden border-b border-gray-400 pb-12">
@@ -475,6 +590,154 @@
                 payload.append('foto', userFotoBase64);
             }
 
+    <div id="modal-agregar" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="modal-overlay absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
+        <div class="lumina-modal-card">
+            <span class="cerrar-modal" onclick="cerrarModales()">&times;</span>
+            <h2 id="modal-user-titulo" class="modal-titulo">Agregar Usuario</h2>
+            <form onsubmit="return false;">
+                <div class="lumina-field">
+                    <label>Nombre</label>
+                    <input type="text" id="user-nombre" placeholder="Ej. Juan Pérez">
+                </div>
+                <div class="lumina-field">
+                    <label>Usuario</label>
+                    <input type="text" id="user-usuario" placeholder="Ej. juanperez">
+                </div>
+                <div class="lumina-field">
+                    <label>Email</label>
+                    <input type="email" id="user-email" placeholder="ejemplo@correo.com">
+                </div>
+                <div class="lumina-field">
+                    <label>Contraseña</label>
+                    <input type="password" id="user-password" placeholder="Contraseña para el usuario">
+                </div>
+                <div class="lumina-field">
+                    <label>Rol</label>
+                    <select id="user-rol"></select>
+                </div>
+                <div id="user-materias-container" class="lumina-field hidden">
+                    <label>Materias Asignadas</label>
+                    <div id="user-materias-list" class="grid grid-cols-2 gap-2 mt-1"></div>
+                </div>
+                <div class="lumina-modal-acciones">
+                    <button type="button" onclick="cerrarModales()" class="btn-modal-cancelar">Cancelar</button>
+                    <button type="button" id="btnPrincipalModalUser" class="btn-modal-guardar">Guardar Usuario</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/menu_ui.js"></script>
+    <script>
+        const mainContent = document.getElementById('main-content');
+        let nombreActual = "";
+
+        function getAvatarUrl(nombre) {
+            return `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre || 'Usuario')}&background=random&color=fff`;
+        }
+
+        function cerrarModales() {
+            document.querySelectorAll('.fixed').forEach(modal => modal.classList.add('hidden'));
+            mainContent.classList.remove('blur-md');
+        }
+
+        // --- LÓGICA USUARIOS ---
+
+        // --- LÓGICA CATEGORÍAS ---
+        function abrirModalEdicion(id, nombre, descripcion, imagen) {
+            idActual = id;
+            nombreActual = nombre;
+            document.getElementById('modal-cat-titulo').innerText = 'Editar Categoría';
+            document.getElementById('cat-nombre').value = nombre;
+            document.getElementById('cat-descripcion').value = descripcion;
+            document.getElementById('btnPrincipalModal').innerText = 'Guardar Cambios';
+            document.getElementById('btnEliminarCategoria').classList.remove('hidden');
+            // Preseleccionar la imagen correspondiente
+            if (imagen) {
+                document.querySelectorAll('input[name="icon-choice"]').forEach(radio => {
+                    radio.checked = (radio.value === imagen);
+                });
+            }
+            abrirModal('modal-agregar-categoria');
+        }
+
+        function confirmarEliminacion(id, nombre) {
+            if (confirm(`¿Estás seguro de eliminar "${nombre}"?`)) {
+                alert("Categoría eliminada");
+                cerrarModales();
+            }
+        }
+
+        // --- EVENTOS ---
+        document.getElementById('btn-abrir-agregar').addEventListener('click', async () => {
+            idActual = null;
+            document.getElementById('modal-user-titulo').innerText = 'Agregar Usuario';
+            document.getElementById('btnPrincipalModalUser').innerText = 'Guardar Usuario';
+            document.getElementById('user-nombre').value = '';
+            document.getElementById('user-usuario').value = '';
+            document.getElementById('user-email').value = '';
+            document.getElementById('user-password').value = '';
+            document.getElementById('user-password').placeholder = 'Contraseña para el usuario';
+            categoriasSeleccionadas = [];
+            if (!rolesList.length) {
+                await fetchRoles();
+            }
+            if (!categoriasList.length) {
+                await fetchCategorias();
+            }
+            document.getElementById('user-rol').value = rolesList.length ? rolesList[0].id : '';
+            toggleMateriasContainer();
+            abrirModal('modal-agregar');
+        });
+
+        document.getElementById('btnPrincipalModalUser').addEventListener('click', async () => {
+            const nombre = document.getElementById('user-nombre').value.trim();
+            const usuario = document.getElementById('user-usuario').value.trim();
+            const email = document.getElementById('user-email').value.trim();
+            const password = document.getElementById('user-password').value;
+            const rolId = parseInt(document.getElementById('user-rol').value, 10);
+
+            if (!nombre || !email || !rolId) {
+                alert('Por favor completa nombre, correo y rol.');
+                return;
+            }
+
+            if (!idActual && password.trim() === '') {
+                alert('Debes ingresar una contraseña para el nuevo usuario.');
+                return;
+            }
+
+            const rolObj = rolesList.find(r => r.id === rolId);
+            const esAutor = rolObj && rolObj.nombre.toLowerCase() === 'autor';
+            
+            if (esAutor) {
+                const checkboxes = Array.from(document.querySelectorAll('#user-materias-list input[type="checkbox"]:checked'));
+                categoriasSeleccionadas = checkboxes.map(cb => parseInt(cb.value, 10));
+                if (categoriasSeleccionadas.length === 0) {
+                    alert('Debe asignar al menos una materia al autor.');
+                    return;
+                }
+            }
+
+            const payload = new URLSearchParams();
+            payload.append('nombre', nombre);
+            payload.append('email', email);
+            payload.append('rol_id', rolId);
+            if (usuario !== '') {
+                payload.append('usuario', usuario);
+            }
+            if (password.trim() !== '') {
+                payload.append('password', password);
+            }
+            if (idActual) {
+                payload.append('id', idActual);
+            }
+            if (categoriasSeleccionadas.length > 0) {
+                payload.append('categorias', JSON.stringify(categoriasSeleccionadas));
+            }
+
             const response = await fetch('../backend/guardar_usuario.php', {
                 method: 'POST',
                 body: payload,
@@ -492,8 +755,8 @@
         });
 
         document.getElementById('btn-abrir-categoria').addEventListener('click', () => {
-            document.getElementById('modal-cat-titulo').innerText = 'Nueva CategorÃ­a';
-            document.getElementById('btnPrincipalModal').innerText = 'Crear CategorÃ­a';
+            document.getElementById('modal-cat-titulo').innerText = 'Nueva Categoría';
+            document.getElementById('btnPrincipalModal').innerText = 'Crear Categoría';
             document.getElementById('btnEliminarCategoria').classList.add('hidden');
             document.getElementById('cat-nombre').value = '';
             document.getElementById('cat-descripcion').value = '';
@@ -505,65 +768,18 @@
             overlay.addEventListener('click', cerrarModales);
         });
 
-        // NAVEGACIÃ“N
+        // NAVEGACIÓN
         const btnMenuUsuarios = document.getElementById('menu-usuarios');
         const btnMenuCategorias = document.getElementById('menu-categorias');
         const sectionUsuarios = document.getElementById('section-usuarios');
         const sectionCategorias = document.getElementById('section-categorias');
         const usuariosTableBody = document.getElementById('usuarios-table-body');
         const userRoleSelect = document.getElementById('user-rol');
-        const userFotoInput = document.getElementById('user-foto');
-        const userFotoPreview = document.getElementById('user-foto-preview');
-        const btnUserFoto = document.getElementById('btn-user-foto');
 
         let rolesList = [];
         let categoriasList = [];
         let idActual = null;
         let categoriasSeleccionadas = [];
-        let userFotoBase64 = '';
-        let userFotoActual = '';
-
-        function getAvatarUrl(nombre) {
-            return `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre || 'Usuario')}&background=random&color=fff`;
-        }
-
-        function resolverFotoUsuario(fotoUrl, nombre) {
-            if (!fotoUrl) {
-                return getAvatarUrl(nombre);
-            }
-            if (/^(https?:)?\/\//.test(fotoUrl) || fotoUrl.startsWith('data:image')) {
-                return fotoUrl;
-            }
-            return fotoUrl.replace(/^(\.\.\/)+/, '').replace(/^frontend\//, '');
-        }
-
-        function setPreviewFotoUsuario(fotoUrl, nombre) {
-            if (!userFotoPreview) return;
-            userFotoPreview.src = resolverFotoUsuario(fotoUrl, nombre);
-            userFotoPreview.onerror = () => {
-                userFotoPreview.src = getAvatarUrl(nombre);
-            };
-        }
-
-        btnUserFoto.addEventListener('click', () => userFotoInput.click());
-        userFotoInput.addEventListener('change', () => {
-            const archivo = userFotoInput.files && userFotoInput.files[0];
-            if (!archivo) return;
-
-            if (!archivo.type.startsWith('image/')) {
-                alert('Selecciona una imagen v?lida.');
-                userFotoInput.value = '';
-                return;
-            }
-
-            const lector = new FileReader();
-            lector.onload = () => {
-                userFotoBase64 = lector.result;
-                setPreviewFotoUsuario(userFotoBase64, document.getElementById('user-nombre').value.trim());
-                btnUserFoto.textContent = 'Cambiar foto';
-            };
-            lector.readAsDataURL(archivo);
-        });
 
         async function fetchCategorias() {
             try {
@@ -574,7 +790,7 @@
                     renderCategoriasCheckboxes();
                 }
             } catch (error) {
-                console.error('Error cargando categorÃ­as:', error);
+                console.error('Error cargando categorías:', error);
             }
         }
 
@@ -633,7 +849,7 @@
                 renderRoleOptions();
             } catch (error) {
                 console.error(error);
-                alert('Error cargando roles. AsegÃºrate de iniciar sesiÃ³n como administrador.');
+                alert('Error cargando roles. Asegúrate de iniciar sesión como administrador.');
             }
         }
 
@@ -653,7 +869,7 @@
                 renderUsuarios(data.usuarios);
             } catch (error) {
                 console.error(error);
-                usuariosTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-gray-500">No se pudieron cargar los usuarios.</td></tr>';
+                usuariosTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-6 text-center text-gray-500">No se pudieron cargar los usuarios.</td></tr>';
             }
         }
 
@@ -675,7 +891,7 @@
         function renderUsuarios(usuarios) {
             usuariosTableBody.innerHTML = '';
             if (!usuarios || usuarios.length === 0) {
-                usuariosTableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-gray-500">No hay usuarios registrados.</td></tr>';
+                usuariosTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-6 text-center text-gray-500">No hay usuarios registrados.</td></tr>';
                 return;
             }
 
@@ -683,43 +899,38 @@
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-gray-50 transition';
 
-                const avatarUrl = resolverFotoUsuario(usuario.foto_url, usuario.nombre);
+                const avatarFallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(usuario.nombre)}&background=random&color=fff`;
+                const avatarUrl = usuario.foto_url ? usuario.foto_url : avatarFallback;
 
                 const nombreTd = document.createElement('td');
-                nombreTd.className = 'px-6 py-4 flex items-center gap-3';
+                nombreTd.className = 'px-8 py-5 flex items-center gap-4';
                 const avatar = document.createElement('img');
                 avatar.src = avatarUrl;
                 avatar.alt = usuario.nombre;
-                avatar.className = 'w-10 h-10 rounded-full border object-cover';
+                avatar.className = 'w-12 h-12 rounded-full border object-cover';
                 avatar.onerror = () => {
-                    avatar.src = getAvatarUrl(usuario.nombre);
+                    avatar.onerror = null;
+                    avatar.src = avatarFallback;
                 };
-                const nombreWrap = document.createElement('div');
-                nombreWrap.className = 'flex flex-col';
                 const nombreSpan = document.createElement('span');
-                nombreSpan.className = 'font-medium text-gray-800';
+                nombreSpan.className = 'font-medium text-gray-800 text-lg';
                 nombreSpan.textContent = usuario.nombre;
-                nombreWrap.append(nombreSpan);
-                if (usuario.rol.toLowerCase() === 'autor') {
-                    const materiasSpan = document.createElement('span');
-                    materiasSpan.className = 'text-xs text-gray-500';
-                    materiasSpan.textContent = usuario.categorias_nombres
-                        ? `Materias: ${usuario.categorias_nombres}`
-                        : 'Sin materias asignadas';
-                    nombreWrap.append(materiasSpan);
-                }
-                nombreTd.append(avatar, nombreWrap);
+                nombreTd.append(avatar, nombreSpan);
+
+                const usuarioTd = document.createElement('td');
+                usuarioTd.className = 'px-8 py-5 text-gray-600 text-base';
+                usuarioTd.textContent = usuario.usuario ? '@' + usuario.usuario : '—';
 
                 const correoTd = document.createElement('td');
-                correoTd.className = 'px-6 py-4 text-gray-600 text-sm';
+                correoTd.className = 'px-8 py-5 text-gray-600 text-base';
                 correoTd.textContent = usuario.correo;
 
                 const estadoTd = document.createElement('td');
-                estadoTd.className = 'px-6 py-4 text-gray-600 text-sm';
+                estadoTd.className = 'px-8 py-5 text-gray-600 text-base';
                 estadoTd.textContent = usuario.estado || 'Activo';
 
                 const rolTd = document.createElement('td');
-                rolTd.className = 'px-6 py-4';
+                rolTd.className = 'px-8 py-5';
                 const roleContainer = document.createElement('div');
                 roleContainer.className = 'role-container';
                 const [roleClass, dotClass] = getRoleClasses(usuario.rol);
@@ -733,7 +944,7 @@
                 roleText.textContent = usuario.rol;
                 const icon = document.createElement('span');
                 icon.className = 'material-symbols-outlined';
-                icon.style.fontSize = '16px';
+                icon.style.fontSize = '18px';
                 icon.textContent = 'expand_more';
                 badge.append(dot, roleText, icon);
 
@@ -755,48 +966,40 @@
                 rolTd.append(roleContainer);
 
                 const accionesTd = document.createElement('td');
-                accionesTd.className = 'px-6 py-4 text-center space-x-2';
+                accionesTd.className = 'px-8 py-5 text-center space-x-2';
                 const editarBtn = document.createElement('button');
-                editarBtn.className = 'bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition';
+                editarBtn.className = 'bg-blue-600 text-white px-5 py-2 rounded-lg text-base font-medium hover:bg-blue-700 transition';
                 editarBtn.textContent = 'Editar';
-                editarBtn.onclick = () => abrirModalEdicionUsuario(usuario);
+                editarBtn.onclick = () => abrirModalEdicionUsuario(usuario.id, usuario.nombre, usuario.usuario, usuario.correo, getRoleIdByName(usuario.rol));
                 const eliminarBtn = document.createElement('button');
-                eliminarBtn.className = 'bg-red-500 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-red-600 transition';
+                eliminarBtn.className = 'bg-red-500 text-white px-5 py-2 rounded-lg text-base font-medium hover:bg-red-600 transition';
                 eliminarBtn.textContent = 'Eliminar';
                 eliminarBtn.onclick = () => eliminarUsuario(usuario.id, usuario.nombre);
                 accionesTd.append(editarBtn, eliminarBtn);
 
-                tr.append(nombreTd, correoTd, estadoTd, rolTd, accionesTd);
+                tr.append(nombreTd, usuarioTd, correoTd, estadoTd, rolTd, accionesTd);
                 usuariosTableBody.appendChild(tr);
             });
         }
 
-        function abrirModalEdicionUsuario(usuario) {
-            const rolId = getRoleIdByName(usuario.rol);
-            idActual = usuario.id;
+        function abrirModalEdicionUsuario(id, nombre, usuarioNombre, email, rolId) {
+            idActual = id;
             document.getElementById('modal-user-titulo').innerText = 'Editar Usuario';
-            document.getElementById('user-nombre').value = usuario.nombre;
-            document.getElementById('user-email').value = usuario.correo;
+            document.getElementById('user-nombre').value = nombre;
+            document.getElementById('user-usuario').value = usuarioNombre || '';
+            document.getElementById('user-email').value = email;
             document.getElementById('user-password').value = '';
-            document.getElementById('user-password').placeholder = 'Dejar vacio si no cambia';
+            document.getElementById('user-password').placeholder = 'Dejar vacío si no cambia';
             document.getElementById('user-rol').value = rolId;
             document.getElementById('btnPrincipalModalUser').innerText = 'Guardar Cambios';
-            userFotoBase64 = '';
-            userFotoActual = usuario.foto_url || '';
-            userFotoInput.value = '';
-            btnUserFoto.textContent = userFotoActual ? 'Cambiar foto' : 'Subir foto';
-            setPreviewFotoUsuario(userFotoActual, usuario.nombre);
-
+            
             const rolObj = rolesList.find(r => r.id === rolId);
             if (rolObj && rolObj.nombre.toLowerCase() === 'autor') {
-                categoriasSeleccionadas = Array.isArray(usuario.categorias)
-                    ? usuario.categorias.map(c => parseInt(c.id, 10))
-                    : [];
-                renderCategoriasCheckboxes();
+                fetchCategoriasAsignadas(id);
             } else {
                 categoriasSeleccionadas = [];
             }
-
+            
             toggleMateriasContainer();
             abrirModal('modal-agregar');
         }
@@ -810,16 +1013,11 @@
                     renderCategoriasCheckboxes();
                 }
             } catch (error) {
-                console.error('Error cargando categorÃ­as del usuario:', error);
+                console.error('Error cargando categorías del usuario:', error);
             }
         }
 
         async function selectRole(item, roleId, roleName, userId) {
-            if (roleName.toLowerCase() === 'autor') {
-                alert('Para asignar el rol Autor, usa Editar y selecciona al menos una materia.');
-                return;
-            }
-
             const container = item.closest('.role-container');
             const badge = container.querySelector('.role-badge');
             const dot = badge.querySelector('.role-dot');
@@ -855,7 +1053,7 @@
         }
 
         async function eliminarUsuario(id, nombre) {
-            if (!confirm(`Â¿EstÃ¡s seguro de eliminar "${nombre}"?`)) {
+            if (!confirm(`¿Estás seguro de eliminar "${nombre}"?`)) {
                 return;
             }
             try {

@@ -40,6 +40,10 @@ $noticia_select = publicaciones_tiene_columna($conexion, 'noticia_url')
     ? 'publicaciones.noticia_url'
     : "NULL AS noticia_url";
 
+$observaciones_select = publicaciones_tiene_columna($conexion, 'observaciones_editor')
+    ? 'publicaciones.observaciones_editor AS observaciones'
+    : "NULL AS observaciones";
+
 $query = "
 SELECT
     publicaciones.id,
