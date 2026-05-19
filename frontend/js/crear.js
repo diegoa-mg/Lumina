@@ -155,6 +155,7 @@ if (btnOpen) {
     btnOpen.onclick = () => {
         postEditando = null;
         resetearFormulario();
+        modal.classList.remove('modal-editando');
         modal.style.display = 'flex';
     };
 }
@@ -694,6 +695,7 @@ function prepararEdicion(boton) {
 
     postEditando = id;
     modoPublicacion = seccion;
+    modal.classList.add('modal-editando');
 
     document.querySelectorAll('.modal-title').forEach((tituloModal) => {
         tituloModal.textContent = seccion === 'aviso'
@@ -883,6 +885,7 @@ function resetearFormulario() {
     postEditando = null;
     archivoSeleccionado = null;
     modoPublicacion = 'post';
+    modal?.classList.remove('modal-editando');
 
     const postTitle = document.getElementById('postTitle');
     const postDesc = document.getElementById('postDesc');

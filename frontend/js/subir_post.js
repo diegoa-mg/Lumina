@@ -104,12 +104,12 @@ function renderizarTarjetaEnPanel(post) {
     const youtubeUrl = escapeHtml(post.youtube_url || '');
     const noticiaUrl = escapeHtml(post.noticia_url || '');
 
-    // Avisos sin imagen: se rellena el recuadro con el icono y color del tipo de aviso.
+    // Avisos no importantes: se rellena el recuadro con el icono y color del tipo de aviso.
     const iconoAviso = tipoAviso === 'plataforma' ? 'language' : 'school';
     const colorAvisoClase = tipoAviso === 'plataforma' ? 'bg-rojo2' : 'bg-rojo';
     const bloqueImagenLateral = seccion === 'aviso'
         ? (
-            !post.imagen
+            importante !== '1' || !post.imagen
                 ? `<div class="aviso-icono-lateral ${colorAvisoClase}"><span class="material-symbols-outlined">${iconoAviso}</span></div>`
                 : `<img src="${imagenFinal}" alt="Preview">`
         )
