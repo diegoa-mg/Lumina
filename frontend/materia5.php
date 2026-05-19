@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+g<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -401,6 +401,9 @@ async function cargarPublicaciones() {
                 ? post.imagen_url
                 : 'img/default-post.jpg';
 
+            const youtubeUrl = post.youtube_url || '';
+            const videoFileUrl = post.video_url || '';
+
             const autor = post.autor
                 ? post.autor
                 : 'Autor desconocido';
@@ -437,11 +440,16 @@ async function cargarPublicaciones() {
 
                 </p>
 
-                <img 
-                    src="${imagen}" 
-                    class="w-full h-52 object-cover rounded-xl mb-4"
-                    alt="Imagen publicación"
-                >
+                ${tipo === 'video' && (videoFileUrl || youtubeUrl) ? (
+                    videoFileUrl
+                    ? `\n                        <video class="w-full h-52 rounded-xl mb-4 object-cover" controls preload="metadata" poster="${imagen}">\n                            <source src="${videoFileUrl}">\n                            Tu navegador no soporta este video.\n                        </video>\n                    `
+                    : (function(){
+                        let videoId = '';
+                        if (youtubeUrl.includes('watch?v=')) videoId = youtubeUrl.split('watch?v=')[1].split('&')[0];
+                        else if (youtubeUrl.includes('youtu.be/')) videoId = youtubeUrl.split('youtu.be/')[1];
+                        return `\n                            <iframe class="w-full h-52 rounded-xl mb-4 object-cover" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>\n                        `;
+                    })()
+                ) : (`\n                    <img src="${imagen}" class="w-full h-52 object-cover rounded-xl mb-4" alt="Imagen publicación">\n                `)}
 
                 <div class="contenido-completo hidden">
 
@@ -463,10 +471,16 @@ async function cargarPublicaciones() {
 
                     </p>
 
-                    <img 
-                        src="${imagen}"
-                        class="w-full h-72 object-cover rounded-2xl mb-6"
-                    >
+                    ${tipo === 'video' && (videoFileUrl || youtubeUrl) ? (
+                        videoFileUrl
+                        ? `\n                            <video class="w-full h-72 rounded-2xl mb-6 object-cover" controls preload="metadata" poster="${imagen}">\n                                <source src="${videoFileUrl}">\n                                Tu navegador no soporta este video.\n                            </video>\n                        `
+                        : (function(){
+                            let videoId = '';
+                            if (youtubeUrl.includes('watch?v=')) videoId = youtubeUrl.split('watch?v=')[1].split('&')[0];
+                            else if (youtubeUrl.includes('youtu.be/')) videoId = youtubeUrl.split('youtu.be/')[1];
+                            return `\n                                <iframe class="w-full h-72 rounded-2xl mb-6 object-cover" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>\n                            `;
+                        })()
+                    ) : (`\n                        <img src="${imagen}" class="w-full h-72 object-cover rounded-2xl mb-6">\n                    `)}
 
                     <div class="space-y-4 text-gray-700 text-[15px] leading-relaxed">
 
