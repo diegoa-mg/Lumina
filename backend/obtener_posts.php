@@ -36,6 +36,9 @@ $importante_select = publicaciones_tiene_columna($conexion, 'importante')
 $youtube_select = publicaciones_tiene_columna($conexion, 'youtube_url')
     ? 'publicaciones.youtube_url'
     : "NULL AS youtube_url";
+$video_select = publicaciones_tiene_columna($conexion, 'video_url')
+    ? 'publicaciones.video_url'
+    : "NULL AS video_url";
 $noticia_select = publicaciones_tiene_columna($conexion, 'noticia_url')
     ? 'publicaciones.noticia_url'
     : "NULL AS noticia_url";
@@ -53,6 +56,7 @@ SELECT
     $urgente_select,
     $importante_select,
     $youtube_select,
+    $video_select,
     $noticia_select,
     publicaciones.categoria_id,
     categorias.nombre_categoria AS materia,

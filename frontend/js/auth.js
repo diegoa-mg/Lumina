@@ -236,9 +236,60 @@ function disableVisitorInteractions() {
     });
 }
 
-function applyGuestRestrictions() {
+async function validarSesionActiva() {
+    if (!isUserLoggedIn()) {
+        return false;
+    }
+
+    try {
+        const respuesta = await fetch('../backend/obtener_cuenta.php', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (!respuesta.ok) {
+            localStorage.clear();
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error validando sesión:', error);
+        return false;
+    }
+}
+
+async function applyGuestRestrictions() {
     renderNav();
     renderFooter();
+
+    const currentPage = window.location.pathname.split('/').pop();
+    const restrictedPages = [
+        'cuenta.html',
+        'dashboard_autor.html',
+        'dashboard_editor.html',
+        'dashboard_admin.html'
+    ];
+
+    if (isUserLoggedIn()) {
+        const sesionValida = await validarSesionActiva();
+        if (!sesionValida) {
+            localStorage.clear();
+            renderNav();
+
+            if (restrictedPages.includes(currentPage)) {
+                alert('Tu sesión ha expirado. Inicia sesión de nuevo.');
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+    }
+
+    if (restrictedPages.includes(currentPage) && !isUserLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+    }
+
     redirectIfNotAllowed();
     disableVisitorInteractions();
 }

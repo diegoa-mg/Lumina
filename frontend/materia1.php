@@ -415,7 +415,27 @@ async function cargarPublicaciones() {
                 : post.descripcion;
 
             const youtubeUrl = post.youtube_url || '';
+            const videoFileUrl = post.video_url || '';
             const noticiaUrl = post.noticia_url || '';
+            const isYoutubeVideo = tipo === 'video' && youtubeUrl;
+            const isVideoFile = tipo === 'video' && videoFileUrl;
+            const videoId = isYoutubeVideo
+                ? (youtubeUrl.includes('watch?v=')
+                    ? youtubeUrl.split('watch?v=')[1].split('&')[0]
+                    : youtubeUrl.includes('youtu.be/')
+                        ? youtubeUrl.split('youtu.be/')[1]
+                        : '')
+                : '';
+            const previewMedia = isYoutubeVideo
+                ? `<iframe class="w-full h-52 rounded-xl mb-4 object-cover" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`
+                : isVideoFile
+                    ? `<video class="w-full h-52 rounded-xl mb-4 object-cover" controls preload="metadata" poster="${imagen}"><source src="${videoFileUrl}">Tu navegador no soporta este video.</video>`
+                    : `<img src="${imagen}" class="w-full h-52 object-cover rounded-xl mb-4" alt="Imagen publicación">`;
+            const previewMediaFull = isYoutubeVideo
+                ? `<iframe class="w-full h-72 rounded-2xl mb-6 object-cover" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`
+                : isVideoFile
+                    ? `<video class="w-full h-72 rounded-2xl mb-6 object-cover" controls preload="metadata" poster="${imagen}"><source src="${videoFileUrl}">Tu navegador no soporta este video.</video>`
+                    : `<img src="${imagen}" class="w-full h-72 object-cover rounded-2xl mb-6">`;
 
             let contenidoExtra = '';
             let botonTexto = 'Leer más →';
@@ -483,11 +503,7 @@ async function cargarPublicaciones() {
 
                 </p>
 
-                <img 
-                    src="${imagen}" 
-                    class="w-full h-52 object-cover rounded-xl mb-4"
-                    alt="Imagen publicación"
-                >
+                ${previewMedia}
 
                 <div class="contenido-completo hidden">
 
@@ -509,10 +525,7 @@ async function cargarPublicaciones() {
 
                     </p>
 
-                    <img 
-                        src="${imagen}"
-                        class="w-full h-72 object-cover rounded-2xl mb-6"
-                    >
+                    ${previewMediaFull}
 
                     <div class="space-y-4 text-gray-700 text-[15px] leading-relaxed">
 

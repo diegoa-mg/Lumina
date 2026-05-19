@@ -520,7 +520,9 @@
     height: 100%;
 }
 
-.imagen-lateral img {
+.imagen-lateral img,
+.imagen-lateral video,
+.imagen-lateral iframe {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -541,6 +543,15 @@
 .aviso-icono-lateral .material-symbols-outlined {
     color: #fff;
     font-size: 6rem;
+}
+
+.imagen-lateral video,
+.imagen-lateral iframe {
+    display: block;
+    border: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .aviso-lateral {

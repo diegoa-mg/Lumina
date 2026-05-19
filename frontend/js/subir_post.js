@@ -23,6 +23,15 @@ function resolveImageSrc(ruta) {
     return ruta;
 }
 
+function obtenerYoutubeEmbedUrl(url) {
+    if (!url) return null;
+
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w\-]+)/;
+    const match = url.match(regex);
+
+    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+}
+
 const MATERIAS_POST = {
     1: 'POO',
     2: 'Servicios de Internet',
@@ -59,7 +68,27 @@ function renderizarTarjetaEnPanel(post) {
     const tipo = escapeHtml(post.tipo || 'articulo');
     const categoriaId = Number(post.categoria_id || 1);
     const materia = escapeHtml(post.materia || MATERIAS_POST[categoriaId] || 'POO');
+    const videoUrl = post.video_url || '';
+    const youtubeUrlRaw = post.youtube_url || '';
     const imagenFinal = escapeHtml(resolveImageSrc(post.imagen));
+    let previewHtml = `<img src="${imagenFinal}" alt="Preview">`;
+
+    if (tipo === 'video') {
+        if (videoUrl) {
+            const videoSrc = escapeHtml(resolveImageSrc(videoUrl));
+            previewHtml = `
+                <video class="media-preview-card" src="${videoSrc}" poster="${imagenFinal}" controls muted playsinline preload="metadata"></video>
+            `;
+        } else if (youtubeUrlRaw) {
+            const embedUrl = obtenerYoutubeEmbedUrl(youtubeUrlRaw);
+            previewHtml = embedUrl
+                ? `
+                    <iframe class="media-preview-card" src="${escapeHtml(embedUrl)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                `
+                : `<img src="${imagenFinal}" alt="Preview">`;
+        }
+    }
+
     const estadoTexto = {
         borrador: 'Borrador',
         rechazado: 'Rechazado',
@@ -78,9 +107,13 @@ function renderizarTarjetaEnPanel(post) {
     // Avisos sin imagen: se rellena el recuadro con el icono y color del tipo de aviso.
     const iconoAviso = tipoAviso === 'plataforma' ? 'language' : 'school';
     const colorAvisoClase = tipoAviso === 'plataforma' ? 'bg-rojo2' : 'bg-rojo';
-    const bloqueImagenLateral = (seccion === 'aviso' && !post.imagen)
-        ? `<div class="aviso-icono-lateral ${colorAvisoClase}"><span class="material-symbols-outlined">${iconoAviso}</span></div>`
-        : `<img src="${imagenFinal}" alt="Preview">`;
+    const bloqueImagenLateral = seccion === 'aviso'
+        ? (
+            !post.imagen
+                ? `<div class="aviso-icono-lateral ${colorAvisoClase}"><span class="material-symbols-outlined">${iconoAviso}</span></div>`
+                : `<img src="${imagenFinal}" alt="Preview">`
+        )
+        : previewHtml;
 
     // Los avisos muestran urgencia e importancia en lugar de tipo y materia.
     const metaInfo = seccion === 'aviso'
@@ -103,6 +136,7 @@ function renderizarTarjetaEnPanel(post) {
         data-tipo-aviso="${tipoAviso}"
         data-urgente="${urgente}"
         data-importante="${importante}"
+        data-video-url="${escapeHtml(videoUrl)}"
         data-youtube-url="${youtubeUrl}"
         data-noticia-url="${noticiaUrl}"
     >
@@ -226,7 +260,8 @@ async function cargarPostsDelAutor() {
                 urgente: post.urgente,
                 importante: post.importante,
                 youtube_url: post.youtube_url || '',
-                noticia_url: post.noticia_url || ''
+                noticia_url: post.noticia_url || '',
+                video_url: post.video_url || ''
             });
         });
 
