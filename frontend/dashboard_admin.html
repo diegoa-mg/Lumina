@@ -240,6 +240,19 @@
         }
 
         .btn-modal-guardar:hover { background: var(--secundario); }
+        .preview-upload-box {
+            border: 2px dashed #cbd5e1;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            cursor: pointer;
+            background-color: #f8fafc;
+            transition: border-color 0.2s;
+        }
+        .preview-upload-box:hover {
+        border-color: #2b4cd1;
+        
+    }
     </style>
 </head>
 <body class="relative">
@@ -264,11 +277,45 @@
         </header>
 
         <main class="min-h-screen bg-slate-100 px-4 pb-8">
+
         <div class="contenedor-principal">
             <div class="encabezado-pagina">
                 <h1>Panel de administración</h1>
                 <p>Control total del sistema</p>
             </div>
+            
+                <div id="contenedor-stats-dinamico" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-4">
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center gap-5">
+                    <div class="p-4 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-3xl">description</span>
+                </div>
+                <div>
+                    <p class="text-3xl font-bold text-gray-800" id="cnt-publicaciones">0</p>
+                    <p class="text-sm text-gray-500 font-semibold mt-0.5">Publicaciones creadas</p>
+                </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center gap-5">
+            <div class="p-4 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
+                <span class="material-symbols-outlined text-3xl">group</span>
+            </div>
+                <div>
+                    <p class="text-3xl font-bold text-gray-800" id="cnt-usuarios">0</p>
+                    <p class="text-sm text-gray-500 font-semibold mt-0.5">Usuarios creados</p>
+                </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-center">
+                <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2.5">Usuarios por rol</p>
+                <div id="lista-roles-contador" class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs font-bold text-gray-600">
+                </div>
+        </div>
+    </div>
+
+
+
+
+            
 
             <div class="flex gap-8">
                 <aside class="w-64">
@@ -318,36 +365,7 @@
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="category-card bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col items-center text-center relative" data-id="1">
-                            <div class="absolute top-4 right-4 px-2 py-1 bg-green-100 text-green-600 text-[10px] font-bold rounded-full uppercase">Activa</div>
-                            <div class="mb-4">
-                                <div class="w-20 h-20 rounded-2xl overflow-hidden shadow-sm">
-                                    <img src="img/materias/POO1.webp" alt="Programación Orientada a Objetos" class="w-full h-full object-cover">
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-1">Programación Orientada a Objetos</h3>
-                            <p class="text-gray-400 text-xs mb-6">ID en BD: 1</p>
-                            <div class="w-full flex gap-2">
-                                <button onclick="abrirModalEdicion('1', 'Programación Orientada a Objetos', 'Descripción técnica', 'img/materias/POO1.webp')" class="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded-lg text-sm transition">Editar</button>
-                                <button onclick="confirmarEliminacion('1', 'Programación Orientada a Objetos')" class="p-2 text-red-400 hover:text-red-600 transition"><span class="material-symbols-outlined">delete</span></button>
-                            </div>
-                        </div>
-
-                        <div class="category-card bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col items-center text-center relative" data-id="4">
-                            <div class="absolute top-4 right-4 px-2 py-1 bg-green-100 text-green-600 text-[10px] font-bold rounded-full uppercase">Activa</div>
-                            <div class="mb-4">
-                                <div class="w-20 h-20 rounded-2xl overflow-hidden shadow-sm">
-                                    <img src="img/materias/MNUMERICOS.webp" alt="Métodos Numéricos" class="w-full h-full object-cover">
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-1">Métodos Numéricos</h3>
-                            <p class="text-gray-400 text-xs mb-6">ID en BD: 4</p>
-                            <div class="w-full flex gap-2">
-                                <button onclick="abrirModalEdicion('4', 'Métodos Numéricos', 'Descripción de la materia', 'img/materias/MNUMERICOS.webp')" class="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded-lg text-sm transition">Editar</button>
-                                <button onclick="confirmarEliminacion('4', 'Métodos Numéricos')" class="p-2 text-red-400 hover:text-red-600 transition"><span class="material-symbols-outlined">delete</span></button>
-                            </div>
-                        </div>
+                    <div id="categorias-grid-dinamico" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" >
                     </div>
                 </section>
             </div>
@@ -528,6 +546,7 @@
 
     <script src="js/auth.js"></script>
     <script src="js/menu_ui.js"></script>
+    <script src="js/categorias_imagenes.js"></script>
     <script>
         const mainContent = document.getElementById('main-content');
         let nombreActual = "";
@@ -548,6 +567,7 @@
         function abrirModalEdicion(id, nombre, descripcion, imagen) {
             idActual = id;
             nombreActual = nombre;
+            nombreActual = nombre;
             document.getElementById('modal-cat-titulo').innerText = 'Editar Categoría';
             document.getElementById('cat-nombre').value = nombre;
             document.getElementById('cat-descripcion').value = descripcion;
@@ -562,10 +582,28 @@
             abrirModal('modal-agregar-categoria');
         }
 
-        function confirmarEliminacion(id, nombre) {
-            if (confirm(`¿Estás seguro de eliminar "${nombre}"?`)) {
-                alert("Categoría eliminada");
+        async function confirmarEliminacion(id, nombre) {
+            if (!confirm(`¿Estás seguro de eliminar "${nombre}"?`)) {
+                return;
+            }
+            try {
+                const response = await fetch('../backend/eliminarcategoria.php', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id }),
+                });
+                const data = await response.json();
+                if (!data.success) {
+                    throw new Error(data.error || 'No se pudo eliminar la categoría.');
+                }
                 cerrarModales();
+                await fetchCategoriasGrid();
+                await fetchEstadisticas();
+                alert(data.mensaje || 'Categoría eliminada.');
+            } catch (error) {
+                console.error(error);
+                alert(error.message || 'Error al eliminar la categoría.');
             }
         }
 
@@ -654,14 +692,143 @@
         });
 
         document.getElementById('btn-abrir-categoria').addEventListener('click', () => {
+            idActual = null;
             document.getElementById('modal-cat-titulo').innerText = 'Nueva Categoría';
             document.getElementById('btnPrincipalModal').innerText = 'Crear Categoría';
             document.getElementById('btnEliminarCategoria').classList.add('hidden');
             document.getElementById('cat-nombre').value = '';
             document.getElementById('cat-descripcion').value = '';
             document.getElementById('cat-estado').value = 'activa';
+            const primeraImagen = document.querySelector('input[name="icon-choice"]');
+            if (primeraImagen) {
+                primeraImagen.checked = true;
+            }
             abrirModal('modal-agregar-categoria');
         });
+
+        document.getElementById('btnPrincipalModal').addEventListener('click', guardarCategoria);
+
+        async function guardarCategoria() {
+            const nombre = document.getElementById('cat-nombre').value.trim();
+            const imagenSeleccionada = document.querySelector('input[name="icon-choice"]:checked');
+
+            if (!nombre) {
+                alert('El nombre de la categoría es obligatorio.');
+                return;
+            }
+            if (!imagenSeleccionada) {
+                alert('Selecciona una imagen para la categoría.');
+                return;
+            }
+
+            const payload = {
+                nombre_categoria: nombre,
+                imagen_url: imagenSeleccionada.value,
+            };
+            if (idActual) {
+                payload.id = idActual;
+            }
+
+            try {
+                const response = await fetch('../backend/guardarcategoria.php', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const data = await response.json();
+                if (!data.success) {
+                    throw new Error(data.error || 'No se pudo guardar la categoría.');
+                }
+                cerrarModales();
+                await fetchCategoriasGrid();
+                await fetchCategorias();
+                alert(data.mensaje || 'Categoría guardada.');
+            } catch (error) {
+                console.error(error);
+                alert(error.message || 'Error al guardar la categoría.');
+            }
+        }
+
+        async function fetchEstadisticas() {
+            try {
+                const response = await fetch('../backend/obtener_estadisticas.php', {
+                    credentials: 'same-origin',
+                });
+                const data = await response.json();
+                if (!data.success || !data.data) {
+                    return;
+                }
+                document.getElementById('cnt-publicaciones').textContent = data.data.total_publicaciones ?? 0;
+                document.getElementById('cnt-usuarios').textContent = data.data.total_usuarios ?? 0;
+
+                const listaRoles = document.getElementById('lista-roles-contador');
+                listaRoles.innerHTML = '';
+                const roles = data.data.roles || [];
+                if (roles.length === 0) {
+                    listaRoles.innerHTML = '<span class="text-gray-400 col-span-2">Sin datos</span>';
+                    return;
+                }
+                roles.forEach((rol) => {
+                    const item = document.createElement('div');
+                    item.className = 'flex justify-between gap-2';
+                    item.innerHTML = `<span class="truncate">${rol.nombre}</span><span class="text-blue-600">${rol.cantidad}</span>`;
+                    listaRoles.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Error cargando estadísticas:', error);
+            }
+        }
+
+        const categoriasGrid = document.getElementById('categorias-grid-dinamico');
+
+        function resolverImagenCategoria(cat) {
+            if (window.CategoriasImagenes) {
+                return window.CategoriasImagenes.resolver(cat);
+            }
+            return cat.imagen_url || 'img/materias/DEMPRENDEDOR.webp';
+        }
+
+        async function fetchCategoriasGrid() {
+            try {
+                const response = await fetch('../backend/obtener_categorias.php', { credentials: 'same-origin' });
+                const data = await response.json();
+                if (!data.ok || !data.categorias) {
+                    return;
+                }
+                categoriasList = data.categorias;
+                renderCategoriasGrid(data.categorias);
+            } catch (error) {
+                console.error('Error cargando categorías:', error);
+                if (categoriasGrid) {
+                    categoriasGrid.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-8">No se pudieron cargar las categorías.</p>';
+                }
+            }
+        }
+
+        function renderCategoriasGrid(categorias) {
+            if (!categoriasGrid) return;
+            categoriasGrid.innerHTML = '';
+            if (!categorias || categorias.length === 0) {
+                categoriasGrid.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-8">No hay categorías. Crea la primera con el botón de arriba.</p>';
+                return;
+            }
+            const imgDefault = window.CategoriasImagenes ? window.CategoriasImagenes.DEFAULT : 'img/materias/DEMPRENDEDOR.webp';
+            categorias.forEach((cat) => {
+                const img = resolverImagenCategoria(cat);
+                const nombre = String(cat.nombre_categoria || '').replace(/</g, '&lt;');
+                const card = document.createElement('article');
+                card.className = 'category-card bg-white rounded-3xl p-5 shadow-sm border border-gray-100 cursor-pointer';
+                card.innerHTML = `
+                    <div class="aspect-video rounded-2xl overflow-hidden mb-4 bg-slate-100">
+                        <img src="${img.replace(/"/g, '&quot;')}" alt="${nombre}" class="w-full h-full object-cover" onerror="this.src='${imgDefault}'">
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">${nombre}</h3>
+                `;
+                card.onclick = () => abrirModalEdicion(cat.id, cat.nombre_categoria, '', img);
+                categoriasGrid.appendChild(card);
+            });
+        }
 
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', cerrarModales);
@@ -727,6 +894,7 @@
             btnMenuCategorias.className = 'flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium transition';
             sectionUsuarios.classList.add('hidden');
             sectionCategorias.classList.remove('hidden');
+            fetchCategoriasGrid();
         });
 
         btnMenuUsuarios.addEventListener('click', (e) => {
@@ -984,7 +1152,10 @@
             }
         });
 
-        fetchRoles().then(fetchUsuarios);
+        fetchRoles().then(() => {
+            fetchUsuarios();
+            fetchEstadisticas();
+        });
     </script>
 </body>
 </html>
