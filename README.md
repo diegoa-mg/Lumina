@@ -8,7 +8,11 @@
        width="650">
 </a>
 
-# 🌟 Lumina
+<div id="user-content-toc">
+  <ul align="center">
+    <summary><h1 style="display: inline-block">Lumina</h1></summary>
+  </ul>
+</div>
 
 ### Claridad a la información académica
 
