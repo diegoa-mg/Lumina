@@ -9,7 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">  
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <link rel="preload" href="css/normalize.css" as="style">
@@ -26,8 +26,17 @@
 
     <link rel="preload" href="css/index.css" as="style">
     <link rel="stylesheet" href="css/index.css">
-    <link rel="preload" href="css/recursos.css?v=4" as="style">
-    <link rel="stylesheet" href="css/recursos.css?v=4">
+
+    <!-- Clasifica al usuario antes de pintar para evitar parpadeo -->
+    <script>
+        document.documentElement.classList.add(
+            localStorage.getItem('sesion_activa') === 'true' ? 'con-sesion' : 'sin-sesion'
+        );
+    </script>
+    <style>
+        html.sin-sesion .solo-usuario { display: none !important; }
+        html.con-sesion .solo-invitado { display: none !important; }
+    </style>
 
 </head>
 <body>
@@ -41,7 +50,7 @@
                   <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
                 </a>
             </div>
-            
+
             <!-- Barra de busqueda -->
             <div class="search-container">
                 <span class="search-icon material-symbols-outlined">search</span>
@@ -55,26 +64,22 @@
 
         </div>
     </header>
-    
-    <!-- Heading --> 
-    <section class="uni">
+
+    <!-- Heading -->
+    <section class="uni solo-usuario">
         <section class="contenido-uni">
             <div class="ubicacion">
-                <h2>Bienvenido a<br>Lumina: <br><span>Claridad a la información académica.</span></h2>
-                <p>Plataforma de publicación digital para<br>instituciones académicas.</p>
-            </div> 
+                <h2>Bienvenido a Lumina</h2>
+                <p class="uni-eslogan">Claridad a la información académica</p>
+                <p class="uni-desc">Plataforma de publicación digital para instituciones académicas.</p>
+            </div>
         </section>
     </section>
-    
+
     <!-- Contenido Principal -->
     <main>
-        <a href="calendario.html" class="group relative block h-16 w-3/4 mx-auto mt-8 overflow-hidden rounded-2xl bg-amber-200 shadow-md transition-all duration-200 cursor-pointer hover:bg-amber-300 hover:scale-105 hover:shadow-lg active:scale-95">
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-                 <h3 class="text-black text-xl font-black text-center px-4 ">
-                    ¡Atención! Semana de exámenes del 1 al 5 de mayo. Más detalles aquí.
-                </h3>
-            </div>
-        </a>
+      <!-- Contenido para usuarios con sesión -->
+      <div class="solo-usuario">
         <section class="index-importante" style="margin: 5rem auto; max-width: 120rem; padding: 0 2rem;">
             <span class="label-azul">Importante</span>
 
@@ -94,97 +99,81 @@
                 </button>
             </div>
         </section>
-<!-- Contador con movimiento -->
-<section class=" py-20 flex justify-center items-center px-4">
-  <div id="counter-section" 
-       class="bg-[#7d8fe3] text-white rounded-xl shadow-xl w-full md:w-3/4 mx-auto flex flex-row items-stretch  overflow-hidden">
-        <div class="flex-1 text-center py-20 px-2 md:px-4 flex flex-col justify-center">
-            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
-            +<span class="count" data-target="100">0</span>
-            </h3>
-            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
-            Casos de éxito
-            </p>
-        </div>
 
-            <div class="flex items-center">
-                <div class="w-[1px] h-24 bg-black/100"></div>
+        <!-- Publicaciones recientes -->
+        <section class="index-recientes" style="margin: 5rem auto; max-width: 120rem; padding: 0 2rem;">
+            <div class="flex items-center justify-between flex-wrap gap-4 mb-8">
+                <span class="label-azul" style="margin-bottom: 0;">Publicaciones recientes</span>
+                <a href="recursos.html" class="text-[#0b78d8] font-semibold hover:underline">Ver todas &rarr;</a>
             </div>
-
-        <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
-            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
-            +<span class="count" data-target="200">0</span>
-            </h3>
-            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
-             Recursos disponibles
-            </p>
-        </div>
-        
-            <div class="flex items-center">
-                <div class="w-[1px] h-24 bg-black/100"></div>
+            <div id="postsRecientesIndex" class="grid-recientes">
+                <p style="color:#6b7280;">Cargando publicaciones recientes...</p>
             </div>
+        </section>
+      </div>
+      <!-- /Contenido para usuarios con sesión -->
 
-    <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
-            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
-            +<span class="count" data-target="100">0</span>
-            </h3>
-            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
-            Concursos semestrales
-            </p>
-    </div>
-
-            <div class="flex items-center">
-                <div class="w-[1px] h-24 bg-black/100"></div>
+      <!-- Landing de bienvenida para visitantes sin sesión -->
+      <div class="solo-invitado">
+        <section class="landing-invitado-hero">
+          <div class="landing-invitado-overlay">
+            <div class="landing-invitado-contenido">
+              <h1>Lumina</h1>
+              <p class="landing-invitado-eslogan">Claridad a la información académica</p>
+              <p class="landing-invitado-desc">
+              La plataforma de publicación digital que centraliza avisos, recursos y
+              convocatorias de tu institución académica en un solo lugar.
+              </p>
+              <div class="landing-invitado-acciones">
+                <a href="registro.html" class="landing-btn landing-btn-primario">Registrarse</a>
+                <a href="login.html" class="landing-btn landing-btn-secundario">Iniciar sesión</a>
+              </div>
             </div>
+          </div>
+        </section>
 
-    <div class="flex-1 text-center py-10 px-2 md:px-4 flex flex-col justify-center">
-            <h3 class="text-xl sm:text-2xl md:text-4xl font-bold mb-1">
-            +<span class="count" data-target="100">0</span>
-            </h3>
-            <p class="text-[10px] sm:text-xs md:text-sm opacity-90 uppercase font-semibold leading-tight">
-            Casos de éxito
-            </p>
-    </div>
-    
-  </div>
-</section>
+        <!-- ¿Qué es Lumina? -->
+        <section class="max-w-3xl mx-auto px-6 py-20 text-center">
+          <h2 class="text-4xl md:text-5xl font-bold text-[#03183d] mb-6">¿Qué es Lumina?</h2>
+          <p class="text-gray-600 text-xl md:text-2xl leading-relaxed">
+            Lumina reúne las noticias educativas, los recursos de cada materia y las
+            convocatorias de becas en un mismo espacio. Así estudiantes y docentes
+            encuentran lo que necesitan sin perderse entre canales dispersos.
+          </p>
+        </section>
 
-<script>
-  // Función para animar el conteo
-  const animateCount = (el) => {
-    const target = +el.getAttribute('data-target');
-    const count = +el.innerText;
-    const speed = 200; // A menor número, más rápido
-    const inc = target / speed;
+        <!-- Funciones -->
+        <section class="max-w-6xl mx-auto px-6 pb-20">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+              <span class="material-symbols-outlined text-[#0b78d8]" style="font-size:3rem;">campaign</span>
+              <h3 class="text-2xl font-bold text-[#03183d] mt-4 mb-2">Avisos</h3>
+              <p class="text-gray-500 text-lg">Mantente al día con los anuncios escolares más recientes.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+              <span class="material-symbols-outlined text-[#0b78d8]" style="font-size:3rem;">menu_book</span>
+              <h3 class="text-2xl font-bold text-[#03183d] mt-4 mb-2">Recursos</h3>
+              <p class="text-gray-500 text-lg">Accede a material de apoyo organizado por cada materia.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+              <span class="material-symbols-outlined text-[#0b78d8]" style="font-size:3rem;">calendar_month</span>
+              <h3 class="text-2xl font-bold text-[#03183d] mt-4 mb-2">Calendario</h3>
+              <p class="text-gray-500 text-lg">Consulta fechas de exámenes, entregas y eventos importantes.</p>
+            </div>
+          </div>
+        </section>
 
-    if (count < target) {
-      el.innerText = Math.ceil(count + inc);
-      setTimeout(() => animateCount(el), 15);
-    } else {
-      el.innerText = target;
-    }
-  };
+        <!-- Llamada final -->
+        <section class="bg-gray-100">
+          <div class="max-w-3xl mx-auto px-6 py-16 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-[#03183d] mb-6">¿Listo para empezar?</h2>
+            <a href="registro.html" class="inline-block bg-[#0b78d8] text-white font-semibold text-lg px-10 py-3 rounded-lg hover:bg-[#0a4a9e] transition">Crea tu cuenta</a>
+          </div>
+        </section>
 
-  // Configuración del Observador
-  const observerOptions = {
-    threshold: 0.5 // Se activa cuando el 50% de la sección es visible
-  };
+      </div>
+      <!-- /Landing de bienvenida -->
 
-  const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Seleccionamos todos los números y los animamos
-        const counters = entry.target.querySelectorAll('.count');
-        counters.forEach(counter => animateCount(counter));
-        // Dejamos de observar para que no se repita la animación cada vez que subas/bajes
-        observer.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  // Empezar a observar la sección
-  observer.observe(document.getElementById('counter-section'));
-</script>
 </main>
 
     <footer class="footer">
@@ -231,6 +220,7 @@
     <script src="js/menu_ui.js?v=5"></script>
     <script src="js/reacciones.js?v=3"></script>
     <script src="js/index_importante.js?v=7"></script>
+    <script src="js/index_recientes.js"></script>
 
 
 </body>

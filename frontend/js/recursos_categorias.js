@@ -74,11 +74,13 @@
                 throw new Error(data.mensaje || 'No se pudieron cargar las categorías');
             }
             grid.innerHTML = '';
-            if (data.categorias.length === 0) {
+            const categoriasMaterias = data.categorias.filter((cat) => Number(cat.id) !== 9);
+
+            if (categoriasMaterias.length === 0) {
                 grid.innerHTML = '<p class="col-span-full text-center text-gray-500 py-12">No hay categorías disponibles.</p>';
                 return;
             }
-            data.categorias.forEach((cat, index) => {
+            categoriasMaterias.forEach((cat, index) => {
                 grid.appendChild(crearTarjeta(cat, index));
             });
         } catch (error) {

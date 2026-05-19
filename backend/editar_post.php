@@ -147,6 +147,19 @@ if (!$stmt) {
 $stmt->bind_param($tipos_bind, ...$valores);
 
 if ($stmt->execute()) {
+    // Si el autor pidio enviar a revision, solo se promueven borradores/rechazados.
+    if (($data['status'] ?? '') === 'revision') {
+        $promo = $conexion->prepare(
+            "UPDATE publicaciones SET status = 'revision'
+             WHERE id = ? AND autor_id = ? AND status IN ('borrador', 'rechazado')"
+        );
+        if ($promo) {
+            $promo->bind_param('ii', $post_id, $autor_id);
+            $promo->execute();
+            $promo->close();
+        }
+    }
+
     echo json_encode([
         'success' => true,
         'imagen_url' => $imagen_url,

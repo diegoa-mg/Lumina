@@ -40,6 +40,22 @@ body {
     font-family: var(--fuente-principal);
     color: var(--texto-oscuro);
     -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Empuja el footer hasta abajo cuando hay poco contenido */
+main {
+    flex: 1 0 auto;
+}
+
+/* Wrapper que envuelve header + main + footer en algunos paneles;
+   debe propagar la columna flex para que el sticky footer funcione */
+#main-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
 }
 
 a {
