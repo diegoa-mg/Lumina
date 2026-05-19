@@ -47,8 +47,8 @@ $urgente = normalizar_booleano($data['urgente'] ?? 0);
 $importante = normalizar_booleano($data['importante'] ?? 0);
 $categoria_id = obtener_categoria_post_desde_data($data);
 $youtube_url = trim($data['youtube_url'] ?? '');
-$video_url = trim($data['video_url'] ?? '');
-$noticia_url = trim($data['noticia_url'] ?? '');
+$video_url_solicitado = trim($data['video_url'] ?? '');
+$archivo_url_solicitado = trim($data['archivo_url'] ?? $data['noticia_url'] ?? '');
 $imagen = $data['imagen'] ?? null;
 
 if ($seccion === 'aviso') {
@@ -60,24 +60,27 @@ if (!$post_id || $titulo === '' || $descripcion === '') {
     exit;
 }
 
-$video_upload_present = !empty($_FILES['video_file']['tmp_name'] ?? null);
+$video_upload_present = upload_archivo_intentado($_FILES['video_file'] ?? null);
+$recurso_upload_present = upload_archivo_intentado($_FILES['resource_file'] ?? null);
 
 if ($seccion === 'post') {
-    if ($tipo === 'video' && $youtube_url === '' && $video_url === '' && !$video_upload_present) {
+    if ($tipo === 'video' && $youtube_url === '' && $video_url_solicitado === '' && !$video_upload_present) {
         echo json_encode(['success' => false, 'error' => 'Debes agregar un link de video o subir un archivo']);
         exit;
     }
-    if ($tipo === 'noticia' && $noticia_url === '') {
-        echo json_encode(['success' => false, 'error' => 'Debes agregar un link de noticia']);
+    if ($tipo === 'recurso' && $archivo_url_solicitado === '' && !$recurso_upload_present) {
+        echo json_encode(['success' => false, 'error' => 'Debes subir un archivo de recurso']);
         exit;
     }
 }
 
 $tiene_video_url = publicaciones_tiene_columna($conexion, 'video_url');
+$columna_archivo_inicial = publicaciones_columna_archivo($conexion);
 $stmt = $conexion->prepare(
-    $tiene_video_url
-        ? "SELECT imagen_url, video_url FROM publicaciones WHERE id = ? AND autor_id = ?"
-        : "SELECT imagen_url FROM publicaciones WHERE id = ? AND autor_id = ?"
+    "SELECT imagen_url"
+    . ($tiene_video_url ? ", video_url" : "")
+    . ($columna_archivo_inicial ? ", {$columna_archivo_inicial} AS archivo_url" : "")
+    . " FROM publicaciones WHERE id = ? AND autor_id = ?"
 );
 if (!$stmt) {
     echo json_encode(['success' => false, 'error' => 'Error SQL: ' . $conexion->error]);
@@ -96,7 +99,10 @@ if (!$post) {
 }
 
 $imagen_url = $post['imagen_url'];
-$video_url = $post['video_url'] ?? '';
+$video_url_anterior = $post['video_url'] ?? '';
+$video_url = $video_url_solicitado;
+$archivo_url_anterior = $post['archivo_url'] ?? '';
+$archivo_url = $archivo_url_solicitado;
 $resultado_imagen = guardar_imagen_post_base64($imagen, $seccion . '_' . $autor_id);
 if (is_array($resultado_imagen) && empty($resultado_imagen['success'])) {
     echo json_encode($resultado_imagen);
@@ -112,7 +118,7 @@ $video_archivo_resultado = null;
 $tiene_tipo = publicaciones_tiene_columna($conexion, 'tipo');
 $tiene_youtube_url = publicaciones_tiene_columna($conexion, 'youtube_url');
 $tiene_video_url = publicaciones_tiene_columna($conexion, 'video_url');
-$tiene_noticia_url = publicaciones_tiene_columna($conexion, 'noticia_url');
+$columna_archivo = publicaciones_columna_archivo($conexion);
 $tiene_seccion = publicaciones_tiene_columna($conexion, 'seccion');
 $tiene_tipo_aviso = publicaciones_tiene_columna($conexion, 'tipo_aviso');
 $tiene_urgente = publicaciones_tiene_columna($conexion, 'urgente');
@@ -120,12 +126,17 @@ $tiene_importante = publicaciones_tiene_columna($conexion, 'importante');
 
 $video_archivo_resultado = null;
 
-if (!empty($_FILES['video_file']['tmp_name'] ?? null) && !$tiene_video_url) {
+if ($video_upload_present && !$tiene_video_url) {
     echo json_encode(['success' => false, 'error' => 'La base de datos no soporta la carga de video de archivo.']);
     exit;
 }
 
-if ($tiene_video_url && !empty($_FILES['video_file']['tmp_name'] ?? null)) {
+if ($recurso_upload_present && !$columna_archivo) {
+    echo json_encode(['success' => false, 'error' => 'La base de datos no soporta la carga de recursos.']);
+    exit;
+}
+
+if ($tiene_video_url && $video_upload_present) {
     $video_archivo_resultado = guardar_video_post_archivo($_FILES['video_file'] ?? null, $seccion . '_' . $autor_id);
 
     if (is_array($video_archivo_resultado) && empty($video_archivo_resultado['success'])) {
@@ -135,6 +146,19 @@ if ($tiene_video_url && !empty($_FILES['video_file']['tmp_name'] ?? null)) {
 
     if (is_array($video_archivo_resultado)) {
         $video_url = $video_archivo_resultado['video_url'];
+    }
+}
+
+if ($columna_archivo && $recurso_upload_present) {
+    $recurso_archivo_resultado = guardar_recurso_post_archivo($_FILES['resource_file'] ?? null, $seccion . '_' . $autor_id);
+
+    if (is_array($recurso_archivo_resultado) && empty($recurso_archivo_resultado['success'])) {
+        echo json_encode($recurso_archivo_resultado);
+        exit;
+    }
+
+    if (is_array($recurso_archivo_resultado)) {
+        $archivo_url = $recurso_archivo_resultado['archivo_url'];
     }
 }
 
@@ -165,10 +189,10 @@ if ($tiene_video_url) {
     $tipos_bind .= 's';
     $valores[] = $video_url;
 }
-if ($tiene_noticia_url) {
-    $set[] = 'noticia_url = ?';
+if ($columna_archivo) {
+    $set[] = "{$columna_archivo} = ?";
     $tipos_bind .= 's';
-    $valores[] = $noticia_url;
+    $valores[] = $archivo_url;
 }
 if ($tiene_seccion) {
     $set[] = 'seccion = ?';
@@ -206,6 +230,22 @@ if (!$stmt) {
 $stmt->bind_param($tipos_bind, ...$valores);
 
 if ($stmt->execute()) {
+    if ($tiene_video_url
+        && $video_url_anterior
+        && $video_url_anterior !== $video_url
+        && strpos($video_url_anterior, 'uploads/posts/') === 0
+    ) {
+        eliminar_archivo_frontend($video_url_anterior);
+    }
+
+    if ($columna_archivo
+        && $archivo_url_anterior
+        && $archivo_url_anterior !== $archivo_url
+        && strpos($archivo_url_anterior, 'uploads/') === 0
+    ) {
+        eliminar_archivo_frontend($archivo_url_anterior);
+    }
+
     // Si el autor pidio enviar a revision, solo se promueven borradores/rechazados.
     if (($data['status'] ?? '') === 'revision') {
         $promo = $conexion->prepare(
@@ -226,7 +266,7 @@ if ($stmt->execute()) {
         'categoria_id' => $categoria_id,
         'youtube_url' => $youtube_url,
         'video_url' => $video_url,
-        'noticia_url' => $noticia_url,
+        'archivo_url' => $archivo_url,
         'seccion' => $seccion,
         'tipo_aviso' => $tipo_aviso,
         'urgente' => $urgente,

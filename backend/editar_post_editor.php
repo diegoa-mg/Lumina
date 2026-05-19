@@ -29,9 +29,26 @@ if ($rol_id !== 3 && $rol_id !== 4) {
     exit;
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
+$raw_input = file_get_contents('php://input');
+$data = json_decode($raw_input, true);
 
 if (!$data) {
+    $data = $_POST;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST'
+    && stripos($_SERVER['CONTENT_TYPE'] ?? '', 'multipart/form-data') !== false
+    && empty($_POST)
+    && empty($_FILES)
+) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'Carga rechazada. Verifica upload_max_filesize y post_max_size en php.ini.'
+    ]);
+    exit;
+}
+
+if (!is_array($data)) {
     echo json_encode(['success' => false, 'error' => 'Datos inválidos']);
     exit;
 }
@@ -117,6 +134,20 @@ if ($seccion === 'aviso') {
 } else {
     $tipo = normalizar_tipo_post($data['tipo'] ?? 'articulo');
     $categoria_id = intval($data['categoria_id'] ?? 1);
+    $youtube_url = trim($data['youtube_url'] ?? '');
+    $video_url_solicitado = trim($data['video_url'] ?? '');
+    $archivo_url_solicitado = trim($data['archivo_url'] ?? $data['noticia_url'] ?? '');
+    $video_upload_present = upload_archivo_intentado($_FILES['video_file'] ?? null);
+    $recurso_upload_present = upload_archivo_intentado($_FILES['resource_file'] ?? null);
+
+    if ($tipo === 'video' && $youtube_url === '' && $video_url_solicitado === '' && !$video_upload_present) {
+        echo json_encode(['success' => false, 'error' => 'Debes agregar un link de video o subir un archivo']);
+        exit;
+    }
+    if ($tipo === 'recurso' && $archivo_url_solicitado === '' && !$recurso_upload_present) {
+        echo json_encode(['success' => false, 'error' => 'Debes subir un archivo de recurso']);
+        exit;
+    }
 
     $set[] = 'categoria_id = ?';
     $tipos_bind .= 'i';
@@ -126,6 +157,94 @@ if ($seccion === 'aviso') {
         $set[] = 'tipo = ?';
         $tipos_bind .= 's';
         $valores[] = $tipo;
+    }
+
+    $tiene_youtube_url = publicaciones_tiene_columna($conexion, 'youtube_url');
+    $tiene_video_url = publicaciones_tiene_columna($conexion, 'video_url');
+    $columna_archivo = publicaciones_columna_archivo($conexion);
+
+    $video_url_anterior = '';
+    $archivo_url_anterior = '';
+    if ($tiene_video_url || $columna_archivo) {
+        $video_stmt = $conexion->prepare(
+            "SELECT "
+            . ($tiene_video_url ? "video_url" : "NULL AS video_url")
+            . ($columna_archivo ? ", {$columna_archivo} AS archivo_url" : ", NULL AS archivo_url")
+            . " FROM publicaciones WHERE id = ? AND status = 'revision'"
+        );
+        if (!$video_stmt) {
+            echo json_encode(['success' => false, 'error' => 'Error SQL: ' . $conexion->error]);
+            exit;
+        }
+        $video_stmt->bind_param('i', $post_id);
+        $video_stmt->execute();
+        $video_row = $video_stmt->get_result()->fetch_assoc();
+        $video_stmt->close();
+
+        if (!$video_row) {
+            echo json_encode(['success' => false, 'error' => 'Post no encontrado']);
+            exit;
+        }
+
+        $video_url_anterior = $video_row['video_url'] ?? '';
+        $archivo_url_anterior = $video_row['archivo_url'] ?? '';
+    }
+
+    $video_url = $video_url_solicitado;
+    $archivo_url = $archivo_url_solicitado;
+
+    if ($video_upload_present && !$tiene_video_url) {
+        echo json_encode(['success' => false, 'error' => 'La base de datos no soporta la carga de video de archivo.']);
+        exit;
+    }
+
+    if ($recurso_upload_present && !$columna_archivo) {
+        echo json_encode(['success' => false, 'error' => 'La base de datos no soporta la carga de recursos.']);
+        exit;
+    }
+
+    if ($tiene_video_url && $video_upload_present) {
+        $video_archivo_resultado = guardar_video_post_archivo($_FILES['video_file'] ?? null, 'post_editor_' . $usuario_id);
+
+        if (is_array($video_archivo_resultado) && empty($video_archivo_resultado['success'])) {
+            echo json_encode($video_archivo_resultado);
+            exit;
+        }
+
+        if (is_array($video_archivo_resultado)) {
+            $video_url = $video_archivo_resultado['video_url'];
+        }
+    }
+
+    if ($columna_archivo && $recurso_upload_present) {
+        $recurso_archivo_resultado = guardar_recurso_post_archivo($_FILES['resource_file'] ?? null, 'post_editor_' . $usuario_id);
+
+        if (is_array($recurso_archivo_resultado) && empty($recurso_archivo_resultado['success'])) {
+            echo json_encode($recurso_archivo_resultado);
+            exit;
+        }
+
+        if (is_array($recurso_archivo_resultado)) {
+            $archivo_url = $recurso_archivo_resultado['archivo_url'];
+        }
+    }
+
+    if ($tiene_youtube_url) {
+        $set[] = 'youtube_url = ?';
+        $tipos_bind .= 's';
+        $valores[] = $youtube_url;
+    }
+
+    if ($tiene_video_url) {
+        $set[] = 'video_url = ?';
+        $tipos_bind .= 's';
+        $valores[] = $video_url;
+    }
+
+    if ($columna_archivo) {
+        $set[] = "{$columna_archivo} = ?";
+        $tipos_bind .= 's';
+        $valores[] = $archivo_url;
     }
 }
 
@@ -146,6 +265,22 @@ if (!$stmt) {
 $stmt->bind_param($tipos_bind, ...$valores);
 
 if ($stmt->execute()) {
+    if (isset($video_url_anterior, $video_url)
+        && $video_url_anterior
+        && $video_url_anterior !== $video_url
+        && strpos($video_url_anterior, 'uploads/posts/') === 0
+    ) {
+        eliminar_archivo_frontend($video_url_anterior);
+    }
+
+    if (isset($archivo_url_anterior, $archivo_url)
+        && $archivo_url_anterior
+        && $archivo_url_anterior !== $archivo_url
+        && strpos($archivo_url_anterior, 'uploads/') === 0
+    ) {
+        eliminar_archivo_frontend($archivo_url_anterior);
+    }
+
     echo json_encode(['success' => true]);
 } else {
     echo json_encode(['success' => false, 'error' => $stmt->error]);

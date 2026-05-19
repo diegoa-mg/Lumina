@@ -9,6 +9,8 @@ const MATERIAS_COMENTARIOS = {
     'materia8.php': 8
 };
 
+let categoriaComentariosActual = 1;
+
 function escapeHtmlComentario(valor) {
     return String(valor ?? '')
         .replaceAll('&', '&amp;')
@@ -22,6 +24,20 @@ function resolveFotoComentario(ruta) {
     if (!ruta) return '';
     if (ruta.startsWith('http') || ruta.startsWith('data:') || ruta.startsWith('../')) return ruta;
     return ruta;
+}
+
+function obtenerInicialesComentario(nombre) {
+    const partes = String(nombre || 'Usuario')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    if (partes.length === 0) return 'U';
+
+    return partes
+        .slice(0, 2)
+        .map((parte) => parte.charAt(0).toUpperCase())
+        .join('');
 }
 
 function formatearFechaComentario(fecha) {
@@ -46,10 +62,17 @@ function renderAvatarComentario(comentario) {
         return `<img src="${escapeHtmlComentario(foto)}" alt="${escapeHtmlComentario(comentario.nombre || 'Usuario')}" class="comentario-avatar-img">`;
     }
 
-    return '<span class="material-symbols-outlined comentario-avatar-icon">person</span>';
+    return `<span class="comentario-avatar-iniciales">${escapeHtmlComentario(obtenerInicialesComentario(comentario.nombre))}</span>`;
 }
 
 function renderComentarioMateria(comentario) {
+    const id = Number(comentario.id || 0);
+    const botonEliminar = comentario.puede_eliminar === true
+        ? `<button class="comentario-eliminar" title="Borrar comentario" onclick="eliminarComentarioMateria(${id})">
+                <span class="material-symbols-outlined">delete</span>
+            </button>`
+        : '';
+
     return `
         <article class="comentario-card">
             <div class="comentario-avatar">
@@ -59,6 +82,7 @@ function renderComentarioMateria(comentario) {
                 <div class="comentario-header">
                     <strong>${escapeHtmlComentario(comentario.nombre || 'Usuario')}</strong>
                     <span>${escapeHtmlComentario(formatearFechaComentario(comentario.fecha_creacion))}</span>
+                    ${botonEliminar}
                 </div>
                 <p>${escapeHtmlComentario(comentario.comentario || '')}</p>
             </div>
@@ -66,7 +90,34 @@ function renderComentarioMateria(comentario) {
     `;
 }
 
+async function eliminarComentarioMateria(comentarioId) {
+    if (!confirm('¿Borrar este comentario? Esta acción no se puede deshacer.')) return;
+
+    try {
+        const respuesta = await fetch('../backend/eliminar_comentario_materia.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ comentario_id: comentarioId })
+        });
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.success) {
+            throw new Error(resultado.error || 'No se pudo borrar el comentario');
+        }
+
+        await cargarComentariosMateria(categoriaComentariosActual);
+    } catch (error) {
+        console.error(error);
+        alert(error.message || 'No se pudo borrar el comentario');
+    }
+}
+
 async function cargarComentariosMateria(categoriaId) {
+    categoriaComentariosActual = categoriaId;
+
     const lista = document.getElementById('listaComentariosMateria');
     if (!lista) return;
 

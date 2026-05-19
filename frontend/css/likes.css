@@ -65,6 +65,12 @@
     flex-shrink: 0;     /* Evita que se aplaste */
 }
 
+.autor-info .autor-avatar-iniciales {
+    font-size: 1.15rem;
+    height: 3.5rem;
+    width: 3.5rem;
+}
+
 .nombre-autor {
     font-weight: 600;
     font-size: 1.3rem;

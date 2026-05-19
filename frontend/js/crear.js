@@ -8,24 +8,31 @@ const btnClose = document.getElementById('btnCerrar');
 const btnCerrarSecundario = document.querySelectorAll('.btnCerrarSecundario');
 const fileInput = document.getElementById('fileInput');
 const videoFileInput = document.getElementById('videoFileInput');
+const resourceFileInput = document.getElementById('resourceFileInput');
 const btnVolver = document.querySelector('.btnVolver');
 const btnVolverSelector = document.querySelectorAll('.btnVolverSelector');
 const btnCrearPost = document.getElementById('btnCrearPost');
 const btnCrearAviso = document.getElementById('btnCrearAviso');
 const postTipoSelect = document.getElementById('postTipo');
 const campoYoutube = document.querySelector('.campo-youtube');
-const campoNoticia = document.querySelector('.campo-noticia');
+const campoRecurso = document.querySelector('.campo-recurso-file');
 
 let archivoSeleccionado = null;
 let archivoVideoSeleccionado = null;
+let archivoRecursoSeleccionado = null;
 let enviando = false;
 let postEditando = null;
 let modoPublicacion = 'post';
 let videoMode = 'link'; // 'link' or 'file' - UI toggle for video posts
 let videoPreviewUrl = null;
+let videoActualUrl = '';
+let videoActualNombre = '';
+let recursoActualUrl = '';
+let recursoActualNombre = '';
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const MAX_VIDEO_SIZE = 500 * 1024 * 1024;
+const MAX_RESOURCE_SIZE = 100 * 1024 * 1024;
 const VIDEO_FORMATOS_PERMITIDOS = [
     'video/mp4'
 ];
@@ -34,6 +41,12 @@ const FORMATOS_PERMITIDOS = [
     'image/jpeg',
     'image/png',
     'image/webp'
+];
+const RESOURCE_EXTENSIONS_PERMITIDAS = [
+    'pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx',
+    'txt', 'csv', 'zip', 'rar', '7z',
+    'py', 'html', 'css', 'js', 'php', 'java', 'c', 'cpp', 'h',
+    'json', 'xml', 'sql', 'md'
 ];
 
 const CONFIG_AVISOS = {
@@ -67,6 +80,7 @@ function actualizarCamposTipoPost() {
     }
 
     const videoPreviewSection = document.getElementById('videoPreviewSection');
+    const resourcePreviewSection = document.getElementById('resourcePreviewSection');
     const imagenSection = document.getElementById('imagenPostSection');
     const btnCambiarImagenPost = document.getElementById('btnCambiarImagenPost');
 
@@ -91,12 +105,43 @@ function actualizarCamposTipoPost() {
             videoPreviewSection.classList.remove('d-none');
             videoPreviewSection.style.display = 'flex';
         }
+        if (resourcePreviewSection) {
+            resourcePreviewSection.classList.add('d-none');
+            resourcePreviewSection.style.display = 'none';
+        }
 
         if (btnCambiarImagenPost) {
             btnCambiarImagenPost.classList.add('d-none');
         }
 
         actualizarPreviewVideo();
+    } else if (tipo === 'recurso') {
+        if (campoVideoToggle) {
+            campoVideoToggle.classList.add('d-none');
+        }
+        campoYoutubeLocal?.classList.add('d-none');
+        campoVideoFile?.classList.add('d-none');
+
+        if (imagenSection) {
+            imagenSection.classList.add('d-none');
+            imagenSection.style.display = 'none';
+        }
+
+        if (videoPreviewSection) {
+            videoPreviewSection.classList.add('d-none');
+            videoPreviewSection.style.display = 'none';
+        }
+
+        if (resourcePreviewSection) {
+            resourcePreviewSection.classList.remove('d-none');
+            resourcePreviewSection.style.display = 'flex';
+        }
+
+        if (btnCambiarImagenPost) {
+            btnCambiarImagenPost.classList.add('d-none');
+        }
+
+        actualizarPreviewRecurso();
     } else {
         if (campoVideoToggle) {
             campoVideoToggle.classList.add('d-none');
@@ -113,19 +158,23 @@ function actualizarCamposTipoPost() {
             videoPreviewSection.classList.add('d-none');
             videoPreviewSection.style.display = 'none';
         }
+        if (resourcePreviewSection) {
+            resourcePreviewSection.classList.add('d-none');
+            resourcePreviewSection.style.display = 'none';
+        }
 
         if (btnCambiarImagenPost) {
             btnCambiarImagenPost.classList.remove('d-none');
         }
     }
-    campoNoticia?.classList.toggle('d-none', tipo !== 'noticia');
+    campoRecurso?.classList.toggle('d-none', tipo !== 'recurso');
 
     if (imagenOpcionalNote) {
         imagenOpcionalNote.classList.toggle('d-none', tipo !== 'video');
     }
 
     if (btnTextoImagenPost) {
-        if (tipo === 'video' && !archivoSeleccionado) {
+        if ((tipo === 'video' || tipo === 'recurso') && !archivoSeleccionado) {
             btnTextoImagenPost.textContent = 'Subir imagen (opcional)';
         } else if (!archivoSeleccionado) {
             btnTextoImagenPost.textContent = 'Subir imagen';
@@ -255,6 +304,36 @@ if (videoFileInput) {
     };
 }
 
+if (resourceFileInput) {
+    resourceFileInput.onchange = (e) => {
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        const extension = (file.name || '').split('.').pop().toLowerCase();
+        if (!RESOURCE_EXTENSIONS_PERMITIDAS.includes(extension)) {
+            alert('Formato de recurso no permitido');
+            return;
+        }
+
+        if (file.size > MAX_RESOURCE_SIZE) {
+            alert('Archivo muy pesado. El maximo es 100 MB.');
+            return;
+        }
+
+        archivoRecursoSeleccionado = file;
+        recursoActualUrl = '';
+        recursoActualNombre = file.name;
+
+        const resourceFileNameDisplay = document.getElementById('resourceFileNameDisplay');
+        if (resourceFileNameDisplay) {
+            resourceFileNameDisplay.textContent = file.name;
+        }
+
+        actualizarPreviewRecurso();
+    };
+}
+
 function procesarImagen(file) {
     archivoSeleccionado = file;
 
@@ -289,13 +368,58 @@ function actualizarEstadoPreviewVideoSeleccionado(tieneVideo) {
 
     if (videoFileNameDisplay) {
         videoFileNameDisplay.textContent = tieneVideo
-            ? (archivoVideoSeleccionado ? archivoVideoSeleccionado.name : 'Video seleccionado')
+            ? (archivoVideoSeleccionado ? archivoVideoSeleccionado.name : videoActualNombre || 'Video actual')
             : 'No se ha seleccionado video';
     }
 
     if (btnSubirVideo) {
         btnSubirVideo.textContent = tieneVideo ? 'Cambiar video' : 'Seleccionar video';
     }
+}
+
+function obtenerNombreDesdeRuta(ruta) {
+    if (!ruta) return '';
+
+    const nombreArchivo = decodeURIComponent(String(ruta).split('/').pop() || '');
+
+    return nombreArchivo.replace(/^(?:post|aviso|post_editor)(?:_\d+)?_\d+_[a-f0-9]{8}_/i, '');
+}
+
+function actualizarPreviewRecurso() {
+    const nombre = archivoRecursoSeleccionado?.name || recursoActualNombre || obtenerNombreDesdeRuta(recursoActualUrl) || 'Selecciona un archivo';
+    const nombrePreview = document.getElementById('resourcePreviewName');
+    const nombreDisplay = document.getElementById('resourceFileNameDisplay');
+    const boton = document.getElementById('btnSubirRecurso');
+    const tieneArchivo = Boolean(archivoRecursoSeleccionado || recursoActualUrl);
+
+    if (nombrePreview) {
+        nombrePreview.textContent = nombre;
+    }
+
+    if (nombreDisplay) {
+        nombreDisplay.textContent = tieneArchivo
+            ? nombre
+            : 'No se ha seleccionado archivo';
+    }
+
+    if (boton) {
+        boton.textContent = tieneArchivo ? 'Cambiar archivo' : 'Seleccionar recurso';
+    }
+}
+
+function formatearDuracionVideo(segundos) {
+    if (!Number.isFinite(segundos) || segundos <= 0) return '';
+
+    const total = Math.round(segundos);
+    const horas = Math.floor(total / 3600);
+    const minutos = Math.floor((total % 3600) / 60);
+    const restantes = total % 60;
+
+    if (horas > 0) {
+        return `${horas}:${String(minutos).padStart(2, '0')}:${String(restantes).padStart(2, '0')}`;
+    }
+
+    return `${minutos}:${String(restantes).padStart(2, '0')}`;
 }
 
 function obtenerYoutubeEmbedUrl(url) {
@@ -318,6 +442,7 @@ function limpiarPreviewVideo() {
 
     if (video) {
         video.pause();
+        video.onloadedmetadata = null;
         video.removeAttribute('src');
         video.load();
     }
@@ -347,7 +472,8 @@ function actualizarPreviewVideo() {
 
     if (videoMode === 'file') {
         iframe.classList.add('d-none');
-        if (!archivoVideoSeleccionado) {
+
+        if (!archivoVideoSeleccionado && !videoActualUrl) {
             video.classList.add('d-none');
             note.textContent = 'Selecciona un archivo .mp4 para vista previa.';
             return;
@@ -358,10 +484,28 @@ function actualizarPreviewVideo() {
             videoPreviewUrl = null;
         }
 
-        videoPreviewUrl = URL.createObjectURL(archivoVideoSeleccionado);
-        video.src = videoPreviewUrl;
+        let etiquetaVideo = '';
+
+        if (archivoVideoSeleccionado) {
+            videoPreviewUrl = URL.createObjectURL(archivoVideoSeleccionado);
+            video.src = videoPreviewUrl;
+            etiquetaVideo = archivoVideoSeleccionado.name;
+        } else {
+            video.src = typeof resolveImageSrc === 'function'
+                ? resolveImageSrc(videoActualUrl)
+                : videoActualUrl;
+            etiquetaVideo = videoActualNombre || 'Video actual';
+        }
+
         video.classList.remove('d-none');
-        note.textContent = archivoVideoSeleccionado.name;
+        note.textContent = etiquetaVideo;
+        video.onloadedmetadata = () => {
+            const duracion = formatearDuracionVideo(video.duration);
+            note.textContent = duracion
+                ? `${etiquetaVideo} • ${duracion}`
+                : etiquetaVideo;
+        };
+        video.load();
         return;
     }
 
@@ -382,32 +526,30 @@ function actualizarPreviewVideo() {
     }
 }
 
+function establecerModoVideo(modo) {
+    const btnLink = document.getElementById('videoModeLink');
+    const btnFile = document.getElementById('videoModeFile');
+
+    videoMode = modo === 'file' ? 'file' : 'link';
+    btnLink?.classList.toggle('active', videoMode === 'link');
+    btnFile?.classList.toggle('active', videoMode === 'file');
+    actualizarCamposTipoPost();
+}
+
 // Inicializar botones de modo video (link / archivo)
 const initVideoModeButtons = () => {
     const btnLink = document.getElementById('videoModeLink');
     const btnFile = document.getElementById('videoModeFile');
 
     if (!btnLink || !btnFile) return;
+    if (btnLink.dataset.videoModeReady === '1') return;
 
-    const activarLink = () => {
-        videoMode = 'link';
-        btnLink.classList.add('active');
-        btnFile.classList.remove('active');
-        actualizarCamposTipoPost();
-    };
+    btnLink.dataset.videoModeReady = '1';
 
-    const activarFile = () => {
-        videoMode = 'file';
-        btnFile.classList.add('active');
-        btnLink.classList.remove('active');
-        actualizarCamposTipoPost();
-    };
+    btnLink.addEventListener('click', () => establecerModoVideo('link'));
+    btnFile.addEventListener('click', () => establecerModoVideo('file'));
 
-    btnLink.addEventListener('click', activarLink);
-    btnFile.addEventListener('click', activarFile);
-
-    // marcar estado inicial
-    if (videoMode === 'file') activarFile(); else activarLink();
+    establecerModoVideo(videoMode);
 };
 
 // Ejecutar inicialización después de cargar el script (los elementos están en el DOM)
@@ -435,13 +577,24 @@ function obtenerCamposActuales() {
         };
     }
 
+    const tipoPost = document.getElementById('postTipo')?.value || 'articulo';
+    const esVideo = tipoPost === 'video';
+    const esRecurso = tipoPost === 'recurso';
+
     return {
         titulo: document.getElementById('postTitle').value.trim(),
         descripcion: document.getElementById('postDesc').value.trim(),
-        tipo: document.getElementById('postTipo')?.value || 'articulo',
+        tipo: tipoPost,
         categoria_id: document.getElementById('postMateria')?.value || '1',
-        youtube_url: document.getElementById('youtubeUrl')?.value.trim() || '',
-        noticia_url: document.getElementById('noticiaUrl')?.value.trim() || '',
+        youtube_url: esVideo && videoMode === 'link'
+            ? document.getElementById('youtubeUrl')?.value.trim() || ''
+            : '',
+        video_url: esVideo && videoMode === 'file'
+            ? videoActualUrl
+            : '',
+        archivo_url: esRecurso
+            ? recursoActualUrl
+            : '',
         seccion: 'post',
         tipo_aviso: 'academico',
         urgente: false,
@@ -457,7 +610,7 @@ function validarCampos() {
         return false;
     }
 
-    if (datos.seccion === 'post' && datos.tipo !== 'video' && !archivoSeleccionado && !postEditando) {
+    if (datos.seccion === 'post' && datos.tipo === 'articulo' && !archivoSeleccionado && !postEditando) {
         alert('Los posts requieren una imagen adjunta');
         return false;
     }
@@ -468,14 +621,14 @@ function validarCampos() {
             return false;
         }
 
-        if (videoMode === 'file' && !archivoVideoSeleccionado) {
+        if (videoMode === 'file' && !archivoVideoSeleccionado && !videoActualUrl) {
             alert('Debes seleccionar un archivo .mp4 desde tu PC');
             return false;
         }
     }
 
-    if (datos.seccion === 'post' && datos.tipo === 'noticia' && !datos.noticia_url) {
-        alert('Debes agregar un link de noticia');
+    if (datos.seccion === 'post' && datos.tipo === 'recurso' && !archivoRecursoSeleccionado && !recursoActualUrl) {
+        alert('Debes seleccionar un archivo de recurso');
         return false;
     }
 
@@ -515,7 +668,7 @@ function actualizarProgresoVideo(percent, texto = '') {
     }
 }
 
-function enviarPublicacionConArchivo(url, payload, archivoVideo) {
+function enviarPublicacionConArchivo(url, payload, archivo, fieldName = 'video_file') {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         const formData = new FormData();
@@ -526,7 +679,7 @@ function enviarPublicacionConArchivo(url, payload, archivoVideo) {
             }
         });
 
-        formData.append('video_file', archivoVideo);
+        formData.append(fieldName, archivo);
 
         xhr.withCredentials = true;
         xhr.open('POST', url, true);
@@ -534,7 +687,9 @@ function enviarPublicacionConArchivo(url, payload, archivoVideo) {
         xhr.upload.onprogress = (event) => {
             if (event.lengthComputable) {
                 const percentComplete = (event.loaded / event.total) * 100;
-                actualizarProgresoVideo(percentComplete);
+                if (fieldName === 'video_file') {
+                    actualizarProgresoVideo(percentComplete);
+                }
             }
         };
 
@@ -584,7 +739,7 @@ async function manejarPublicacion(estado) {
         const datos = obtenerCamposActuales();
         let imagenBase64 = null;
 
-        if (archivoSeleccionado && (datos.seccion !== 'aviso' || datos.importante)) {
+        if (archivoSeleccionado && (datos.seccion !== 'aviso' || datos.importante) && datos.tipo !== 'recurso') {
             imagenBase64 = await convertirABase64(archivoSeleccionado);
         }
 
@@ -606,6 +761,8 @@ async function manejarPublicacion(estado) {
 
         if (archivoVideoSeleccionado && datos.tipo === 'video') {
             resultado = await enviarPublicacionConArchivo(url, payload, archivoVideoSeleccionado);
+        } else if (archivoRecursoSeleccionado && datos.tipo === 'recurso') {
+            resultado = await enviarPublicacionConArchivo(url, payload, archivoRecursoSeleccionado, 'resource_file');
         } else {
             const respuesta = await fetch(url, {
                 method: 'POST',
@@ -691,10 +848,17 @@ function prepararEdicion(boton) {
     const urgente = tarjeta.dataset.urgente === '1';
     const importante = tarjeta.dataset.importante === '1';
     const youtubeUrl = tarjeta.dataset.youtubeUrl || '';
-    const noticiaUrl = tarjeta.dataset.noticiaUrl || '';
+    const videoUrl = tarjeta.dataset.videoUrl || '';
+    const archivoUrl = tarjeta.dataset.archivoUrl || tarjeta.dataset.noticiaUrl || '';
 
     postEditando = id;
     modoPublicacion = seccion;
+    archivoVideoSeleccionado = null;
+    archivoRecursoSeleccionado = null;
+    videoActualUrl = videoUrl;
+    videoActualNombre = obtenerNombreDesdeRuta(videoUrl);
+    recursoActualUrl = archivoUrl;
+    recursoActualNombre = obtenerNombreDesdeRuta(archivoUrl);
     modal.classList.add('modal-editando');
 
     document.querySelectorAll('.modal-title').forEach((tituloModal) => {
@@ -744,17 +908,34 @@ function prepararEdicion(boton) {
         }
 
         const youtubeInput = document.getElementById('youtubeUrl');
-        const noticiaInput = document.getElementById('noticiaUrl');
-
         if (youtubeInput) {
             youtubeInput.value = youtubeUrl;
         }
 
-        if (noticiaInput) {
-            noticiaInput.value = noticiaUrl;
+        if ((tipo || '').toLowerCase() === 'video') {
+            if (videoActualUrl) {
+                if (youtubeInput) {
+                    youtubeInput.value = '';
+                }
+
+                establecerModoVideo('file');
+                actualizarEstadoPreviewVideoSeleccionado(true);
+            } else {
+                establecerModoVideo('link');
+            }
+        } else {
+            videoActualUrl = '';
+            videoActualNombre = '';
+            establecerModoVideo('link');
+            actualizarCamposTipoPost();
         }
 
-        actualizarCamposTipoPost();
+        if ((tipo || '').toLowerCase() === 'recurso') {
+            actualizarPreviewRecurso();
+        } else {
+            recursoActualUrl = '';
+            recursoActualNombre = '';
+        }
 
         const materiaSelect = document.getElementById('postMateria');
 
@@ -897,7 +1078,7 @@ function resetearFormulario() {
     const fileNameDisplay = document.getElementById('fileNameDisplay');
     const avisoFileNameDisplay = document.getElementById('avisoFileNameDisplay');
     const youtubeInput = document.getElementById('youtubeUrl');
-    const noticiaInput = document.getElementById('noticiaUrl');
+    const resourceFileNameDisplay = document.getElementById('resourceFileNameDisplay');
 
     if (postTitle) postTitle.value = '';
     if (postDesc) postDesc.value = '';
@@ -905,11 +1086,11 @@ function resetearFormulario() {
     if (avisoDesc) avisoDesc.value = '';
     if (avisoImportante) avisoImportante.checked = false;
     if (youtubeInput) youtubeInput.value = '';
-    if (noticiaInput) noticiaInput.value = '';
     if (imgPreview) imgPreview.src = '';
     if (avisoImgPreview) avisoImgPreview.src = '';
     if (fileNameDisplay) fileNameDisplay.textContent = 'Selecciona una imagen';
     if (avisoFileNameDisplay) avisoFileNameDisplay.textContent = 'Selecciona una imagen';
+    if (resourceFileNameDisplay) resourceFileNameDisplay.textContent = 'No se ha seleccionado archivo';
     actualizarEstadoPreviewImagenPost(false);
     actualizarEstadoPreviewImagenAviso(false);
 
@@ -921,15 +1102,22 @@ function resetearFormulario() {
         videoFileInput.value = '';
     }
 
+    if (resourceFileInput) {
+        resourceFileInput.value = '';
+    }
+
     const videoFileNameDisplay = document.getElementById('videoFileNameDisplay');
     const videoUploadProgressContainer = document.getElementById('videoUploadProgressContainer');
 
     archivoVideoSeleccionado = null;
+    archivoRecursoSeleccionado = null;
+    videoActualUrl = '';
+    videoActualNombre = '';
+    recursoActualUrl = '';
+    recursoActualNombre = '';
     limpiarPreviewVideo();
-
-    if (videoFileNameDisplay) {
-        videoFileNameDisplay.textContent = 'No se ha seleccionado video';
-    }
+    actualizarEstadoPreviewVideoSeleccionado(false);
+    actualizarPreviewRecurso();
 
     if (videoUploadProgressContainer) {
         videoUploadProgressContainer.classList.add('d-none');

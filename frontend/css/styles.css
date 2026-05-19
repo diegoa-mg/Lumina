@@ -225,3 +225,61 @@ p.copy {
 .scrollbar-invisible::-webkit-scrollbar {
     display: none;
 }
+
+.autor-avatar-iniciales {
+    align-items: center;
+    background: linear-gradient(145deg, var(--celeste), var(--principal));
+    border-radius: 50%;
+    color: var(--blanco);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 1.25rem;
+    font-weight: 800;
+    height: 4rem;
+    justify-content: center;
+    letter-spacing: 0;
+    line-height: 1;
+    width: 4rem;
+}
+
+.autor-avatar-iniciales.avatar-busqueda-iniciales {
+    font-size: 0.875rem;
+    height: 2rem;
+    width: 2rem;
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    padding-right: 4.4rem !important;
+}
+
+.password-toggle {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: 0.8rem;
+    color: #6b7280;
+    cursor: pointer;
+    display: inline-flex;
+    height: 3.2rem;
+    justify-content: center;
+    position: absolute;
+    right: 0.35rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: background 0.2s ease, color 0.2s ease;
+    width: 3.2rem;
+}
+
+.password-toggle:hover {
+    background: #eef2ff;
+    color: var(--principal);
+}
+
+.password-toggle .material-symbols-outlined {
+    font-size: 2rem;
+    line-height: 1;
+}

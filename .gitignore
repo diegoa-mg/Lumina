@@ -13,5 +13,11 @@ Thumbs.db
 error_log
 php_errors.log
 
+# Ignorar archivos subidos desde la app
+frontend/uploads/posts/*
+frontend/uploads/recursos/*
+!frontend/uploads/posts/.gitkeep
+!frontend/uploads/recursos/.gitkeep
+
 # Configuración local (credenciales)
 backend/config.php

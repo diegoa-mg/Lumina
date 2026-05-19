@@ -47,7 +47,7 @@ $categoria_id = obtener_categoria_post_desde_data($data);
 $status = normalizar_status_post($data['status'] ?? 'borrador');
 $youtube_url = trim($data['youtube_url'] ?? '');
 $video_url = trim($data['video_url'] ?? '');
-$noticia_url = trim($data['noticia_url'] ?? '');
+$archivo_url = trim($data['archivo_url'] ?? $data['noticia_url'] ?? '');
 
 if ($seccion === 'aviso') {
     $categoria_id = 9;
@@ -63,15 +63,16 @@ if ($titulo === '' || $descripcion === '') {
     exit;
 }
 
-$video_upload_present = !empty($_FILES['video_file']['tmp_name'] ?? null);
+$video_upload_present = upload_archivo_intentado($_FILES['video_file'] ?? null);
+$recurso_upload_present = upload_archivo_intentado($_FILES['resource_file'] ?? null);
 
 if ($seccion === 'post') {
     if ($tipo === 'video' && $youtube_url === '' && $video_url === '' && !$video_upload_present) {
         echo json_encode(['success' => false, 'error' => 'Debes agregar un link de video o subir un archivo']);
         exit;
     }
-    if ($tipo === 'noticia' && $noticia_url === '') {
-        echo json_encode(['success' => false, 'error' => 'Debes agregar un link de noticia']);
+    if ($tipo === 'recurso' && $archivo_url === '' && !$recurso_upload_present) {
+        echo json_encode(['success' => false, 'error' => 'Debes subir un archivo de recurso']);
         exit;
     }
 }
@@ -93,22 +94,28 @@ if (is_array($resultado_imagen)) {
 $tiene_tipo = publicaciones_tiene_columna($conexion, 'tipo');
 $tiene_youtube_url = publicaciones_tiene_columna($conexion, 'youtube_url');
 $tiene_video_url = publicaciones_tiene_columna($conexion, 'video_url');
-$tiene_noticia_url = publicaciones_tiene_columna($conexion, 'noticia_url');
+$columna_archivo = publicaciones_columna_archivo($conexion);
 $tiene_seccion = publicaciones_tiene_columna($conexion, 'seccion');
 $tiene_tipo_aviso = publicaciones_tiene_columna($conexion, 'tipo_aviso');
 $tiene_urgente = publicaciones_tiene_columna($conexion, 'urgente');
 $tiene_importante = publicaciones_tiene_columna($conexion, 'importante');
 
 $video_archivo_resultado = null;
+$recurso_archivo_resultado = null;
 
 // Si se subió un archivo pero la base de datos no soporta la columna, rechazar
-if (!empty($_FILES['video_file']['tmp_name'] ?? null) && !$tiene_video_url) {
+if ($video_upload_present && !$tiene_video_url) {
     echo json_encode(['success' => false, 'error' => 'La base de datos no soporta la carga de video de archivo.']);
     exit;
 }
 
+if ($recurso_upload_present && !$columna_archivo) {
+    echo json_encode(['success' => false, 'error' => 'La base de datos no soporta la carga de recursos.']);
+    exit;
+}
+
 // Si la DB soporta video_url y se envió un archivo, guardarlo
-if ($tiene_video_url && !empty($_FILES['video_file']['tmp_name'] ?? null)) {
+if ($tiene_video_url && $video_upload_present) {
     $video_archivo_resultado = guardar_video_post_archivo($_FILES['video_file'] ?? null, $seccion . '_' . $autor_id);
 
     if (is_array($video_archivo_resultado) && empty($video_archivo_resultado['success'])) {
@@ -118,6 +125,19 @@ if ($tiene_video_url && !empty($_FILES['video_file']['tmp_name'] ?? null)) {
 
     if (is_array($video_archivo_resultado)) {
         $video_url = $video_archivo_resultado['video_url'];
+    }
+}
+
+if ($columna_archivo && $recurso_upload_present) {
+    $recurso_archivo_resultado = guardar_recurso_post_archivo($_FILES['resource_file'] ?? null, $seccion . '_' . $autor_id);
+
+    if (is_array($recurso_archivo_resultado) && empty($recurso_archivo_resultado['success'])) {
+        echo json_encode($recurso_archivo_resultado);
+        exit;
+    }
+
+    if (is_array($recurso_archivo_resultado)) {
+        $archivo_url = $recurso_archivo_resultado['archivo_url'];
     }
 }
 
@@ -162,10 +182,10 @@ if ($tiene_video_url) {
     $valores[] = $video_url;
 }
 
-if ($tiene_noticia_url) {
-    $columnas[] = 'noticia_url';
+if ($columna_archivo) {
+    $columnas[] = $columna_archivo;
     $tipos_bind .= 's';
-    $valores[] = $noticia_url;
+    $valores[] = $archivo_url;
 }
 
 if ($tiene_seccion) {
@@ -213,7 +233,7 @@ if ($stmt->execute()) {
         'status' => $status,
         'youtube_url' => $youtube_url,
         'video_url' => $video_url,
-        'noticia_url' => $noticia_url,
+        'archivo_url' => $archivo_url,
         'seccion' => $seccion,
         'tipo_aviso' => $tipo_aviso,
         'urgente' => $urgente,

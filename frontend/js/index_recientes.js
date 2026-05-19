@@ -36,19 +36,41 @@ function etiquetaTipoRecientes(tipo) {
     const etiquetas = {
         articulo: 'Artículo',
         video: 'Video',
-        noticia: 'Noticia',
         recurso: 'Recurso'
     };
 
     return etiquetas[String(tipo || '').toLowerCase()] || 'Publicación';
 }
 
+function obtenerInicialesRecientes(nombre) {
+    const partes = String(nombre || 'Usuario')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    if (partes.length === 0) return 'U';
+
+    return partes
+        .slice(0, 2)
+        .map((parte) => parte.charAt(0).toUpperCase())
+        .join('');
+}
+
+function renderAvatarAutorRecientes(fotoUrl, nombre) {
+    if (fotoUrl) {
+        return `<img src="${escapeHtmlRecientes(fotoUrl)}" alt="${escapeHtmlRecientes(nombre)}">`;
+    }
+
+    return `<span class="autor-avatar-iniciales">${escapeHtmlRecientes(obtenerInicialesRecientes(nombre))}</span>`;
+}
+
 function renderCardReciente(post) {
     const id = Number(post.id || 0);
     const titulo = escapeHtmlRecientes(post.titulo || 'Publicación sin título');
     const imagen = escapeHtmlRecientes(post.imagen_url || 'img/clases/clase2.webp');
-    const autor = escapeHtmlRecientes(post.autor || 'Autor desconocido');
-    const autorFoto = escapeHtmlRecientes(post.autor_foto || 'img/usuarios/usuarios1.webp');
+    const autorNombre = post.autor || 'Autor desconocido';
+    const autor = escapeHtmlRecientes(autorNombre);
+    const autorFoto = post.autor_foto || '';
     const fecha = escapeHtmlRecientes(formatearFechaRecientes(post.fecha_creacion));
     const tipo = escapeHtmlRecientes(etiquetaTipoRecientes(post.tipo));
     const materia = escapeHtmlRecientes(post.materia || 'Materia sin asignar');
@@ -66,7 +88,7 @@ function renderCardReciente(post) {
                 </div>
                 <h4>${titulo}</h4>
                 <div class="autor-info">
-                    <img src="${autorFoto}" alt="${autor}">
+                    ${renderAvatarAutorRecientes(autorFoto, autorNombre)}
                     <div>
                         <p class="nombre-autor">${autor}</p>
                         <p class="fecha-autor">${fecha}</p>

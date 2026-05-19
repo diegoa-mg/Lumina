@@ -289,8 +289,24 @@ header {
 }
 
 .nav-avatar-img.d-none,
-.nav-avatar-icon.d-none {
+.nav-avatar-icon.d-none,
+.nav-avatar-initials.d-none {
     display: none;
+}
+
+.nav-avatar-initials {
+    align-items: center;
+    background: linear-gradient(145deg, var(--celeste), var(--principal));
+    color: var(--blanco);
+    display: flex;
+    font-size: 1.35rem;
+    font-weight: 800;
+    height: 100%;
+    justify-content: center;
+    letter-spacing: 0;
+    line-height: 1;
+    padding-top: 0.1rem;
+    width: 100%;
 }
 
 .nav-avatar .nav-avatar-icon.material-symbols-outlined {

@@ -14,11 +14,26 @@ function resolveNavAvatarSrc(fotoUrl) {
     return fotoUrl;
 }
 
+function obtenerInicialesUsuario(nombre) {
+    const partes = String(nombre || 'Usuario')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    if (partes.length === 0) return 'U';
+
+    return partes
+        .slice(0, 2)
+        .map((parte) => parte.charAt(0).toUpperCase())
+        .join('');
+}
+
 async function cargarAvatarNav() {
     const avatar = document.getElementById('nav-avatar-img');
     const icono = document.getElementById('nav-avatar-icon');
+    const iniciales = document.getElementById('nav-avatar-initials');
 
-    if (!avatar || !icono || !isUserLoggedIn()) return;
+    if (!avatar || !icono || !iniciales || !isUserLoggedIn()) return;
 
     try {
         const respuesta = await fetch('../backend/obtener_cuenta.php', {
@@ -26,13 +41,23 @@ async function cargarAvatarNav() {
         });
         const datos = await respuesta.json();
 
-        if (!respuesta.ok || !datos.ok || !datos.usuario?.foto_url) {
+        if (!respuesta.ok || !datos.ok) {
+            return;
+        }
+
+        iniciales.textContent = obtenerInicialesUsuario(datos.usuario?.nombre);
+
+        if (!datos.usuario?.foto_url) {
+            avatar.classList.add('d-none');
+            icono.classList.add('d-none');
+            iniciales.classList.remove('d-none');
             return;
         }
 
         avatar.src = resolveNavAvatarSrc(datos.usuario.foto_url);
         avatar.classList.remove('d-none');
         icono.classList.add('d-none');
+        iniciales.classList.add('d-none');
     } catch (error) {
         console.error('No se pudo cargar la foto de perfil en la navbar:', error);
     }
@@ -124,6 +149,7 @@ function renderNav() {
                 <button id="btn-cuenta" class="btn-cuenta-estilo btn-cuenta-avatar" aria-label="Abrir menú de cuenta">
                     <span class="nav-avatar">
                         <img id="nav-avatar-img" class="nav-avatar-img d-none" src="" alt="Foto de perfil">
+                        <span id="nav-avatar-initials" class="nav-avatar-initials d-none">U</span>
                         <span id="nav-avatar-icon" class="material-symbols-outlined nav-avatar-icon">person</span>
                     </span>
                     <span class="material-symbols-outlined">expand_more</span>

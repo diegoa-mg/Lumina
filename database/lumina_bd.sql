@@ -84,10 +84,10 @@ CREATE TABLE `publicaciones` (
   `titulo` varchar(255) NOT NULL,
   `descripcion` text NOT NULL,
   `imagen_url` varchar(500) DEFAULT NULL,
-  `tipo` enum('articulo','video','noticia','recurso') NOT NULL DEFAULT 'articulo',
+  `tipo` enum('articulo','video','recurso') NOT NULL DEFAULT 'articulo',
   `youtube_url` varchar(500) DEFAULT NULL,
   `video_url` varchar(500) DEFAULT NULL,
-  `noticia_url` varchar(500) DEFAULT NULL,
+  `recurso_url` varchar(500) DEFAULT NULL,
   `categoria_id` int(11) DEFAULT NULL,
   `seccion` enum('post','aviso') NOT NULL DEFAULT 'post',
   `tipo_aviso` enum('academico','plataforma') NOT NULL DEFAULT 'academico',
@@ -105,7 +105,7 @@ CREATE TABLE `publicaciones` (
 -- Volcado de datos para la tabla `publicaciones`
 --
 
-INSERT INTO `publicaciones` (`id`, `titulo`, `descripcion`, `imagen_url`, `tipo`, `youtube_url`, `video_url`, `noticia_url`, `categoria_id`, `seccion`, `tipo_aviso`, `urgente`, `importante`, `status`, `autor_id`, `fecha_creacion`, `fecha_actualizacion`, `fecha_publicacion`, `observaciones_editor`) VALUES
+INSERT INTO `publicaciones` (`id`, `titulo`, `descripcion`, `imagen_url`, `tipo`, `youtube_url`, `video_url`, `recurso_url`, `categoria_id`, `seccion`, `tipo_aviso`, `urgente`, `importante`, `status`, `autor_id`, `fecha_creacion`, `fecha_actualizacion`, `fecha_publicacion`, `observaciones_editor`) VALUES
 (13, 'asfasdfasdfadf', 'asdfasdfasdfasdfad', 'uploads/posts/post_1_1779064539_ef9471d7.jpeg', 'articulo', '', NULL, '', 1, 'post', 'academico', 0, 0, 'publicado', 1, '2026-05-18 00:35:39', '2026-05-18 02:08:43', '2026-05-18 02:08:43', NULL),
 (15, 'sfasfasdfasdf', 'asfasdfasdfasdfasdfadf', 'uploads/posts/aviso_1_1779070094_3466f509.jpeg', 'articulo', '', NULL, '', 1, 'post', 'academico', 0, 0, 'publicado', 1, '2026-05-18 02:08:14', '2026-05-18 02:08:26', '2026-05-18 02:08:26', NULL),
 (16, 'pRUEBA', 'asdf;kajsdflkajs;lfa', 'uploads/posts/post_1_1779075042_716c77a1.jpeg', 'articulo', '', NULL, '', 1, 'post', 'academico', 0, 0, 'revision', 1, '2026-05-18 03:30:42', '2026-05-18 03:30:45', NULL, NULL),
@@ -176,7 +176,7 @@ CREATE TABLE `usuarios` (
   `usuarios` text NOT NULL,
   `correo` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `foto_url` varchar(500) DEFAULT NULL,
+  `foto_url`,
   `rol_id` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

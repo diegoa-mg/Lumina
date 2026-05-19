@@ -13,7 +13,6 @@ const RECURSOS_PREF_DEFAULTS = {
     tipos: {
         articulo: true,
         video: true,
-        noticia: true,
         recurso: true
     }
 };
@@ -54,11 +53,32 @@ function etiquetaTipoRecurso(tipo) {
     const etiquetas = {
         articulo: 'Artículo',
         video: 'Video',
-        noticia: 'Noticia',
         recurso: 'Recurso'
     };
 
     return etiquetas[String(tipo || '').toLowerCase()] || String(tipo || '');
+}
+
+function obtenerInicialesRecursos(nombre) {
+    const partes = String(nombre || 'Usuario')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    if (partes.length === 0) return 'U';
+
+    return partes
+        .slice(0, 2)
+        .map((parte) => parte.charAt(0).toUpperCase())
+        .join('');
+}
+
+function renderAvatarAutorRecursos(fotoUrl, nombre) {
+    if (fotoUrl) {
+        return `<img src="${escapeHtmlRecursos(fotoUrl)}" alt="${escapeHtmlRecursos(nombre)}">`;
+    }
+
+    return `<span class="autor-avatar-iniciales">${escapeHtmlRecursos(obtenerInicialesRecursos(nombre))}</span>`;
 }
 
 function cargarPreferenciasRecursos() {
@@ -108,7 +128,7 @@ function normalizarPostRecurso(post) {
         materia: post.materia || 'Materia sin asignar',
         fecha: formatearFechaRecursos(post.fecha_creacion),
         autor: post.autor || 'Autor desconocido',
-        autorFoto: post.autor_foto || 'img/usuarios/usuarios1.webp'
+        autorFoto: post.autor_foto || ''
     };
 }
 
@@ -135,7 +155,7 @@ function renderPostRecienteRecurso(postOriginal) {
                 </div>
                 <h4>${escapeHtmlRecursos(post.titulo)}</h4>
                 <div class="autor-info">
-                    <img src="${escapeHtmlRecursos(post.autorFoto)}" alt="${escapeHtmlRecursos(post.autor)}">
+                    ${renderAvatarAutorRecursos(post.autorFoto, post.autor)}
                     <div>
                         <p class="nombre-autor">${escapeHtmlRecursos(post.autor)}</p>
                         <p class="fecha-autor">${escapeHtmlRecursos(post.fecha)}</p>

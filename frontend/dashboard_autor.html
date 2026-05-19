@@ -103,6 +103,7 @@
         <div class="modal-overlay" id="modalAdmin">
             <input type="file" id="fileInput" hidden accept="image/*">
             <input type="file" id="videoFileInput" hidden accept=".mp4,video/mp4">
+            <input type="file" id="resourceFileInput" hidden accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.rar,.7z,.py,.html,.css,.js,.php,.java,.c,.cpp,.h,.json,.xml,.sql,.md">
             <!-- PANTALLA 0: ELEGIR TIPO DE PUBLICACION -->
             <div class="modal-content" id="pantallaSelector">
                 <span class="close-modal" id="btnCerrar">&times;</span>
@@ -112,7 +113,7 @@
                     <button class="opcion-publicacion" type="button" id="btnCrearPost">
                         <span class="material-symbols-outlined">article</span>
                         <strong>Subir post</strong>
-                        <small>Publicacion para materias, recursos o noticias academicas.</small>
+                        <small>Publicacion para materias, videos o recursos academicos.</small>
                     </button>
 
                     <button class="opcion-publicacion" type="button" id="btnCrearAviso">
@@ -185,10 +186,6 @@
                 Video
             </option>
 
-            <option value="noticia">
-                Noticia
-            </option>
-
             <option value="recurso">
                 Recurso
             </option>
@@ -245,9 +242,15 @@
         <p class="text-sm text-gray-500 mt-2" id="videoUploadNote">Máximo 500 MB. Formato permitido: .mp4</p>
     </div>
 
-    <div class="field campo-noticia d-none">
-        <label>URL de la noticia</label>
-        <input type="url" id="noticiaUrl" placeholder="https://sitio.com/noticia">
+    <div class="field campo-recurso-file d-none">
+        <label>Archivo de recurso</label>
+        <div class="video-file-upload">
+            <p class="filename aviso-imagen-nombre" id="resourceFileNameDisplay">No se ha seleccionado archivo</p>
+            <button type="button" class="btn-select" id="btnSubirRecurso" onclick="document.getElementById('resourceFileInput').click()">
+                Seleccionar recurso
+            </button>
+        </div>
+        <p class="text-sm text-gray-500 mt-2">PDF, Word, PowerPoint, Excel, ZIP o archivos de programación. Máximo 100 MB.</p>
     </div>
 
 </div>
@@ -266,9 +269,15 @@
                             <p class="text-sm text-gray-500 mt-2 d-none" id="imagenOpcionalNote">Imagen opcional para publicaciones de video.</p>
                         </div>
                         <div class="preview-video d-none" id="videoPreviewSection" style="display:none;">
-                            <video id="videoPreview" class="post-video-preview" controls muted playsinline></video>
+                            <video id="videoPreview" class="post-video-preview" controls muted playsinline preload="metadata"></video>
                             <iframe id="youtubePreviewIframe" class="post-video-preview d-none" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                             <p class="text-sm text-gray-500 mt-2" id="videoPreviewNote">Vista previa del video</p>
+                        </div>
+                        <div class="preview-recurso d-none" id="resourcePreviewSection" style="display:none;">
+                            <div class="resource-preview-card">
+                                <span class="material-symbols-outlined">description</span>
+                                <p id="resourcePreviewName">Selecciona un archivo</p>
+                            </div>
                         </div>
                         <button
                             type="button"

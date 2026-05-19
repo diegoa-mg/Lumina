@@ -28,7 +28,7 @@ function obtenerConfigAviso(tipoAviso) {
         return {
             texto: 'Plataforma',
             icono: 'language',
-            clase: 'bg-rojo3'
+            clase: 'bg-rojo2'
         };
     }
 

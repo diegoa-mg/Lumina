@@ -37,7 +37,7 @@
 .comentario-form textarea {
     min-height: 4.4rem !important;
     max-height: 12rem !important;
-    resize: vertical !important;
+    resize: none !important;
 }
 
 .comentario-avatar,
@@ -75,6 +75,20 @@
     font-size: 2.4rem !important;
 }
 
+.comentario-avatar-iniciales {
+    align-items: center;
+    background: linear-gradient(145deg, var(--celeste), var(--principal));
+    color: #fff;
+    display: flex;
+    font-size: 1.35rem;
+    font-weight: 800;
+    height: 100%;
+    justify-content: center;
+    letter-spacing: 0;
+    line-height: 1;
+    width: 100%;
+}
+
 .comentario-card {
     display: flex !important;
     align-items: flex-start !important;
@@ -105,6 +119,27 @@
 .comentario-header span {
     color: #6b7280 !important;
     font-size: 1.1rem !important;
+}
+
+.comentario-eliminar {
+    margin-left: auto !important;
+    background: none !important;
+    border: none !important;
+    color: #ef4444 !important;
+    cursor: pointer !important;
+    padding: 0.2rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    border-radius: 0.6rem !important;
+    transition: background 0.15s ease !important;
+}
+
+.comentario-eliminar:hover {
+    background: #fee2e2 !important;
+}
+
+.comentario-eliminar .material-symbols-outlined {
+    font-size: 1.9rem !important;
 }
 
 .comentario-contenido p {

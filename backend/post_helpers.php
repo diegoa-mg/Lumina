@@ -7,6 +7,8 @@ function publicaciones_tiene_columna($conexion, $columna) {
         'tipo' => true,
         'youtube_url' => true,
         'video_url' => true,
+        'archivo_url' => true,
+        'recurso_url' => true,
         'noticia_url' => true,
         'observaciones_editor' => true,
         'seccion' => true,
@@ -48,13 +50,112 @@ function publicaciones_tiene_columna($conexion, $columna) {
     return $cache[$columna];
 }
 
+function publicaciones_columna_archivo($conexion) {
+    if (publicaciones_tiene_columna($conexion, 'archivo_url')) {
+        return 'archivo_url';
+    }
+
+    if (publicaciones_tiene_columna($conexion, 'recurso_url')) {
+        return 'recurso_url';
+    }
+
+    if (publicaciones_tiene_columna($conexion, 'noticia_url')) {
+        return 'noticia_url';
+    }
+
+    return null;
+}
+
 function normalizar_tipo_post($tipo) {
     $tipo = trim(strtolower($tipo ?: 'articulo'));
-    $tipos_permitidos = ['articulo', 'video', 'noticia', 'recurso'];
+    $tipos_permitidos = ['articulo', 'video', 'recurso'];
 
     return in_array($tipo, $tipos_permitidos, true)
         ? $tipo
         : 'articulo';
+}
+
+function guardar_recurso_post_archivo($archivo, $prefijo = 'recurso') {
+    if (empty($archivo) || !is_array($archivo)) {
+        return null;
+    }
+
+    $error = intval($archivo['error'] ?? UPLOAD_ERR_NO_FILE);
+
+    if ($error === UPLOAD_ERR_NO_FILE) {
+        return null;
+    }
+
+    if ($error !== UPLOAD_ERR_OK) {
+        $mensajes = [
+            UPLOAD_ERR_INI_SIZE => 'El archivo supera el limite configurado en PHP.',
+            UPLOAD_ERR_FORM_SIZE => 'El archivo supera el limite permitido por el formulario.',
+            UPLOAD_ERR_PARTIAL => 'El archivo se subio incompleto. Intentalo otra vez.',
+            UPLOAD_ERR_NO_TMP_DIR => 'No existe carpeta temporal para subir archivos.',
+            UPLOAD_ERR_CANT_WRITE => 'No se pudo escribir el archivo en el servidor.',
+            UPLOAD_ERR_EXTENSION => 'Una extension de PHP detuvo la subida del archivo.'
+        ];
+
+        return [
+            'success' => false,
+            'error' => $mensajes[$error] ?? 'Error al subir el archivo.'
+        ];
+    }
+
+    if (!isset($archivo['tmp_name']) || !is_uploaded_file($archivo['tmp_name'])) {
+        return [
+            'success' => false,
+            'error' => 'No se recibio correctamente el archivo.'
+        ];
+    }
+
+    if ($archivo['size'] > 100 * 1024 * 1024) {
+        return [
+            'success' => false,
+            'error' => 'El archivo es demasiado pesado. Maximo 100 MB.'
+        ];
+    }
+
+    $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+    $formatos_permitidos = [
+        'pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx',
+        'txt', 'csv', 'zip', 'rar', '7z',
+        'py', 'html', 'css', 'js', 'php', 'java', 'c', 'cpp', 'h',
+        'json', 'xml', 'sql', 'md'
+    ];
+
+    if (!in_array($extension, $formatos_permitidos, true)) {
+        return [
+            'success' => false,
+            'error' => 'Formato de recurso no permitido.'
+        ];
+    }
+
+    $ruta_directorio = __DIR__ . '/../frontend/uploads/recursos/';
+
+    if (!is_dir($ruta_directorio) && !mkdir($ruta_directorio, 0777, true)) {
+        return [
+            'success' => false,
+            'error' => 'Error al crear carpeta de recursos'
+        ];
+    }
+
+    $nombre_seguro = preg_replace('/[^a-zA-Z0-9_-]+/', '_', pathinfo($archivo['name'], PATHINFO_FILENAME));
+    $nombre_seguro = trim($nombre_seguro, '_') ?: 'archivo';
+    $nombre_archivo = $prefijo . '_' . time() . '_' . bin2hex(random_bytes(4)) . '_' . $nombre_seguro . '.' . $extension;
+    $ruta_archivo = $ruta_directorio . $nombre_archivo;
+
+    if (!move_uploaded_file($archivo['tmp_name'], $ruta_archivo)) {
+        return [
+            'success' => false,
+            'error' => 'Error al guardar el recurso.'
+        ];
+    }
+
+    return [
+        'success' => true,
+        'archivo_url' => 'uploads/recursos/' . $nombre_archivo
+    ];
 }
 
 function normalizar_categoria_post($categoria_id) {
@@ -185,14 +286,36 @@ function guardar_imagen_post_base64($imagen, $prefijo = 'post') {
 }
 
 function guardar_video_post_archivo($archivo, $prefijo = 'post') {
-    if (empty($archivo) || !isset($archivo['tmp_name']) || !is_uploaded_file($archivo['tmp_name'])) {
+    if (empty($archivo) || !is_array($archivo)) {
         return null;
     }
 
-    if ($archivo['error'] !== UPLOAD_ERR_OK) {
+    $error = intval($archivo['error'] ?? UPLOAD_ERR_NO_FILE);
+
+    if ($error === UPLOAD_ERR_NO_FILE) {
+        return null;
+    }
+
+    if ($error !== UPLOAD_ERR_OK) {
+        $mensajes = [
+            UPLOAD_ERR_INI_SIZE => 'El video supera el limite configurado en PHP.',
+            UPLOAD_ERR_FORM_SIZE => 'El video supera el limite permitido por el formulario.',
+            UPLOAD_ERR_PARTIAL => 'El video se subio incompleto. Intentalo otra vez.',
+            UPLOAD_ERR_NO_TMP_DIR => 'No existe carpeta temporal para subir archivos.',
+            UPLOAD_ERR_CANT_WRITE => 'No se pudo escribir el video en el servidor.',
+            UPLOAD_ERR_EXTENSION => 'Una extension de PHP detuvo la subida del video.'
+        ];
+
         return [
             'success' => false,
-            'error' => 'Error al subir el archivo de video.'
+            'error' => $mensajes[$error] ?? 'Error al subir el archivo de video.'
+        ];
+    }
+
+    if (!isset($archivo['tmp_name']) || !is_uploaded_file($archivo['tmp_name'])) {
+        return [
+            'success' => false,
+            'error' => 'No se recibio correctamente el archivo de video.'
         ];
     }
 
@@ -244,6 +367,45 @@ function guardar_video_post_archivo($archivo, $prefijo = 'post') {
         'success' => true,
         'video_url' => 'uploads/posts/' . $nombre_archivo
     ];
+}
+
+function upload_archivo_intentado($archivo) {
+    return is_array($archivo)
+        && intval($archivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE;
+}
+
+function eliminar_archivo_frontend($ruta_relativa, $prefijo_permitido = null) {
+    $ruta_relativa = trim((string) $ruta_relativa);
+    $prefijos_permitidos = $prefijo_permitido
+        ? [$prefijo_permitido]
+        : ['uploads/posts/', 'uploads/recursos/'];
+
+    if ($ruta_relativa === ''
+        || strpos($ruta_relativa, "\0") !== false
+        || strpos($ruta_relativa, '..') !== false
+    ) {
+        return false;
+    }
+
+    $prefijo_valido = false;
+    foreach ($prefijos_permitidos as $prefijo) {
+        if (strpos($ruta_relativa, $prefijo) === 0) {
+            $prefijo_valido = true;
+            break;
+        }
+    }
+
+    if (!$prefijo_valido) {
+        return false;
+    }
+
+    $ruta_archivo = __DIR__ . '/../frontend/' . $ruta_relativa;
+
+    if (is_file($ruta_archivo)) {
+        return @unlink($ruta_archivo);
+    }
+
+    return false;
 }
 
 ?>

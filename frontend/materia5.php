@@ -16,7 +16,7 @@ g<!DOCTYPE html>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter&family=Libre+Baskerville&display=swap" rel="stylesheet">  
+    <link href="https://fonts.googleapis.com/css2?family=Inter&family=Libre+Baskerville&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
@@ -25,7 +25,7 @@ g<!DOCTYPE html>
     <link rel="stylesheet" href="css/recursos.css?v=4">
     <link rel="stylesheet" href="css/navbar.css?v=6">
     <link rel="stylesheet" href="css/styles.css?v=17">
-    <link rel="stylesheet" href="css/comentarios_materia.css?v=2">
+    <link rel="stylesheet" href="css/comentarios_materia.css?v=3">
 </head>
 
 <body class="bg-gray-100">
@@ -38,7 +38,7 @@ g<!DOCTYPE html>
             <a href="index.html">
                 <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png">
             </a>
-        </div>  
+        </div>
 
         <div class="search-container">
             <span class="search-icon material-symbols-outlined">
@@ -69,7 +69,7 @@ g<!DOCTYPE html>
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold">
                     <span id="materiaNombre">POO</span>
-                </h1> 
+                </h1>
             </div>
 
             <div class="materia-autor-card">
@@ -111,11 +111,6 @@ g<!DOCTYPE html>
                 <button class="filter-btn pb-3 text-gray-500"
                         data-filter="video">
                     Videos
-                </button>
-
-                <button class="filter-btn pb-3 text-gray-500"
-                        data-filter="noticia">
-                    Noticias
                 </button>
 
                 <button class="filter-btn pb-3 text-gray-500"
@@ -418,7 +413,7 @@ async function cargarPublicaciones() {
                 : post.descripcion;
 
             const tarjeta = `
-            
+
             <div class="content-box bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-lg transition duration-300 flex flex-col"
                  data-type="${tipo}">
 
@@ -628,7 +623,7 @@ document.addEventListener(
 
 <script src="js/auth.js"></script>
 <script src="js/menu_ui.js"></script>
-<script src="js/comentarios_materia.js?v=2"></script>
+<script src="js/comentarios_materia.js?v=3"></script>
 
 </body>
 </html>
