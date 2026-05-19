@@ -15,32 +15,42 @@
 
 .contenido-uni {
     position: absolute;
-    background-color: rgba(0, 0, 0, .7);
-    background-color: rgb(0 0 0 / 70%);
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    /* Degradado azulado para que el texto se lea sobre cualquier imagen */
+    background: linear-gradient(180deg, rgba(3, 24, 61, 0.55) 0%, rgba(3, 24, 61, 0.82) 100%);
     display: flex;
     flex-direction: column;
-	align-items: start;
-	justify-content: center;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
 }
 
-.contenido-uni h2,
-.contenido-uni p {
-    color: var(--blanco);
-    font-size: 1.5rem;
+.contenido-uni .ubicacion {
+    max-width: 80rem;
 }
 
 .contenido-uni h2 {
-    font-size: 3.5rem;
-    font-weight: 500;
-    margin-bottom: 0;
-    padding-bottom: 0;
+    color: var(--blanco);
+    font-family: "Libre Baskerville", serif;
+    font-size: 3.6rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0 0 1.2rem;
 }
 
-.contenido-uni h2 span {
-    font-size: 3rem;
-    margin-top: 0;
+.contenido-uni .uni-eslogan {
+    color: var(--blanco);
+    font-size: 1.9rem;
+    font-weight: 300;
+    margin: 0 0 1.4rem;
+}
+
+.contenido-uni .uni-desc {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin: 0;
 }
 
 @media (min-width: 768px) {
@@ -48,13 +58,333 @@
         font-size: 6rem;
     }
 
-    .contenido-uni p {
-        font-size: 2.5rem;
+    .contenido-uni .uni-eslogan {
+        font-size: 3rem;
+    }
+
+    .contenido-uni .uni-desc {
+        font-size: 2rem;
     }
 }
 
-.contenido-uni .ubicacion {
-    margin: 1.5rem;
-    display: block;
+/* Landing - visitantes sin sesion */
+.landing-invitado-hero {
+    background-image: url(../img/bg/1.webp);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 56rem;
+    position: relative;
+}
+
+.landing-invitado-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(3, 24, 61, 0.48) 0%, rgba(3, 24, 61, 0.84) 100%),
+        linear-gradient(90deg, rgba(3, 24, 61, 0.22) 0%, rgba(3, 24, 61, 0.05) 52%, rgba(3, 24, 61, 0.48) 100%);
+    display: flex;
     align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.landing-invitado-contenido {
+    max-width: 82rem;
+}
+
+.landing-invitado-contenido h1 {
+    color: var(--blanco);
+    font-family: "Libre Baskerville", serif;
+    font-size: 4.8rem;
+    font-weight: 700;
+    line-height: 1.05;
+    margin: 0 0 1.2rem;
+}
+
+.landing-invitado-eslogan {
+    color: var(--blanco);
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1.25;
+    margin: 0 0 1.6rem;
+}
+
+.landing-invitado-desc {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 1.6rem;
+    line-height: 1.65;
+    margin: 0 auto 3rem;
+    max-width: 68rem;
+}
+
+.landing-invitado-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+    justify-content: center;
+}
+
+.landing-btn {
+    border-radius: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    min-height: 4.8rem;
+    padding: 1.1rem 2.6rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.landing-btn:hover {
+    transform: translateY(-2px);
+}
+
+.landing-btn-primario {
+    background: var(--blanco);
+    color: var(--azul-logo);
+}
+
+.landing-btn-primario:hover {
+    background: #eef3ff;
+}
+
+.landing-btn-secundario {
+    background: rgba(255, 255, 255, 0.08);
+    border: 0.1rem solid rgba(255, 255, 255, 0.82);
+    color: var(--blanco);
+}
+
+.landing-btn-secundario:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+@media (min-width: 768px) {
+    .landing-invitado-hero {
+        min-height: 68rem;
+    }
+
+    .landing-invitado-contenido h1 {
+        font-size: 7rem;
+    }
+
+    .landing-invitado-eslogan {
+        font-size: 3.2rem;
+    }
+
+    .landing-invitado-desc {
+        font-size: 2rem;
+    }
+}
+
+/* === Sección "Importante" (carrusel del inicio) ===
+   Movido desde recursos.css para que el inicio no dependa de ese archivo.
+   Las clases .label-azul y .recursos-carousel-* también viven en
+   recursos.css porque la página de Recursos las comparte. */
+.importante-index-carousel {
+    position: relative;
+}
+
+.label-azul {
+    display: inline-block;
+    background-color: #1d4ed8; /* blue-700 */
+    color: white;
+    font-weight: bold;
+    padding: 1rem 2.5rem;
+    border-radius: 1rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 0.4rem 0.6rem rgba(0, 0, 0, 0.1);
+}
+
+.recursos-carousel-btn {
+    position: absolute;
+    top: 50%;
+    z-index: 20;
+    width: 5.6rem;
+    height: 5.6rem;
+    border: none;
+    border-radius: 50%;
+    background-color: #2563eb;
+    color: white;
+    font-size: 2.6rem;
+    line-height: 1;
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.15);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.recursos-carousel-btn:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-50%) scale(1.08);
+}
+
+.recursos-carousel-btn.hidden {
+    display: none;
+}
+
+.recursos-carousel-prev {
+    left: 0.5rem;
+}
+
+.recursos-carousel-next {
+    right: 0.5rem;
+}
+
+.card-importante {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border: 0.1rem solid #e5e7eb;
+    border-radius: 2.5rem;
+    overflow: hidden;
+    box-shadow: 0 1rem 2.5rem rgba(0,0,0,0.05);
+}
+
+@media (min-width: 768px) {
+    .card-importante {
+        flex-direction: row;
+        height: 45rem;
+    }
+}
+
+.img-container-big {
+    position: relative;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .img-container-big {
+        width: 66.66%;
+    }
+}
+
+.img-container-big img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.info-container-big {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+    .info-container-big {
+        width: 33.33%;
+    }
+}
+
+/* Detalles internos de la tarjeta Importante (también en recursos.css) */
+.autor-info {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.autor-info img {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+}
+
+.meta-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+}
+
+.btn-invisible, .btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: inherit;
+    transition: transform 0.2s ease;
+}
+
+.btn-invisible:hover, .btn-icon:hover {
+    transform: scale(1.15);
+    color: var(--azul-primario);
+}
+
+/* Tarjeta de "Publicaciones recientes" (mismo diseño que Recursos) */
+.grid-recientes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+}
+
+@media (min-width: 768px) {
+    .grid-recientes {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.card-reciente {
+    background-color: white;
+    border: 0.1rem solid #e5e7eb;
+    border-radius: 2.5rem;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card-reciente:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.1);
+}
+
+.card-reciente > img {
+    width: 100%;
+    height: 18rem;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 2rem;
+}
+
+.footer-card {
+    border-top: 0.1rem solid #f3f4f6;
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    color: #ef4444;
+    font-weight: bold;
+}
+
+@keyframes pop-clik {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.animar-click {
+    animation: pop-click 0.3s ease-out;
+}
+
+.like-activo .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    color: #ef4444 !important;
+    transition: all 0.3s ease;
+}
+
+.save-activo .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    color: #256cc9 !important;
+    transition: all 0.3s ease;
 }

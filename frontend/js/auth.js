@@ -66,6 +66,23 @@ function renderNav() {
     }
 }
 
+function renderFooter() {
+    const footerLinks = document.querySelector('.footer-links');
+    if (!footerLinks) return;
+
+    // Con sesión activa se dejan los enlaces por defecto del HTML
+    if (isUserLoggedIn()) return;
+
+    footerLinks.classList.add('footer-links--guest');
+    footerLinks.innerHTML = `
+        <div class="footer-link-group">
+            <a href="index.html">Inicio</a>
+            <a href="login.html">Iniciar Sesión</a>
+            <a href="registro.html">Registrarse</a>
+        </div>
+    `;
+}
+
 function redirectIfNotAllowed() {
     const currentPage = window.location.pathname.split('/').pop();
     const role = getUserRole();
@@ -124,6 +141,7 @@ function disableVisitorInteractions() {
 
 function applyGuestRestrictions() {
     renderNav();
+    renderFooter();
     redirectIfNotAllowed();
     disableVisitorInteractions();
 }

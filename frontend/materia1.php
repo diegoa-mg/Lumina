@@ -60,7 +60,7 @@
 
 <!-- ================= MAIN ================= -->
 
-<main class="w-full min-h-screen">
+<main class="w-full">
 
     <div class="max-w-[1400px] mx-auto px-4 py-6">
 
@@ -244,14 +244,14 @@
 <script>
 
 const MATERIAS = {
-    'materia1.php': { id: 1, nombre: 'POO' },
+    'materia1.php': { id: 1, nombre: 'Programación Orientada a Objetos' },
     'materia2.php': { id: 2, nombre: 'Servicios de Internet' },
-    'materia3.php': { id: 3, nombre: 'Ciclo de Vida del Software' },
-    'materia4.php': { id: 4, nombre: 'Metodos Numericos' },
+    'materia3.php': { id: 3, nombre: 'Ciclo de Vida del Desarrollo de Software' },
+    'materia4.php': { id: 4, nombre: 'Métodos Numéricos' },
     'materia5.php': { id: 5, nombre: 'Desarrollo Emprendedor' },
     'materia6.php': { id: 6, nombre: 'Sistemas Digitales' },
-    'materia7.php': { id: 7, nombre: 'Ingles' },
-    'materia8.php': { id: 8, nombre: 'Orientacion y Tutoria' }
+    'materia7.php': { id: 7, nombre: 'Inglés' },
+    'materia8.php': { id: 8, nombre: 'Orientación y Tutoría' }
 };
 
 const archivoMateria = window.location.pathname.split('/').pop();

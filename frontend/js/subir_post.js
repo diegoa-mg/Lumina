@@ -67,6 +67,27 @@ function renderizarTarjetaEnPanel(post) {
         revision: 'En revision'
     }[status] || 'Borrador';
     const observaciones = escapeHtml(post.observaciones || '');
+    // Los avisos no tienen columna propia: se identifican por categoria_id 9.
+    const seccion = categoriaId === 9 ? 'aviso' : 'post';
+    const tipoAviso = escapeHtml(post.tipo_aviso || 'academico');
+    const urgente = Number(post.urgente) === 1 ? '1' : '0';
+    const importante = Number(post.importante) === 1 ? '1' : '0';
+    const youtubeUrl = escapeHtml(post.youtube_url || '');
+    const noticiaUrl = escapeHtml(post.noticia_url || '');
+
+    // Avisos sin imagen: se rellena el recuadro con el icono y color del tipo de aviso.
+    const iconoAviso = tipoAviso === 'plataforma' ? 'language' : 'school';
+    const colorAvisoClase = tipoAviso === 'plataforma' ? 'bg-rojo2' : 'bg-rojo';
+    const bloqueImagenLateral = (seccion === 'aviso' && !post.imagen)
+        ? `<div class="aviso-icono-lateral ${colorAvisoClase}"><span class="material-symbols-outlined">${iconoAviso}</span></div>`
+        : `<img src="${imagenFinal}" alt="Preview">`;
+
+    // Los avisos muestran urgencia e importancia en lugar de tipo y materia.
+    const metaInfo = seccion === 'aviso'
+        ? `<p class="text-sm">Urgente: ${urgente === '1' ? 'Sí' : 'No'}</p>
+            <p class="text-sm">Importante: ${importante === '1' ? 'Sí' : 'No'}</p>`
+        : `<p class="text-sm">Tipo: ${tipo}</p>
+            <p class="text-sm">Materia: ${materia}</p>`;
 
     const nuevaTarjeta = `
     <article
@@ -77,6 +98,13 @@ function renderizarTarjetaEnPanel(post) {
         data-imagen="${imagen}"
         data-tipo="${tipo}"
         data-categoria-id="${categoriaId}"
+        data-status="${status}"
+        data-seccion="${seccion}"
+        data-tipo-aviso="${tipoAviso}"
+        data-urgente="${urgente}"
+        data-importante="${importante}"
+        data-youtube-url="${youtubeUrl}"
+        data-noticia-url="${noticiaUrl}"
     >
         <button
             class="btn-eliminar-post"
@@ -87,7 +115,7 @@ function renderizarTarjetaEnPanel(post) {
         </button>
 
         <div class="imagen-lateral">
-            <img src="${imagenFinal}" alt="Preview">
+            ${bloqueImagenLateral}
         </div>
 
         <div class="contenido-derecha">
@@ -101,8 +129,7 @@ function renderizarTarjetaEnPanel(post) {
 
             <p class="extracto">${descripcion}</p>
 
-            <p class="text-sm">Tipo: ${tipo}</p>
-            <p class="text-sm">Materia: ${materia}</p>
+            ${metaInfo}
             ${status === 'rechazado' && observaciones ? `<p class="text-sm text-red-600 mt-3"><strong>Observación:</strong> ${observaciones}</p>` : ''}
         </div>
 
@@ -193,7 +220,13 @@ async function cargarPostsDelAutor() {
                 categoria_id: post.categoria_id || 1,
                 materia: post.materia || '',
                 status: post.status || 'borrador',
-                observaciones: post.observaciones || ''
+                observaciones: post.observaciones || '',
+                seccion: post.seccion || 'post',
+                tipo_aviso: post.tipo_aviso || 'academico',
+                urgente: post.urgente,
+                importante: post.importante,
+                youtube_url: post.youtube_url || '',
+                noticia_url: post.noticia_url || ''
             });
         });
 

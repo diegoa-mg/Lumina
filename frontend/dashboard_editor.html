@@ -9,7 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">  
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <link rel="preload" href="css/normalize.css" as="style">
@@ -38,7 +38,7 @@
                   <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
                 </a>
             </div>
-    
+
             <!-- Barra de búsqueda -->
             <div class="search-container">
                 <span class="search-icon material-symbols-outlined">search</span>
@@ -51,7 +51,7 @@
             </nav>
 
         </div>
-    
+
     </header>
 
     <main>
@@ -65,8 +65,9 @@
             <div id="contenedorPosts" class="space-y-6">
 
             </div>
-            
+
             <div id="modalAdmin" class="modal-overlay" style="display: none;">
+                <input type="file" id="fileInputEditor" hidden accept="image/*">
                 <div class="modal-content">
                     <span id="btnCerrar" class="close-modal" onclick="cerrarModal()">&times;</span>
                     <h1 class="modal-title">Editar</h1>
@@ -85,7 +86,7 @@
                                 <textarea id="postDesc"></textarea>
                             </div>
 
-                            <div class="tipo-materia-row">
+                            <div class="tipo-materia-row" id="campos-post">
                                 <div class="field">
                                     <label>Tipo</label>
                                     <select id="postTipo">
@@ -109,12 +110,75 @@
                                     </select>
                                 </div>
                             </div>
+
+                            <div id="campos-aviso" style="display:none;">
+                                <label class="check-importante">
+                                    <input type="checkbox" id="avisoImportanteEditor">
+                                    <span>Marcar como Importante</span>
+                                </label>
+                                <div class="tipo-materia-row">
+                                    <div class="field">
+                                        <label>Tipo de aviso</label>
+                                        <select id="avisoTipoEditor">
+                                            <option value="academico">Academico</option>
+                                            <option value="plataforma">Plataforma</option>
+                                        </select>
+                                    </div>
+                                    <div class="field">
+                                        <label>Urgencia</label>
+                                        <select id="avisoUrgenteEditor">
+                                            <option value="0">No urgente</option>
+                                            <option value="1">Urgente</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="preview-side">
-                            <div class="preview-card">
+                            <div class="preview-card" id="previewPost">
                                 <img id="imgPreview" src="" alt="Preview">
                             </div>
+
+                            <div class="preview-aviso" id="previewAviso" style="display:none;">
+                                <div class="preview-aviso-header">
+                                    <div class="icono-principal bg-rojo" id="avisoIconoEditor">
+                                        <span class="material-symbols-outlined" id="avisoIconoTextoEditor">school</span>
+                                    </div>
+                                    <div>
+                                        <h3 id="avisoPrevTituloEditor">Titulo del aviso</h3>
+                                        <p>Vista previa</p>
+                                    </div>
+                                    <span class="badge-urgente" id="avisoPrevUrgenteEditor" style="display:none;">Urgente</span>
+                                </div>
+                                <p id="avisoPrevDescEditor">La descripcion del aviso aparecera aqui.</p>
+                                <div class="preview-aviso-footer">
+                                    <div class="linea-negra"></div>
+                                    <span class="material-symbols-outlined" id="avisoPrevFooterIconoEditor">school</span>
+                                    <span class="etiqueta-blanca" id="avisoPrevTipoEditor">Academico</span>
+                                </div>
+                            </div>
+
+                            <div class="aviso-imagen-preview d-none" id="previewAvisoImportanteEditor">
+                                <div class="aviso-imagen-box" id="avisoImagenBoxEditor">
+                                    <img id="avisoImgPreviewEditor" src="" alt="Imagen del aviso importante">
+                                    <div class="aviso-imagen-placeholder" id="avisoImagenPlaceholderEditor">
+                                        <span class="material-symbols-outlined">add_photo_alternate</span>
+                                        <p>Imagen del aviso</p>
+                                    </div>
+                                </div>
+                                <p class="filename aviso-imagen-nombre" id="avisoFileNameDisplayEditor">Selecciona una imagen</p>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="btn-cambiar-imagen d-none"
+                                id="btnCambiarImagenAvisoEditor"
+                            >
+                                <span class="material-symbols-outlined">photo_camera</span>
+                                <span id="btnTextoImagenAvisoEditor">Subir imagen</span>
+                            </button>
+
                             <div class="actions">
                                 <button class="btn-save" id="btnGuardarCambiosEditor">Guardar Cambios</button>
                             </div>
@@ -207,8 +271,40 @@
 
             posts.forEach(post => {
 
+                const esAvisoEditor = Number(post.categoria_id) === 9;
+                const avisoImportanteEditor = Number(post.importante) === 1;
+                const tipoAvisoEditor = post.tipo_aviso || 'academico';
+                const iconoAvisoEditor = tipoAvisoEditor === 'plataforma' ? 'language' : 'school';
+                const colorAvisoEditor = tipoAvisoEditor === 'plataforma' ? '#0f3ab5' : '#f75555';
+
+                // Aviso no importante: recuadro con icono. Aviso importante: imagen si existe.
+                const bloqueImagenEditor = (esAvisoEditor && (!avisoImportanteEditor || !post.imagen_url))
+                    ? `<div class="w-full h-72 rounded-xl mb-5 flex items-center justify-center" style="background-color:${colorAvisoEditor};">
+                           <span class="material-symbols-outlined" style="color:#fff;font-size:6rem;">${iconoAvisoEditor}</span>
+                       </div>`
+                    : `<img src="../frontend/${post.imagen_url}" class="w-full h-72 object-cover rounded-xl mb-5">`;
+
+                // Los avisos muestran urgencia/importancia; los posts, materia/tipo.
+                const metaInfoEditor = esAvisoEditor
+                    ? `<span class="flex items-center gap-1.5">
+                           <span class="material-symbols-outlined text-base">priority_high</span>
+                           Urgente: ${Number(post.urgente) === 1 ? 'Sí' : 'No'}
+                       </span>
+                       <span class="flex items-center gap-1.5">
+                           <span class="material-symbols-outlined text-base">push_pin</span>
+                           Importante: ${Number(post.importante) === 1 ? 'Sí' : 'No'}
+                       </span>`
+                    : `<span class="flex items-center gap-1.5">
+                           <span class="material-symbols-outlined text-base">school</span>
+                           ${post.materia || 'Sin materia'}
+                       </span>
+                       <span class="flex items-center gap-1.5 capitalize">
+                           <span class="material-symbols-outlined text-base">sell</span>
+                           ${post.tipo || 'articulo'}
+                       </span>`;
+
                 const tarjeta = `
-                
+
                 <div class="bg-white rounded-2xl shadow p-6"
                     data-post-id="${post.id}"
                     data-titulo="${(post.titulo || '').replace(/"/g, '&quot;')}"
@@ -216,12 +312,13 @@
                     data-imagen="${(post.imagen_url || '').replace(/"/g, '&quot;')}"
                     data-tipo="${post.tipo || 'articulo'}"
                     data-categoria-id="${post.categoria_id || 1}"
+                    data-seccion="${Number(post.categoria_id) === 9 ? 'aviso' : 'post'}"
+                    data-tipo-aviso="${post.tipo_aviso || 'academico'}"
+                    data-urgente="${Number(post.urgente) === 1 ? '1' : '0'}"
+                    data-importante="${Number(post.importante) === 1 ? '1' : '0'}"
                 >
 
-                    <img
-                        src="../frontend/${post.imagen_url}"
-                        class="w-full h-72 object-cover rounded-xl mb-5"
-                    >
+                    ${bloqueImagenEditor}
 
                     <h2 class="text-3xl font-bold mb-3">
                         ${post.titulo}
@@ -232,14 +329,7 @@
                             <span class="material-symbols-outlined text-base">person</span>
                             ${post.autor || 'Autor desconocido'}
                         </span>
-                        <span class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-base">school</span>
-                            ${post.materia || 'Sin materia'}
-                        </span>
-                        <span class="flex items-center gap-1.5 capitalize">
-                            <span class="material-symbols-outlined text-base">sell</span>
-                            ${post.tipo || 'articulo'}
-                        </span>
+                        ${metaInfoEditor}
                         <span class="flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-base">calendar_today</span>
                             ${formatearFecha(post.fecha_creacion)}
@@ -404,18 +494,149 @@
 
     }
 
-    // Variable para guardar el ID del post que estamos editando
+    // Vista previa del aviso dentro del modal del editor
+    const CONFIG_AVISO_EDITOR = {
+        academico:  { texto: 'Academico',  icono: 'school',   clase: 'bg-rojo'  },
+        plataforma: { texto: 'Plataforma', icono: 'language', clase: 'bg-rojo2' }
+    };
+    const editorFileInput = document.getElementById('fileInputEditor');
+    const EDITOR_MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+    const EDITOR_FORMATOS_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
+    let editorArchivoImagen = null;
+
+    function resolveEditorImageSrc(imagen) {
+        if (!imagen) return '';
+        if (/^(https?:|data:|\/)/.test(imagen)) return imagen;
+        return `../frontend/${imagen}`;
+    }
+
+    function actualizarEstadoImagenAvisoEditor(tieneImagen) {
+        document.getElementById('avisoImagenBoxEditor')?.classList.toggle('has-image', tieneImagen);
+        const textoBoton = document.getElementById('btnTextoImagenAvisoEditor');
+        if (textoBoton) {
+            textoBoton.textContent = tieneImagen ? 'Cambiar imagen' : 'Subir imagen';
+        }
+    }
+
+    function abrirSelectorImagenAvisoEditor() {
+        editorFileInput?.click();
+    }
+
+    document.getElementById('avisoImagenBoxEditor')?.addEventListener('click', abrirSelectorImagenAvisoEditor);
+    document.getElementById('btnCambiarImagenAvisoEditor')?.addEventListener('click', abrirSelectorImagenAvisoEditor);
+
+    editorFileInput?.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (file.size > EDITOR_MAX_IMAGE_SIZE) {
+            alert('Imagen muy pesada');
+            editorFileInput.value = '';
+            return;
+        }
+
+        if (!EDITOR_FORMATOS_PERMITIDOS.includes(file.type)) {
+            alert('Formato invalido');
+            editorFileInput.value = '';
+            return;
+        }
+
+        editorArchivoImagen = file;
+        const reader = new FileReader();
+        reader.onload = (readerEvent) => {
+            document.getElementById('avisoImgPreviewEditor').src = readerEvent.target.result;
+            document.getElementById('avisoFileNameDisplayEditor').textContent = file.name;
+            actualizarEstadoImagenAvisoEditor(true);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    function convertirImagenEditorABase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function actualizarPreviewAvisoEditor() {
+        const tipo = document.getElementById('avisoTipoEditor').value || 'academico';
+        const cfg = CONFIG_AVISO_EDITOR[tipo] || CONFIG_AVISO_EDITOR.academico;
+        const urgente = document.getElementById('avisoUrgenteEditor').value === '1';
+        const importante = document.getElementById('avisoImportanteEditor').checked === true;
+
+        document.getElementById('avisoPrevTituloEditor').textContent =
+            document.getElementById('postTitle').value.trim() || 'Titulo del aviso';
+        document.getElementById('avisoPrevDescEditor').textContent =
+            document.getElementById('postDesc').value.trim() || 'La descripcion del aviso aparecera aqui.';
+        document.getElementById('avisoPrevTipoEditor').textContent = cfg.texto;
+        document.getElementById('avisoPrevUrgenteEditor').style.display = urgente ? '' : 'none';
+
+        const icono = document.getElementById('avisoIconoEditor');
+        icono.classList.remove('bg-rojo', 'bg-rojo2');
+        icono.classList.add(cfg.clase);
+        document.getElementById('avisoIconoTextoEditor').textContent = cfg.icono;
+        document.getElementById('avisoPrevFooterIconoEditor').textContent = cfg.icono;
+
+        document.getElementById('previewAviso')?.classList.toggle('d-none', importante);
+        document.getElementById('previewAvisoImportanteEditor')?.classList.toggle('d-none', !importante);
+        document.getElementById('btnCambiarImagenAvisoEditor')?.classList.toggle('d-none', !importante);
+    }
+
+    ['postTitle', 'postDesc', 'avisoTipoEditor', 'avisoUrgenteEditor', 'avisoImportanteEditor'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', actualizarPreviewAvisoEditor);
+        el.addEventListener('change', actualizarPreviewAvisoEditor);
+    });
+
+    // Variables del post/aviso que estamos editando
     let postEditandoId = null;
+    let seccionEditando = 'post';
 
     function abrirModalEdicion(boton) {
         const tarjeta = boton.closest('[data-post-id]');
         postEditandoId = tarjeta.dataset.postId;
+        seccionEditando = tarjeta.dataset.seccion || 'post';
+        editorArchivoImagen = null;
+        if (editorFileInput) {
+            editorFileInput.value = '';
+        }
 
         document.getElementById('postTitle').value = tarjeta.dataset.titulo;
         document.getElementById('postDesc').value = tarjeta.dataset.descripcion;
         document.getElementById('imgPreview').src = tarjeta.dataset.imagen || '';
-        document.getElementById('postTipo').value = tarjeta.dataset.tipo || 'articulo';
-        document.getElementById('postMateria').value = tarjeta.dataset.categoriaId || '1';
+
+        const esAviso = seccionEditando === 'aviso';
+        document.getElementById('campos-post').style.display = esAviso ? 'none' : '';
+        document.getElementById('campos-aviso').style.display = esAviso ? '' : 'none';
+        document.querySelector('#modalAdmin .modal-title').textContent =
+            esAviso ? 'Editar aviso' : 'Editar post';
+
+        if (esAviso) {
+            document.getElementById('avisoTipoEditor').value = tarjeta.dataset.tipoAviso || 'academico';
+            document.getElementById('avisoUrgenteEditor').value = tarjeta.dataset.urgente === '1' ? '1' : '0';
+            document.getElementById('avisoImportanteEditor').checked = tarjeta.dataset.importante === '1';
+            const imagenAviso = tarjeta.dataset.imagen || '';
+            document.getElementById('avisoImgPreviewEditor').src = resolveEditorImageSrc(imagenAviso);
+            document.getElementById('avisoFileNameDisplayEditor').textContent = imagenAviso
+                ? 'Imagen actual'
+                : 'Selecciona una imagen';
+            actualizarEstadoImagenAvisoEditor(Boolean(imagenAviso));
+            actualizarPreviewAvisoEditor();
+        } else {
+            document.getElementById('postTipo').value = tarjeta.dataset.tipo || 'articulo';
+            document.getElementById('postMateria').value = tarjeta.dataset.categoriaId || '1';
+        }
+
+        document.getElementById('previewPost').style.display = esAviso ? 'none' : '';
+        document.getElementById('previewAviso').style.display = esAviso ? '' : 'none';
+        document.getElementById('previewAvisoImportanteEditor').style.display = esAviso ? '' : 'none';
+        document.getElementById('btnCambiarImagenAvisoEditor').style.display = esAviso ? '' : 'none';
+        if (esAviso) {
+            actualizarPreviewAvisoEditor();
+        }
 
         document.getElementById('modalAdmin').style.display = 'flex';
     }
@@ -433,21 +654,39 @@
             return;
         }
 
-        try {
-            const tipo = document.getElementById('postTipo').value;
-            const categoria_id = document.getElementById('postMateria').value;
+        const payload = {
+            post_id: postEditandoId,
+            titulo,
+            descripcion,
+            seccion: seccionEditando
+        };
 
+        if (seccionEditando === 'aviso') {
+            const avisoImportante = document.getElementById('avisoImportanteEditor').checked;
+            const tieneImagenActual = Boolean(document.getElementById('avisoImgPreviewEditor').getAttribute('src'));
+
+            if (avisoImportante && !editorArchivoImagen && !tieneImagenActual) {
+                alert('Los avisos importantes requieren imagen');
+                return;
+            }
+
+            payload.tipo_aviso = document.getElementById('avisoTipoEditor').value;
+            payload.urgente = document.getElementById('avisoUrgenteEditor').value === '1' ? 1 : 0;
+            payload.importante = avisoImportante ? 1 : 0;
+            payload.imagen = editorArchivoImagen
+                ? await convertirImagenEditorABase64(editorArchivoImagen)
+                : null;
+        } else {
+            payload.tipo = document.getElementById('postTipo').value;
+            payload.categoria_id = document.getElementById('postMateria').value;
+        }
+
+        try {
             const respuesta = await fetch('../backend/editar_post_editor.php', {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    post_id: postEditandoId,
-                    titulo,
-                    descripcion,
-                    tipo,
-                    categoria_id
-                })
+                body: JSON.stringify(payload)
             });
 
             const resultado = await respuesta.json();
@@ -474,4 +713,4 @@
     </script>
 
 </body>
-</html> 
+</html>

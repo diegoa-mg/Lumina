@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 18-05-2026 a las 06:52:09
+-- Tiempo de generación: 19-05-2026 a las 01:23:08
 -- Versión del servidor: 10.11.16-MariaDB
 -- Versión de PHP: 8.4.20
 
@@ -86,8 +86,13 @@ CREATE TABLE `publicaciones` (
   `imagen_url` varchar(500) DEFAULT NULL,
   `tipo` enum('articulo','video','noticia','recurso') NOT NULL DEFAULT 'articulo',
   `youtube_url` varchar(500) DEFAULT NULL,
+  `video_url` varchar(500) DEFAULT NULL,
   `noticia_url` varchar(500) DEFAULT NULL,
   `categoria_id` int(11) DEFAULT NULL,
+  `seccion` enum('post','aviso') NOT NULL DEFAULT 'post',
+  `tipo_aviso` enum('academico','plataforma') NOT NULL DEFAULT 'academico',
+  `urgente` tinyint(1) NOT NULL DEFAULT 0,
+  `importante` tinyint(1) NOT NULL DEFAULT 0,
   `status` enum('borrador','revision','publicado','rechazado') DEFAULT 'borrador',
   `autor_id` int(11) NOT NULL,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -100,16 +105,20 @@ CREATE TABLE `publicaciones` (
 -- Volcado de datos para la tabla `publicaciones`
 --
 
-INSERT INTO `publicaciones` (`id`, `titulo`, `descripcion`, `imagen_url`, `tipo`, `youtube_url`, `noticia_url`, `categoria_id`, `status`, `autor_id`, `fecha_creacion`, `fecha_actualizacion`, `fecha_publicacion`, `observaciones_editor`) VALUES
-(13, 'asfasdfasdfadf', 'asdfasdfasdfasdfad', 'uploads/posts/post_1_1779064539_ef9471d7.jpeg', 'articulo', '', '', 1, 'publicado', 1, '2026-05-18 00:35:39', '2026-05-18 02:08:43', '2026-05-18 02:08:43', NULL),
-(15, 'sfasfasdfasdf', 'asfasdfasdfasdfasdfadf', 'uploads/posts/aviso_1_1779070094_3466f509.jpeg', 'articulo', '', '', 1, 'publicado', 1, '2026-05-18 02:08:14', '2026-05-18 02:08:26', '2026-05-18 02:08:26', NULL),
-(16, 'pRUEBA', 'asdf;kajsdflkajs;lfa', 'uploads/posts/post_1_1779075042_716c77a1.jpeg', 'articulo', '', '', 1, 'revision', 1, '2026-05-18 03:30:42', '2026-05-18 03:30:45', NULL, NULL),
-(20, 'asdlkñfjañlksdfjañlksdf', 'añlksdjfñlasdjfñlaksdjfla', 'uploads/posts/aviso_1_1779078977_03cfced9.jpeg', 'articulo', '', '', 1, 'publicado', 1, '2026-05-18 04:36:17', '2026-05-18 04:36:26', '2026-05-18 04:36:26', NULL),
-(22, 'aaaaas', 'asfadsfasdfadf', 'uploads/posts/post_1_1779081451_e3a6dfda.jpeg', 'articulo', '', '', 4, 'revision', 1, '2026-05-18 05:17:31', '2026-05-18 05:29:14', NULL, NULL),
-(24, 'adfasdfasdfasdf', 'asdflaksdflakjsdfasdfa', NULL, 'articulo', '', '', 9, 'publicado', 1, '2026-05-18 05:26:58', '2026-05-18 05:27:03', '2026-05-18 05:27:03', NULL),
-(25, 'AVISO IMPORTANTE PRUEBA', 'ASÑLFJASLKFJASÑLKDFJADS', 'uploads/posts/aviso_1_1779082169_30d267a0.jpeg', 'articulo', '', '', 9, 'publicado', 1, '2026-05-18 05:29:29', '2026-05-18 05:29:34', '2026-05-18 05:29:34', NULL),
-(26, 'Aviso prueba', 'asdfasdfadsf', NULL, 'articulo', '', '', 9, 'revision', 1, '2026-05-18 05:46:37', '2026-05-18 05:46:37', NULL, NULL),
-(27, 'Tarea de programación - Método Numérico Bisección', 'OSTÍAS CHAVAL', 'uploads/posts/post_1_1779084488_75d8a9d4.jpeg', 'articulo', '', '', 4, 'publicado', 1, '2026-05-18 06:08:08', '2026-05-18 06:08:13', '2026-05-18 06:08:13', NULL);
+INSERT INTO `publicaciones` (`id`, `titulo`, `descripcion`, `imagen_url`, `tipo`, `youtube_url`, `video_url`, `noticia_url`, `categoria_id`, `seccion`, `tipo_aviso`, `urgente`, `importante`, `status`, `autor_id`, `fecha_creacion`, `fecha_actualizacion`, `fecha_publicacion`, `observaciones_editor`) VALUES
+(13, 'asfasdfasdfadf', 'asdfasdfasdfasdfad', 'uploads/posts/post_1_1779064539_ef9471d7.jpeg', 'articulo', '', NULL, '', 1, 'post', 'academico', 0, 0, 'publicado', 1, '2026-05-18 00:35:39', '2026-05-18 02:08:43', '2026-05-18 02:08:43', NULL),
+(15, 'sfasfasdfasdf', 'asfasdfasdfasdfasdfadf', 'uploads/posts/aviso_1_1779070094_3466f509.jpeg', 'articulo', '', NULL, '', 1, 'post', 'academico', 0, 0, 'publicado', 1, '2026-05-18 02:08:14', '2026-05-18 02:08:26', '2026-05-18 02:08:26', NULL),
+(16, 'pRUEBA', 'asdf;kajsdflkajs;lfa', 'uploads/posts/post_1_1779075042_716c77a1.jpeg', 'articulo', '', NULL, '', 1, 'post', 'academico', 0, 0, 'revision', 1, '2026-05-18 03:30:42', '2026-05-18 03:30:45', NULL, NULL),
+(20, 'asdlkñfjañlksdfjañlksdf', 'añlksdjfñlasdjfñlaksdjfla', 'uploads/posts/aviso_1_1779078977_03cfced9.jpeg', 'articulo', '', NULL, '', 1, 'post', 'academico', 0, 0, 'publicado', 1, '2026-05-18 04:36:17', '2026-05-18 04:36:26', '2026-05-18 04:36:26', NULL),
+(22, 'aaaaas', 'asfadsfasdfadf', 'uploads/posts/post_1_1779081451_e3a6dfda.jpeg', 'articulo', '', NULL, '', 4, 'post', 'academico', 0, 0, 'revision', 1, '2026-05-18 05:17:31', '2026-05-18 05:29:14', NULL, NULL),
+(24, 'adfasdfasdfasdf', 'asdflaksdflakjsdfasdfa', NULL, 'articulo', '', NULL, '', 9, 'aviso', 'academico', 0, 0, 'publicado', 1, '2026-05-18 05:26:58', '2026-05-19 00:35:36', '2026-05-18 05:27:03', NULL),
+(27, 'Tarea de programación - Método Numérico Bisección', 'OSTÍAS CHAVAL', 'uploads/posts/post_1_1779084488_75d8a9d4.jpeg', 'articulo', '', NULL, '', 4, 'post', 'academico', 0, 0, 'publicado', 1, '2026-05-18 06:08:08', '2026-05-18 06:08:13', '2026-05-18 06:08:13', NULL),
+(28, 'AVISO IMPORTANTE PRUEBA', 'AFAAAAA', 'uploads/posts/aviso_1_1779147418_d58fee3c.jpeg', 'articulo', '', NULL, '', 9, 'aviso', 'academico', 0, 0, 'publicado', 1, '2026-05-18 23:36:58', '2026-05-19 00:35:36', '2026-05-18 23:37:04', NULL),
+(30, 'zdaprueba aviso', 'aaaaaaaaaaaaaaaaadfdf', 'uploads/posts/aviso_editor_1_1779153236_b6ced691.webp', 'articulo', '', NULL, '', 9, 'aviso', 'academico', 1, 0, 'revision', 1, '2026-05-19 00:31:04', '2026-05-19 01:14:01', NULL, NULL),
+(31, 'Aviso prueba 2', 'gasfasdfafhas', NULL, 'articulo', '', NULL, '', 9, 'aviso', 'academico', 1, 0, 'borrador', 1, '2026-05-19 00:39:23', '2026-05-19 00:39:23', NULL, NULL),
+(32, 'Prueba', 'adfasdfasdfasdfasdfasdfasdf', 'uploads/posts/post_1_1779152086_3a11aa54.webp', 'articulo', '', NULL, '', 1, 'post', 'academico', 0, 0, 'borrador', 1, '2026-05-19 00:54:46', '2026-05-19 00:54:46', NULL, NULL),
+(33, 'Aviso prueba plataforma', 'safasdfasdfasd', NULL, 'articulo', '', NULL, '', 9, 'aviso', 'plataforma', 0, 0, 'borrador', 1, '2026-05-19 00:58:01', '2026-05-19 00:58:01', NULL, NULL),
+(34, 'AVISO IMPORTANTE PRUEBA', 'aldfjlaksdjf;aklsdjfasd', 'uploads/posts/aviso_1_1779152692_0f698d80.webp', 'articulo', '', NULL, '', 9, 'aviso', 'academico', 0, 1, 'borrador', 1, '2026-05-19 01:04:52', '2026-05-19 01:04:52', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -266,13 +275,13 @@ ALTER TABLE `comentarios_materia`
 -- AUTO_INCREMENT de la tabla `publicaciones`
 --
 ALTER TABLE `publicaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `reacciones`
 --
 ALTER TABLE `reacciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`

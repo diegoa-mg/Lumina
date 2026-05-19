@@ -354,6 +354,7 @@ function prepararEdicion(boton) {
     const tipo = tarjeta.dataset.tipo;
     const categoriaId = tarjeta.dataset.categoriaId;
     const seccion = tarjeta.dataset.seccion || 'post';
+    const status = tarjeta.dataset.status || '';
     const tipoAviso = tarjeta.dataset.tipoAviso || 'academico';
     const urgente = tarjeta.dataset.urgente === '1';
     const importante = tarjeta.dataset.importante === '1';
@@ -445,12 +446,15 @@ function prepararEdicion(boton) {
     modal.style.display = 'flex';
     mostrarPantalla(seccion === 'aviso' ? 'pantallaAviso' : 'pantalla2');
 
+    // El boton de revision solo aparece si la publicacion es borrador o rechazada.
+    const puedeEnviarRevision = status === 'borrador' || status === 'rechazado';
+
     if (seccion === 'aviso') {
         document.getElementById('btnGuardarAviso').textContent = 'Guardar cambios';
-        document.getElementById('btnEnviarAvisoRevision').style.display = 'none';
+        document.getElementById('btnEnviarAvisoRevision').style.display = puedeEnviarRevision ? 'block' : 'none';
     } else {
         document.getElementById('btnGuardarBorrador').textContent = 'Guardar cambios';
-        document.getElementById('btnEnviarRevision').style.display = 'none';
+        document.getElementById('btnEnviarRevision').style.display = puedeEnviarRevision ? 'block' : 'none';
     }
 }
 
