@@ -18,11 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const nombreFoto = document.getElementById('nombre-foto-perfil');
     const btnCancelarFoto = document.getElementById('btn-cancelar-foto');
     const btnGuardarFoto = document.getElementById('btn-guardar-foto');
+    const btnCropZoomOut = document.getElementById('btn-crop-zoom-out');
+    const btnCropZoomIn = document.getElementById('btn-crop-zoom-in');
+    const btnCropReset = document.getElementById('btn-crop-reset');
     const totalLikes = document.getElementById('cuenta-total-likes');
     const totalGuardados = document.getElementById('cuenta-total-guardados');
 
     let fotoSeleccionada = null;
     let fotoBase64 = null;
+    let cropperFoto = null;
     const PREF_KEY = 'lumina_preferencias_contenido';
     const PREF_DEFAULTS = {
         materias: {
@@ -315,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modalFoto.classList.remove('visible');
         fotoSeleccionada = null;
         fotoBase64 = null;
+        destruirCropperFoto();
 
         if (inputFoto) inputFoto.value = '';
         if (previewFoto) previewFoto.removeAttribute('src');
@@ -328,6 +333,37 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.onerror = reject;
         reader.readAsDataURL(file);
     });
+
+    const destruirCropperFoto = () => {
+        if (!cropperFoto) return;
+        cropperFoto.destroy();
+        cropperFoto = null;
+    };
+
+    const iniciarCropperFoto = () => {
+        destruirCropperFoto();
+
+        if (!previewFoto || typeof Cropper === 'undefined') {
+            return;
+        }
+
+        cropperFoto = new Cropper(previewFoto, {
+            aspectRatio: 1,
+            viewMode: 1,
+            dragMode: 'move',
+            autoCropArea: 0.86,
+            background: false,
+            guides: false,
+            center: true,
+            movable: true,
+            zoomable: true,
+            rotatable: false,
+            scalable: false,
+            cropBoxMovable: false,
+            cropBoxResizable: false,
+            toggleDragModeOnDblclick: false
+        });
+    };
 
     const prepararFoto = async (file) => {
         if (!file) return;
@@ -347,10 +383,32 @@ document.addEventListener('DOMContentLoaded', () => {
         fotoSeleccionada = file;
         fotoBase64 = await convertirABase64(file);
 
-        if (previewFoto) previewFoto.src = fotoBase64;
+        destruirCropperFoto();
+        if (previewFoto) {
+            previewFoto.onload = () => {
+                iniciarCropperFoto();
+                previewFoto.onload = null;
+            };
+            previewFoto.src = fotoBase64;
+        }
         if (nombreFoto) nombreFoto.textContent = file.name;
         if (uploadPanel) uploadPanel.classList.add('d-none');
         if (previewPanel) previewPanel.classList.remove('d-none');
+    };
+
+    const obtenerFotoRecortada = () => {
+        if (!cropperFoto) {
+            return fotoBase64;
+        }
+
+        const canvas = cropperFoto.getCroppedCanvas({
+            width: 512,
+            height: 512,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
+        });
+
+        return canvas.toDataURL('image/webp', 0.9);
     };
 
     const guardarFoto = async () => {
@@ -369,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    imagen: fotoBase64
+                    imagen: obtenerFotoRecortada()
                 })
             });
             const datos = await respuesta.json();
@@ -414,6 +472,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnCerrarFoto) btnCerrarFoto.addEventListener('click', cerrarModalFoto);
     if (btnCancelarFoto) btnCancelarFoto.addEventListener('click', cerrarModalFoto);
     if (btnGuardarFoto) btnGuardarFoto.addEventListener('click', guardarFoto);
+    if (btnCropZoomOut) btnCropZoomOut.addEventListener('click', () => cropperFoto?.zoom(-0.1));
+    if (btnCropZoomIn) btnCropZoomIn.addEventListener('click', () => cropperFoto?.zoom(0.1));
+    if (btnCropReset) btnCropReset.addEventListener('click', () => cropperFoto?.reset());
 
     if (modalFoto) {
         modalFoto.addEventListener('click', (event) => {

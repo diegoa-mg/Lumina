@@ -60,6 +60,22 @@ if ($tamanioKb > 5120) {
 
 $usuarioId = (int) $_SESSION['usuario_id'];
 $directorio = __DIR__ . '/../frontend/uploads/perfiles/';
+$stmtFotoAnterior = $conexion->prepare('SELECT foto_url FROM usuarios WHERE id = ? LIMIT 1');
+
+if (!$stmtFotoAnterior) {
+    http_response_code(500);
+    echo json_encode([
+        'ok' => false,
+        'mensaje' => 'No se pudo consultar la foto actual.'
+    ]);
+    exit;
+}
+
+$stmtFotoAnterior->bind_param('i', $usuarioId);
+$stmtFotoAnterior->execute();
+$fotoAnteriorRow = $stmtFotoAnterior->get_result()->fetch_assoc();
+$stmtFotoAnterior->close();
+$fotoAnterior = $fotoAnteriorRow['foto_url'] ?? '';
 
 if (!is_dir($directorio) && !mkdir($directorio, 0777, true)) {
     http_response_code(500);
@@ -98,12 +114,30 @@ $stmt = $conexion->prepare('UPDATE usuarios SET foto_url = ? WHERE id = ?');
 $stmt->bind_param('si', $fotoUrl, $usuarioId);
 
 if (!$stmt->execute()) {
+    if (is_file($rutaArchivo)) {
+        unlink($rutaArchivo);
+    }
+
     http_response_code(500);
     echo json_encode([
         'ok' => false,
         'mensaje' => 'No se pudo actualizar la foto de perfil.'
     ]);
     exit;
+}
+
+$rutaFotoAnterior = realpath(__DIR__ . '/../frontend/' . $fotoAnterior);
+$directorioReal = realpath($directorio);
+
+if (
+    $fotoAnterior
+    && $fotoAnterior !== $fotoUrl
+    && $rutaFotoAnterior
+    && $directorioReal
+    && strpos($rutaFotoAnterior, $directorioReal . DIRECTORY_SEPARATOR) === 0
+    && is_file($rutaFotoAnterior)
+) {
+    unlink($rutaFotoAnterior);
 }
 
 echo json_encode([

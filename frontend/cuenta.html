@@ -20,11 +20,13 @@
     <link rel="preload" href="css/styles.css?v=17" as="style">
     <link rel="stylesheet" href="css/styles.css?v=17">
 
-    <link rel="preload" href="css/navbar.css?v=6" as="style">
-    <link rel="stylesheet" href="css/navbar.css?v=6">
+    <link rel="preload" href="css/navbar.css?v=7" as="style">
+    <link rel="stylesheet" href="css/navbar.css?v=7">
 
-    <link rel="preload" href="css/cuenta.css?v=2" as="style">
-    <link rel="stylesheet" href="css/cuenta.css?v=2">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
+
+    <link rel="preload" href="css/cuenta.css?v=3" as="style">
+    <link rel="stylesheet" href="css/cuenta.css?v=3">
     
 </head>
 <body>
@@ -137,7 +139,7 @@
                     <button type="button" class="avatar-circle" id="btn-avatar" aria-label="Cambiar foto de perfil">
                         <img id="foto-perfil" class="avatar-img" src="" alt="Foto de perfil">
                         <span id="avatar-icon" class="material-symbols-outlined">person</span>
-                        <span class="avatar-edit material-symbols-outlined">photo_camera</span>
+                        <span class="avatar-edit material-symbols-outlined">edit</span>
                     </button>
                     <div class="avatar-hint">Haz click para cambiar tu foto</div>
                 </div>
@@ -158,7 +160,20 @@
                 </div>
 
                 <div class="perfil-preview d-none" id="perfil-preview-panel">
-                    <img id="preview-foto-perfil" src="" alt="Preview foto de perfil">
+                    <div class="perfil-cropper-wrap">
+                        <img id="preview-foto-perfil" src="" alt="Preview foto de perfil">
+                    </div>
+                    <div class="perfil-cropper-tools" aria-label="Controles de imagen">
+                        <button type="button" class="btn-cropper-tool" id="btn-crop-zoom-out">
+                            <span class="material-symbols-outlined">zoom_out</span>
+                        </button>
+                        <button type="button" class="btn-cropper-tool" id="btn-crop-zoom-in">
+                            <span class="material-symbols-outlined">zoom_in</span>
+                        </button>
+                        <button type="button" class="btn-cropper-tool" id="btn-crop-reset">
+                            <span class="material-symbols-outlined">restart_alt</span>
+                        </button>
+                    </div>
                     <p id="nombre-foto-perfil">Imagen seleccionada</p>
                     <div class="perfil-actions">
                         <button type="button" class="btn-cancelar-foto" id="btn-cancelar-foto">Cancelar</button>
@@ -278,9 +293,10 @@
         <p class="copy">© 2026 Lumina: Claridad a la información</p>
     </footer>
 
-    <script src="js/auth.js"></script>
+    <script src="js/auth.js?v=6"></script>
     <script src="js/menu_ui.js"></script>
-    <script src="js/cuenta.js?v=3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+    <script src="js/cuenta.js?v=4"></script>
 </body>
 
 <script>
