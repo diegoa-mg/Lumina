@@ -6,6 +6,87 @@ function getUserRole() {
     return localStorage.getItem('user_role') || 'Usuario';
 }
 
+function resolveNavAvatarSrc(fotoUrl) {
+    if (!fotoUrl) return '';
+    if (fotoUrl.startsWith('http') || fotoUrl.startsWith('data:') || fotoUrl.startsWith('../')) {
+        return fotoUrl;
+    }
+    return fotoUrl;
+}
+
+async function cargarAvatarNav() {
+    const avatar = document.getElementById('nav-avatar-img');
+    const icono = document.getElementById('nav-avatar-icon');
+
+    if (!avatar || !icono || !isUserLoggedIn()) return;
+
+    try {
+        const respuesta = await fetch('../backend/obtener_cuenta.php', {
+            credentials: 'same-origin'
+        });
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok || !datos.ok || !datos.usuario?.foto_url) {
+            return;
+        }
+
+        avatar.src = resolveNavAvatarSrc(datos.usuario.foto_url);
+        avatar.classList.remove('d-none');
+        icono.classList.add('d-none');
+    } catch (error) {
+        console.error('No se pudo cargar la foto de perfil en la navbar:', error);
+    }
+}
+
+function aplicarEstadoThemeNav() {
+    const boton = document.getElementById('btn-theme-toggle');
+    const icono = document.getElementById('theme-toggle-icon');
+    const modo = localStorage.getItem('lumina_theme_mode') || 'light';
+
+    if (!boton || !icono) return;
+
+    const modoNoche = modo === 'dark';
+    boton.dataset.themeMode = modo;
+    boton.setAttribute('aria-label', modoNoche ? 'Cambiar a modo claro' : 'Cambiar a modo noche');
+    icono.textContent = modoNoche ? 'light_mode' : 'dark_mode';
+}
+
+function aplicarEstadoIdiomaNav() {
+    const boton = document.getElementById('btn-language-toggle');
+    const idioma = localStorage.getItem('lumina_language') || 'es';
+
+    if (!boton) return;
+
+    boton.dataset.language = idioma;
+    boton.querySelectorAll('[data-lang-option]').forEach((opcion) => {
+        opcion.classList.toggle('active', opcion.dataset.langOption === idioma);
+    });
+}
+
+function inicializarControlesNav() {
+    const botonTheme = document.getElementById('btn-theme-toggle');
+    const botonIdioma = document.getElementById('btn-language-toggle');
+
+    aplicarEstadoThemeNav();
+    aplicarEstadoIdiomaNav();
+
+    if (botonTheme) {
+        botonTheme.addEventListener('click', () => {
+            const modoActual = localStorage.getItem('lumina_theme_mode') || 'light';
+            localStorage.setItem('lumina_theme_mode', modoActual === 'dark' ? 'light' : 'dark');
+            aplicarEstadoThemeNav();
+        });
+    }
+
+    if (botonIdioma) {
+        botonIdioma.addEventListener('click', () => {
+            const idiomaActual = localStorage.getItem('lumina_language') || 'es';
+            localStorage.setItem('lumina_language', idiomaActual === 'es' ? 'en' : 'es');
+            aplicarEstadoIdiomaNav();
+        });
+    }
+}
+
 function renderNav() {
     const nav = document.querySelector('.nav-principal');
     if (!nav) return;
@@ -29,9 +110,22 @@ function renderNav() {
             <a href="avisos.html">Avisos</a>
             <a href="recursos.html">Recursos</a>
             <a href="calendario.html">Calendario</a>
+            <div class="nav-tools" aria-label="Opciones de interfaz">
+                <button id="btn-theme-toggle" class="nav-tool-btn" type="button" aria-label="Cambiar a modo noche">
+                    <span id="theme-toggle-icon" class="material-symbols-outlined">dark_mode</span>
+                </button>
+                <button id="btn-language-toggle" class="nav-language-btn" type="button" aria-label="Cambiar idioma">
+                    <span data-lang-option="es">ESP</span>
+                    <span class="nav-language-separator">/</span>
+                    <span data-lang-option="en">ENG</span>
+                </button>
+            </div>
             <div class="dropdown-container">
-                <button id="btn-cuenta" class="btn-cuenta-estilo">
-                    <span>Cuenta</span>
+                <button id="btn-cuenta" class="btn-cuenta-estilo btn-cuenta-avatar" aria-label="Abrir menú de cuenta">
+                    <span class="nav-avatar">
+                        <img id="nav-avatar-img" class="nav-avatar-img d-none" src="" alt="Foto de perfil">
+                        <span id="nav-avatar-icon" class="material-symbols-outlined nav-avatar-icon">person</span>
+                    </span>
                     <span class="material-symbols-outlined">expand_more</span>
                 </button>
                 <div id="menu-dropdown" class="dropdown-content">
@@ -58,6 +152,9 @@ function renderNav() {
                 }
             });
         }
+
+        cargarAvatarNav();
+        inicializarControlesNav();
     } else {
         nav.innerHTML = `
             <a href="index.html">Inicio</a>
