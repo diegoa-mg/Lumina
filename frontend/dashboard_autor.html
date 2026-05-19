@@ -24,20 +24,8 @@
     <link rel="preload" href="css/navbar.css?v=6" as="style">
     <link rel="stylesheet" href="css/navbar.css?v=6">
 
-    <link rel="preload" href="css/autor.css?v=8" as="style">
-    <link rel="stylesheet" href="css/autor.css?v=8">
-
-    <style>
-    /* Constrain modal content to avoid romper el contenedor y mantener la flecha visible */
-    .modal-content { max-height: 80vh; overflow-y: auto; box-sizing: border-box; padding: 1rem; }
-    .modal-content .btnVolver, .modal-content .btnVolverSelector { position: relative; z-index: 12; display: inline-flex; align-items: center; gap: .5rem; }
-    .video-mode-toggle { display:flex; gap:.5rem; margin-top:.5rem; }
-    .video-mode-toggle button { padding:.4rem .6rem; border-radius:6px; border:1px solid #d1d5db; background:#fff; cursor:pointer; }
-    .video-mode-toggle button.active { background:#0ea5a4; color:#fff; border-color:transparent; }
-    .campo-video-file .video-file-upload { display:flex; gap:.5rem; align-items:center; }
-    .preview-video { display:flex; flex-direction:column; gap:0.75rem; margin-top:1rem; }
-    .post-video-preview { width:100%; min-height:200px; border-radius:12px; background:#000; }
-    </style>
+    <link rel="preload" href="css/autor.css?v=10" as="style">
+    <link rel="stylesheet" href="css/autor.css?v=10">
 
 </head>
 <body>
@@ -63,6 +51,11 @@
             </nav>
 
         </div>
+    </header>
+
+    <main>
+        <div class="contenedor-principal">
+            <div class="encabezado-pagina">
                 <h1>Panel Autor</h1>
                 <p>Crea nuevos post y mándalos a revisión.</p>
             </div>
