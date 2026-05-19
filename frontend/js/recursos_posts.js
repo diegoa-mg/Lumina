@@ -194,7 +194,9 @@ async function cargarPostsEnRecursos() {
             contenedorRecientes.innerHTML = `
                 <div style="color: #6b7280;">No hay publicaciones recientes.</div>
             `;
-            requestAnimationFrame(actualizarFlechasRecursosCarousel);
+            if (viewportRecientes) {
+                requestAnimationFrame(actualizarFlechasRecursosCarousel);
+            }
             return;
         }
 
@@ -204,7 +206,9 @@ async function cargarPostsEnRecursos() {
             contenedorRecientes.innerHTML = `
                 <div style="color: #6b7280;">No hay publicaciones con tus preferencias activas.</div>
             `;
-            requestAnimationFrame(actualizarFlechasRecursosCarousel);
+            if (viewportRecientes) {
+                requestAnimationFrame(actualizarFlechasRecursosCarousel);
+            }
             return;
         }
 
@@ -220,13 +224,17 @@ async function cargarPostsEnRecursos() {
             viewportRecientes.scrollLeft = 0;
         }
 
-        requestAnimationFrame(actualizarFlechasRecursosCarousel);
+        if (viewportRecientes) {
+            requestAnimationFrame(actualizarFlechasRecursosCarousel);
+        }
     } catch (error) {
         console.error('Error cargando publicaciones en recursos:', error);
         contenedorRecientes.innerHTML = `
             <div style="color: #6b7280;">No se pudieron cargar las publicaciones.</div>
         `;
-        requestAnimationFrame(actualizarFlechasRecursosCarousel);
+        if (viewportRecientes) {
+            requestAnimationFrame(actualizarFlechasRecursosCarousel);
+        }
     }
 }
 

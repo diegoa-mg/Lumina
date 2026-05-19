@@ -23,32 +23,26 @@
 
     <link rel="preload" href="css/navbar.css?v=6" as="style">
     <link rel="stylesheet" href="css/navbar.css?v=6">
-    
+
     <link rel="preload" href="css/recursos.css?v=4" as="style">
     <link rel="stylesheet" href="css/recursos.css?v=4">
 </head>
 <body>
-        <header>
+    <header>
         <div class="nav-bg">
-
-            <!-- Logo -->
             <div class="logo">
                 <a href="index.html">
                   <img src="img/logo/Logo Lumina (Fondo Blanco) Horizontal - Sin eslogan.png" alt="Logo de la universidad">
                 </a>
             </div>
-            
-            <!-- Barra de busqueda -->
             <div class="search-container">
                 <span class="search-icon material-symbols-outlined">search</span>
                 <input class="search" type="search" placeholder="Buscar...">
             </div>
-
             <nav class="nav-principal">
                 <a href="index.html">Inicio</a>
                 <a href="login.html">Iniciar Sesion</a>
             </nav>
-
         </div>
     </header>
 
@@ -57,123 +51,10 @@
             <h1>Recursos</h1>
             <p>Explora materiales de clase y publicaciones académicas recientes.</p>
         </div>
-        
+
         <section class="material-clases">
-        <h2 class="text-5xl font-medium text-center mt-4 pt-16">Material de clases</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-32 pt-16">
-                <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer">
-                    <img src="img/materias/POO1.webp" alt="POO" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <a href="materia1.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-blue-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                            Programación Orientada a Objetos
-                            </h3>
-                                <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                                </div>
-                                    <p class="text-blue-200 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                    Ver Contenido
-                                    </p>
-                        </a>
-                </div>
-
-                <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer">
-                    <img src="img/materias/INTERNETS.avif" alt="Internet" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <a href="materia2.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-indigo-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                            Servicios de Internet
-                            </h3>
-                                <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                                </div>
-                                    <p class="text-indigo-200 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                    Ver Contenido
-                                    </p>
-                        </a>
-                </div>
-
-                <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer">
-                    <img src="img/materias/DSOFTWARE.webp" alt="CVD" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <a href="materia3.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-cyan-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                            Ciclo de Vida del Software
-                            </h3>
-                                <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                                </div>
-                                    <p class="text-cyan-100 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                    Ver Contenido
-                                    </p>
-                        </a>
-                </div>
-
-                <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer">
-                    <img src="img/materias/MNUMERICOS.webp" alt="Metodos" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <a href="materia4.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-slate-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                            Métodos Numéricos
-                            </h3>
-                                <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                                </div>
-                                    <p class="text-slate-300 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                    Ver Contenido
-                                    </p>
-                        </a>
-                </div>
-
-                <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer">
-                    <img src="img/materias/DESARROLLO.webp" alt="Metodos" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <a href="materia5.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-slate-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                            Desarrollo Emprendedor
-                            </h3>
-                                <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                                </div>
-                                    <p class="text-slate-300 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                    Ver Contenido
-                                    </p>
-                        </a>
-                </div>
-
-                <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer">
-                    <img src="img/materias/SISTEMAS.webp" alt="CVD" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <a href="materia6.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-cyan-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                            Sistemas Digitales
-                            </h3>
-                                <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                                </div>
-                                    <p class="text-cyan-100 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                    Ver Contenido
-                                    </p>
-                        </a>    
-                </div>
-
-                <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer">
-                    <img src="img/materias/INGLES.webp" alt="Internet" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <a href="materia7.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-indigo-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                            Inglés
-                            </h3>
-                                <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                                </div>
-                                    <p class="text-indigo-200 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                    Ver Contenido
-                                    </p>
-                        </a>
-                </div>
-                
-                <div class="materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer">
-                    <img src="img/materias/ORIENTACION.avif" alt="POO" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <a href="materia8.php" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center bg-blue-900/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <h3 class="text-white text-xl font-black text-center px-4 transform translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-                            Orientación y Tutoría
-                            </h3>
-                                <div class="mt-2 w-12 h-1 bg-white rounded-full">
-                                </div>
-                                    <p class="text-blue-200 text-xs mt-3 font-semibold uppercase tracking-widest">
-                                    Ver Contenido
-                                    </p>
-                        </a>
-                </div>
-
-            </div>
+            <h2 class="text-5xl font-medium text-center mt-4 pt-16">Material de clases</h2>
+            <div id="categorias-recursos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-32 pt-16"></div>
         </section>
 
         <section>
@@ -186,8 +67,8 @@
     <footer class="footer">
         <section class="contenido-footer">
             <div class="footer-brand">
-            <h1>Lumina</h1>
-            <p>Plataforma de difusión digital académica</p>
+                <h1>Lumina</h1>
+                <p>Plataforma de difusión digital académica</p>
             </div>
             <nav class="footer-links" aria-label="Enlaces del sitio">
                 <div class="footer-link-group">
@@ -213,20 +94,11 @@
         <p class="copy">© 2026 Lumina: Claridad a la información</p>
     </footer>
 
-    <script>
-        document.querySelectorAll('.materia-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const link = card.querySelector('a[href^="materia"]');
-                if (link) {
-                    window.location.href = link.getAttribute('href');
-                }
-            });
-        });
-    </script>
     <script src="js/auth.js?v=5"></script>
     <script src="js/menu_ui.js?v=5"></script>
     <script src="js/reacciones.js?v=3"></script>
+    <script src="js/categorias_imagenes.js"></script>
+    <script src="js/recursos_categorias.js?v=2"></script>
     <script src="js/recursos_posts.js?v=7"></script>
-
 </body>
 </html>
