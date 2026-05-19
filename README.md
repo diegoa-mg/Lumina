@@ -1,7 +1,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/tu-usuario/Lumina">
-    <img src="Logo Lumina (Fondo Negro) Horizontal" alt="Logo Lumina" width="600">
+    <img src="frontend/img/logo/Logo Lumina (Fondo Negro) Horizontal.png" alt="Logo Lumina" width="600">
   </a>
 
   <div id="user-content-toc">
