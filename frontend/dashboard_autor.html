@@ -27,6 +27,18 @@
     <link rel="preload" href="css/autor.css?v=8" as="style">
     <link rel="stylesheet" href="css/autor.css?v=8">
 
+    <style>
+    /* Constrain modal content to avoid romper el contenedor y mantener la flecha visible */
+    .modal-content { max-height: 80vh; overflow-y: auto; box-sizing: border-box; padding: 1rem; }
+    .modal-content .btnVolver, .modal-content .btnVolverSelector { position: relative; z-index: 12; display: inline-flex; align-items: center; gap: .5rem; }
+    .video-mode-toggle { display:flex; gap:.5rem; margin-top:.5rem; }
+    .video-mode-toggle button { padding:.4rem .6rem; border-radius:6px; border:1px solid #d1d5db; background:#fff; cursor:pointer; }
+    .video-mode-toggle button.active { background:#0ea5a4; color:#fff; border-color:transparent; }
+    .campo-video-file .video-file-upload { display:flex; gap:.5rem; align-items:center; }
+    .preview-video { display:flex; flex-direction:column; gap:0.75rem; margin-top:1rem; }
+    .post-video-preview { width:100%; min-height:200px; border-radius:12px; background:#000; }
+    </style>
+
 </head>
 <body>
         <header>
@@ -51,11 +63,6 @@
             </nav>
 
         </div>
-    </header>
-
-    <main>
-        <div class="contenedor-principal">
-            <div class="encabezado-pagina">
                 <h1>Panel Autor</h1>
                 <p>Crea nuevos post y mándalos a revisión.</p>
             </div>
@@ -102,6 +109,7 @@
         <!-- Empieza la ventana modal -->
         <div class="modal-overlay" id="modalAdmin">
             <input type="file" id="fileInput" hidden accept="image/*">
+            <input type="file" id="videoFileInput" hidden accept=".mp4,video/mp4">
             <!-- PANTALLA 0: ELEGIR TIPO DE PUBLICACION -->
             <div class="modal-content" id="pantallaSelector">
                 <span class="close-modal" id="btnCerrar">&times;</span>
@@ -217,9 +225,31 @@
 
     </div>
 
+    <div class="field campo-video-toggle d-none">
+        <div class="video-mode-toggle">
+            <button type="button" id="videoModeLink" class="active">Enlace</button>
+            <button type="button" id="videoModeFile">Archivo</button>
+        </div>
+    </div>
+
     <div class="field campo-youtube d-none">
-        <label>URL de YouTube</label>
+        <label>URL del video</label>
         <input type="url" id="youtubeUrl" placeholder="https://youtube.com/watch?v=...">
+    </div>
+
+    <div class="field campo-video-file d-none">
+        <label>Archivo de video (.mp4)</label>
+        <div class="video-file-upload">
+            <p class="filename aviso-imagen-nombre" id="videoFileNameDisplay">No se ha seleccionado video</p>
+            <button type="button" class="btn-select" id="btnSubirVideo" onclick="document.getElementById('videoFileInput').click()">
+                Seleccionar video (.mp4)
+            </button>
+        </div>
+        <div class="video-progress d-none" id="videoUploadProgressContainer">
+            <progress id="videoProgressBar" value="0" max="100" class="w-full h-3 rounded-full bg-slate-200"></progress>
+            <p class="text-sm text-gray-600 mt-2" id="videoProgressText">Subiendo video...</p>
+        </div>
+        <p class="text-sm text-gray-500 mt-2" id="videoUploadNote">Máximo 500 MB. Formato permitido: .mp4</p>
     </div>
 
     <div class="field campo-noticia d-none">
@@ -231,7 +261,7 @@
 
                     <!-- Preview -->
                     <div class="preview-side">
-                        <div class="aviso-imagen-preview post-imagen-preview">
+                        <div class="aviso-imagen-preview post-imagen-preview" id="imagenPostSection">
                             <div class="post-imagen-box" onclick="document.getElementById('fileInput').click()">
                                 <img id="imgPreview" src="" alt="Imagen del post">
                                 <div class="aviso-imagen-placeholder" id="postImagenPlaceholder">
@@ -240,6 +270,12 @@
                                 </div>
                             </div>
                             <p class="filename aviso-imagen-nombre" id="fileNameDisplay">Selecciona una imagen</p>
+                            <p class="text-sm text-gray-500 mt-2 d-none" id="imagenOpcionalNote">Imagen opcional para publicaciones de video.</p>
+                        </div>
+                        <div class="preview-video d-none" id="videoPreviewSection" style="display:none;">
+                            <video id="videoPreview" class="post-video-preview" controls muted playsinline></video>
+                            <iframe id="youtubePreviewIframe" class="post-video-preview d-none" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <p class="text-sm text-gray-500 mt-2" id="videoPreviewNote">Vista previa del video</p>
                         </div>
                         <button
                             type="button"

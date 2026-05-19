@@ -7,6 +7,7 @@ const btnOpen = document.getElementById('btnAbrirModal');
 const btnClose = document.getElementById('btnCerrar');
 const btnCerrarSecundario = document.querySelectorAll('.btnCerrarSecundario');
 const fileInput = document.getElementById('fileInput');
+const videoFileInput = document.getElementById('videoFileInput');
 const btnVolver = document.querySelector('.btnVolver');
 const btnVolverSelector = document.querySelectorAll('.btnVolverSelector');
 const btnCrearPost = document.getElementById('btnCrearPost');
@@ -16,11 +17,18 @@ const campoYoutube = document.querySelector('.campo-youtube');
 const campoNoticia = document.querySelector('.campo-noticia');
 
 let archivoSeleccionado = null;
+let archivoVideoSeleccionado = null;
 let enviando = false;
 let postEditando = null;
 let modoPublicacion = 'post';
+let videoMode = 'link'; // 'link' or 'file' - UI toggle for video posts
+let videoPreviewUrl = null;
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 500 * 1024 * 1024;
+const VIDEO_FORMATOS_PERMITIDOS = [
+    'video/mp4'
+];
 
 const FORMATOS_PERMITIDOS = [
     'image/jpeg',
@@ -43,9 +51,86 @@ const CONFIG_AVISOS = {
 
 function actualizarCamposTipoPost() {
     const tipo = (postTipoSelect?.value || 'articulo').toLowerCase();
+    const campoVideoFile = document.querySelector('.campo-video-file');
+    const imagenOpcionalNote = document.getElementById('imagenOpcionalNote');
+    const btnTextoImagenPost = document.getElementById('btnTextoImagenPost');
+    const videoModeToggle = document.querySelector('.video-mode-toggle');
+    const campoVideoToggle = document.querySelector('.campo-video-toggle');
+    const campoYoutubeLocal = document.querySelector('.campo-youtube');
 
-    campoYoutube?.classList.toggle('d-none', tipo !== 'video');
+    // Show the toggle and video controls only for video type
+    if (campoVideoToggle) {
+        campoVideoToggle.classList.toggle('d-none', tipo !== 'video');
+    }
+    if (videoModeToggle) {
+        videoModeToggle.classList.toggle('d-none', tipo !== 'video');
+    }
+
+    const videoPreviewSection = document.getElementById('videoPreviewSection');
+    const imagenSection = document.getElementById('imagenPostSection');
+    const btnCambiarImagenPost = document.getElementById('btnCambiarImagenPost');
+
+    if (tipo === 'video') {
+        if (campoVideoToggle) {
+            campoVideoToggle.classList.remove('d-none');
+        }
+        if (videoMode === 'link') {
+            campoYoutubeLocal?.classList.remove('d-none');
+            campoVideoFile?.classList.add('d-none');
+        } else {
+            campoYoutubeLocal?.classList.add('d-none');
+            campoVideoFile?.classList.remove('d-none');
+        }
+
+        if (imagenSection) {
+            imagenSection.classList.add('d-none');
+            imagenSection.style.display = 'none';
+        }
+
+        if (videoPreviewSection) {
+            videoPreviewSection.classList.remove('d-none');
+            videoPreviewSection.style.display = 'flex';
+        }
+
+        if (btnCambiarImagenPost) {
+            btnCambiarImagenPost.classList.add('d-none');
+        }
+
+        actualizarPreviewVideo();
+    } else {
+        if (campoVideoToggle) {
+            campoVideoToggle.classList.add('d-none');
+        }
+        campoYoutubeLocal?.classList.add('d-none');
+        campoVideoFile?.classList.add('d-none');
+
+        if (imagenSection) {
+            imagenSection.classList.remove('d-none');
+            imagenSection.style.display = 'block';
+        }
+
+        if (videoPreviewSection) {
+            videoPreviewSection.classList.add('d-none');
+            videoPreviewSection.style.display = 'none';
+        }
+
+        if (btnCambiarImagenPost) {
+            btnCambiarImagenPost.classList.remove('d-none');
+        }
+    }
     campoNoticia?.classList.toggle('d-none', tipo !== 'noticia');
+
+    if (imagenOpcionalNote) {
+        imagenOpcionalNote.classList.toggle('d-none', tipo !== 'video');
+    }
+
+    if (btnTextoImagenPost) {
+        if (tipo === 'video' && !archivoSeleccionado) {
+            btnTextoImagenPost.textContent = 'Subir imagen (opcional)';
+        } else if (!archivoSeleccionado) {
+            btnTextoImagenPost.textContent = 'Subir imagen';
+        }
+    }
 }
 
 // ============================================
@@ -140,6 +225,35 @@ if (fileInput) {
     };
 }
 
+if (videoFileInput) {
+    videoFileInput.onchange = (e) => {
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        const lowerName = (file.name || '').toLowerCase();
+        if (file.type !== 'video/mp4' && !lowerName.endsWith('.mp4')) {
+            alert('Formato de video invalido. Solo .mp4 permitidos');
+            return;
+        }
+
+        if (file.size > MAX_VIDEO_SIZE) {
+            alert('Video muy pesado. El maximo es 500 MB.');
+            return;
+        }
+
+        archivoVideoSeleccionado = file;
+        const videoFileNameDisplay = document.getElementById('videoFileNameDisplay');
+
+        if (videoFileNameDisplay) {
+            videoFileNameDisplay.textContent = file.name;
+        }
+
+        actualizarEstadoPreviewVideoSeleccionado(true);
+        actualizarPreviewVideo();
+    };
+}
+
 function procesarImagen(file) {
     archivoSeleccionado = file;
 
@@ -167,6 +281,138 @@ function procesarImagen(file) {
 
     reader.readAsDataURL(file);
 }
+
+function actualizarEstadoPreviewVideoSeleccionado(tieneVideo) {
+    const videoFileNameDisplay = document.getElementById('videoFileNameDisplay');
+    const btnSubirVideo = document.getElementById('btnSubirVideo');
+
+    if (videoFileNameDisplay) {
+        videoFileNameDisplay.textContent = tieneVideo
+            ? (archivoVideoSeleccionado ? archivoVideoSeleccionado.name : 'Video seleccionado')
+            : 'No se ha seleccionado video';
+    }
+
+    if (btnSubirVideo) {
+        btnSubirVideo.textContent = tieneVideo ? 'Cambiar video' : 'Seleccionar video';
+    }
+}
+
+function obtenerYoutubeEmbedUrl(url) {
+    if (!url) return null;
+
+    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w\-]+)/;
+    const match = url.match(youtubeRegex);
+
+    if (!match) {
+        return null;
+    }
+
+    return `https://www.youtube.com/embed/${match[1]}`;
+}
+
+function limpiarPreviewVideo() {
+    const video = document.getElementById('videoPreview');
+    const iframe = document.getElementById('youtubePreviewIframe');
+    const note = document.getElementById('videoPreviewNote');
+
+    if (video) {
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+    }
+
+    if (iframe) {
+        iframe.removeAttribute('src');
+    }
+
+    if (videoPreviewUrl) {
+        URL.revokeObjectURL(videoPreviewUrl);
+        videoPreviewUrl = null;
+    }
+
+    if (note) {
+        note.textContent = 'Vista previa del video';
+    }
+}
+
+function actualizarPreviewVideo() {
+    const videoSection = document.getElementById('videoPreviewSection');
+    const video = document.getElementById('videoPreview');
+    const iframe = document.getElementById('youtubePreviewIframe');
+    const note = document.getElementById('videoPreviewNote');
+    const youtubeInput = document.getElementById('youtubeUrl');
+
+    if (!videoSection || !video || !iframe || !note) return;
+
+    if (videoMode === 'file') {
+        iframe.classList.add('d-none');
+        if (!archivoVideoSeleccionado) {
+            video.classList.add('d-none');
+            note.textContent = 'Selecciona un archivo .mp4 para vista previa.';
+            return;
+        }
+
+        if (videoPreviewUrl) {
+            URL.revokeObjectURL(videoPreviewUrl);
+            videoPreviewUrl = null;
+        }
+
+        videoPreviewUrl = URL.createObjectURL(archivoVideoSeleccionado);
+        video.src = videoPreviewUrl;
+        video.classList.remove('d-none');
+        note.textContent = archivoVideoSeleccionado.name;
+        return;
+    }
+
+    if (videoMode === 'link') {
+        video.classList.add('d-none');
+        const embedUrl = obtenerYoutubeEmbedUrl(youtubeInput?.value.trim() || '');
+
+        if (!embedUrl) {
+            iframe.classList.add('d-none');
+            note.textContent = 'Ingresa una URL válida de YouTube para vista previa.';
+            return;
+        }
+
+        iframe.src = embedUrl;
+        iframe.classList.remove('d-none');
+        note.textContent = 'Vista previa del video de YouTube';
+        return;
+    }
+}
+
+// Inicializar botones de modo video (link / archivo)
+const initVideoModeButtons = () => {
+    const btnLink = document.getElementById('videoModeLink');
+    const btnFile = document.getElementById('videoModeFile');
+
+    if (!btnLink || !btnFile) return;
+
+    const activarLink = () => {
+        videoMode = 'link';
+        btnLink.classList.add('active');
+        btnFile.classList.remove('active');
+        actualizarCamposTipoPost();
+    };
+
+    const activarFile = () => {
+        videoMode = 'file';
+        btnFile.classList.add('active');
+        btnLink.classList.remove('active');
+        actualizarCamposTipoPost();
+    };
+
+    btnLink.addEventListener('click', activarLink);
+    btnFile.addEventListener('click', activarFile);
+
+    // marcar estado inicial
+    if (videoMode === 'file') activarFile(); else activarLink();
+};
+
+// Ejecutar inicialización después de cargar el script (los elementos están en el DOM)
+document.addEventListener('DOMContentLoaded', initVideoModeButtons);
+// Called directly because script is loaded at end of body in this page
+initVideoModeButtons();
 
 // ============================================
 // VALIDACION Y DATOS
@@ -210,14 +456,21 @@ function validarCampos() {
         return false;
     }
 
-    if (datos.seccion === 'post' && !archivoSeleccionado && !postEditando) {
+    if (datos.seccion === 'post' && datos.tipo !== 'video' && !archivoSeleccionado && !postEditando) {
         alert('Los posts requieren una imagen adjunta');
         return false;
     }
 
-    if (datos.seccion === 'post' && datos.tipo === 'video' && !datos.youtube_url) {
-        alert('Debes agregar un link de YouTube');
-        return false;
+    if (datos.seccion === 'post' && datos.tipo === 'video') {
+        if (videoMode === 'link' && !datos.youtube_url) {
+            alert('Debes ingresar la URL de YouTube');
+            return false;
+        }
+
+        if (videoMode === 'file' && !archivoVideoSeleccionado) {
+            alert('Debes seleccionar un archivo .mp4 desde tu PC');
+            return false;
+        }
     }
 
     if (datos.seccion === 'post' && datos.tipo === 'noticia' && !datos.noticia_url) {
@@ -240,6 +493,79 @@ function convertirABase64(file) {
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
         reader.readAsDataURL(file);
+    });
+}
+
+function actualizarProgresoVideo(percent, texto = '') {
+    const progressContainer = document.getElementById('videoUploadProgressContainer');
+    const progressBar = document.getElementById('videoProgressBar');
+    const progressText = document.getElementById('videoProgressText');
+
+    if (progressContainer) {
+        progressContainer.classList.remove('d-none');
+    }
+
+    if (progressBar) {
+        progressBar.value = percent;
+    }
+
+    if (progressText) {
+        progressText.textContent = texto || `Subiendo video... ${percent.toFixed(0)}%`;
+    }
+}
+
+function enviarPublicacionConArchivo(url, payload, archivoVideo) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+
+        Object.entries(payload).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                formData.append(key, value);
+            }
+        });
+
+        formData.append('video_file', archivoVideo);
+
+        xhr.withCredentials = true;
+        xhr.open('POST', url, true);
+
+        xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+                const percentComplete = (event.loaded / event.total) * 100;
+                actualizarProgresoVideo(percentComplete);
+            }
+        };
+
+        xhr.onload = () => {
+            const responseText = xhr.responseText || '';
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                    resolve(JSON.parse(responseText));
+                } catch (error) {
+                    reject(new Error(`Respuesta no JSON: ${responseText}`));
+                }
+            } else {
+                let mensaje = responseText;
+
+                try {
+                    const json = JSON.parse(responseText);
+                    mensaje = json.error || responseText;
+                } catch (e) {
+                    // keep raw responseText
+                }
+
+                if (xhr.status === 401) {
+                    mensaje = 'Tu sesión no es válida o ha expirado. Inicia sesión de nuevo.';
+                }
+
+                reject(new Error(`HTTP ${xhr.status}: ${mensaje}`));
+            }
+        };
+
+        xhr.onerror = () => reject(new Error('Error de red'));
+        xhr.send(formData);
     });
 }
 
@@ -271,21 +597,26 @@ async function manejarPublicacion(estado) {
             payload.post_id = postEditando;
         }
 
-        const respuesta = await fetch(
-            postEditando
-                ? '../backend/editar_post.php'
-                : '../backend/publicar.php',
-            {
+        const url = postEditando
+            ? '../backend/editar_post.php'
+            : '../backend/publicar.php';
+
+        let resultado;
+
+        if (archivoVideoSeleccionado && datos.tipo === 'video') {
+            resultado = await enviarPublicacionConArchivo(url, payload, archivoVideoSeleccionado);
+        } else {
+            const respuesta = await fetch(url, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(payload)
-            }
-        );
+            });
 
-        const resultado = await respuesta.json();
+            resultado = await respuesta.json();
+        }
 
         if (resultado.success) {
             alert(postEditando ? 'Publicacion actualizada' : 'Publicacion creada');
@@ -295,7 +626,7 @@ async function manejarPublicacion(estado) {
         }
     } catch (error) {
         console.error(error);
-        alert('Error al guardar');
+        alert(error?.message || 'Error al guardar');
     } finally {
         enviando = false;
     }
@@ -537,7 +868,11 @@ function actualizarPreviewAviso() {
     elemento.addEventListener('input', actualizarPreviewAviso);
     elemento.addEventListener('change', actualizarPreviewAviso);
 });
-
+const youtubeUrlInput = document.getElementById('youtubeUrl');
+if (youtubeUrlInput) {
+    youtubeUrlInput.addEventListener('input', actualizarPreviewVideo);
+    youtubeUrlInput.addEventListener('change', actualizarPreviewVideo);
+}
 postTipoSelect?.addEventListener('change', actualizarCamposTipoPost);
 
 // ============================================
@@ -577,6 +912,24 @@ function resetearFormulario() {
 
     if (fileInput) {
         fileInput.value = '';
+    }
+
+    if (videoFileInput) {
+        videoFileInput.value = '';
+    }
+
+    const videoFileNameDisplay = document.getElementById('videoFileNameDisplay');
+    const videoUploadProgressContainer = document.getElementById('videoUploadProgressContainer');
+
+    archivoVideoSeleccionado = null;
+    limpiarPreviewVideo();
+
+    if (videoFileNameDisplay) {
+        videoFileNameDisplay.textContent = 'No se ha seleccionado video';
+    }
+
+    if (videoUploadProgressContainer) {
+        videoUploadProgressContainer.classList.add('d-none');
     }
 
     const tipoSelect = document.getElementById('postTipo');

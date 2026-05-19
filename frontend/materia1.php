@@ -416,6 +416,13 @@ async function cargarPublicaciones() {
 
             const youtubeUrl = post.youtube_url || '';
             const noticiaUrl = post.noticia_url || '';
+            const isVideoFile = tipo === 'video' && !youtubeUrl && imagen && /\.(mp4|webm|ogg)$/i.test(imagen);
+            const previewMedia = isVideoFile
+                ? `<video src="${imagen}" controls class="w-full h-52 object-cover rounded-xl mb-4"></video>`
+                : `<img src="${imagen}" class="w-full h-52 object-cover rounded-xl mb-4" alt="Imagen publicación">`;
+            const previewMediaFull = isVideoFile
+                ? `<video src="${imagen}" controls class="w-full h-72 rounded-2xl mb-6"></video>`
+                : `<img src="${imagen}" class="w-full h-72 object-cover rounded-2xl mb-6">`;
 
             let contenidoExtra = '';
             let botonTexto = 'Leer más →';
@@ -483,11 +490,7 @@ async function cargarPublicaciones() {
 
                 </p>
 
-                <img 
-                    src="${imagen}" 
-                    class="w-full h-52 object-cover rounded-xl mb-4"
-                    alt="Imagen publicación"
-                >
+                ${previewMedia}
 
                 <div class="contenido-completo hidden">
 
@@ -509,10 +512,7 @@ async function cargarPublicaciones() {
 
                     </p>
 
-                    <img 
-                        src="${imagen}"
-                        class="w-full h-72 object-cover rounded-2xl mb-6"
-                    >
+                    ${previewMediaFull}
 
                     <div class="space-y-4 text-gray-700 text-[15px] leading-relaxed">
 

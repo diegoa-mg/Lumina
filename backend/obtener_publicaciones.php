@@ -14,6 +14,9 @@ $tipo_select = publicaciones_tiene_columna($conexion, 'tipo')
 $youtube_select = publicaciones_tiene_columna($conexion, 'youtube_url')
     ? "publicaciones.youtube_url"
     : "NULL AS youtube_url";
+$video_select = publicaciones_tiene_columna($conexion, 'video_url')
+    ? "publicaciones.video_url"
+    : "NULL AS video_url";
 $noticia_select = publicaciones_tiene_columna($conexion, 'noticia_url')
     ? "publicaciones.noticia_url"
     : "NULL AS noticia_url";
@@ -51,6 +54,7 @@ SELECT
     publicaciones.imagen_url,
     publicaciones.status,
     $youtube_select,
+    $video_select,
     $noticia_select,
     $seccion_select,
     $importante_select,
