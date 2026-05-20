@@ -274,7 +274,7 @@
     <script src="js/i18n.js?v=10"></script>
     <script src="js/auth.js?v=10"></script>
     <script src="js/menu_ui.js"></script>
-    <script src="js/crear.js?v=12"></script>
+    <script src="js/crear.js?v=13"></script>
     <script>
 
     function formatearFecha(fechaStr) {
@@ -381,7 +381,7 @@
                     const embedUrl = obtenerYoutubeEmbedUrlEditor(youtubeUrlEditor);
                     bloqueImagenEditor = embedUrl
                         ? `<iframe class="editor-card-media" src="${escapeHtmlEditor(embedUrl)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
-                        : `<img src="../frontend/${post.imagen_url || 'img/default-post.jpg'}" class="w-full h-72 object-cover rounded-xl mb-5">`;
+                        : `<img src="../frontend/${post.imagen_url || 'img/materias/desarrolloemprendedor.webp'}" class="w-full h-72 object-cover rounded-xl mb-5">`;
                 } else if (esRecursoEditor) {
                     const nombreArchivo = obtenerNombreDesdeRutaEditor(archivoUrlEditor) || 'Recurso adjunto';
                     bloqueImagenEditor = `<div class="editor-card-media resource-card-media">
@@ -389,7 +389,7 @@
                         <p>${escapeHtmlEditor(nombreArchivo)}</p>
                     </div>`;
                 } else {
-                    bloqueImagenEditor = `<img src="../frontend/${post.imagen_url || 'img/default-post.jpg'}" class="w-full h-72 object-cover rounded-xl mb-5">`;
+                    bloqueImagenEditor = `<img src="../frontend/${post.imagen_url || 'img/materias/desarrolloemprendedor.webp'}" class="w-full h-72 object-cover rounded-xl mb-5">`;
                 }
 
                 // Los avisos muestran urgencia/importancia; los posts, materia/tipo.
@@ -627,6 +627,10 @@
         'py', 'html', 'css', 'js', 'php', 'java', 'c', 'cpp', 'h',
         'json', 'xml', 'sql', 'md'
     ];
+    const EDITOR_RESOURCE_CODE_EXTENSIONS = [
+        'py', 'html', 'css', 'js', 'php', 'java', 'c', 'cpp', 'h',
+        'json', 'xml', 'sql', 'md'
+    ];
     let editorArchivoImagen = null;
     let editorArchivoVideo = null;
     let editorArchivoRecurso = null;
@@ -641,6 +645,19 @@
         if (!imagen) return '';
         if (/^(https?:|data:|\/)/.test(imagen)) return imagen;
         return `../frontend/${imagen}`;
+    }
+
+    function obtenerExtensionRecursoEditor(nombreArchivo) {
+        return (nombreArchivo || '').split('.').pop().toLowerCase();
+    }
+
+    function obtenerNombreSeguroRecursoEditor(file) {
+        const nombre = file?.name || 'recurso.txt';
+        const extension = obtenerExtensionRecursoEditor(nombre);
+
+        return EDITOR_RESOURCE_CODE_EXTENSIONS.includes(extension)
+            ? `${nombre}.txt`
+            : nombre;
     }
 
     function limpiarPreviewVideoEditor() {
@@ -1116,7 +1133,11 @@
                     formData.append('video_file', editorArchivoVideo);
                 }
                 if (editorArchivoRecurso && payload.tipo === 'recurso') {
-                    formData.append('resource_file', editorArchivoRecurso);
+                    formData.append(
+                        'resource_file',
+                        editorArchivoRecurso,
+                        obtenerNombreSeguroRecursoEditor(editorArchivoRecurso)
+                    );
                 }
 
                 respuesta = await fetch('../backend/editar_post_editor.php', {

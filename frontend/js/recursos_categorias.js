@@ -52,7 +52,7 @@
         const verContenido = typeof t === 'function' ? t('comun.ver_contenido') : 'Ver contenido';
 
         const card = document.createElement('div');
-        card.className = 'materia-card group relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer';
+        card.className = 'materia-card group relative h-40 sm:h-64 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-lg cursor-pointer';
         card.innerHTML = `
             <img src="${escapeHtml(img)}" alt="${nombre}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="this.src='${IMAGEN_DEFAULT}'">
             <a href="${escapeHtml(href)}" class="materia-overlay absolute inset-0 flex flex-col items-center justify-center ${overlay} opacity-0 transition-opacity duration-300 group-hover:opacity-100">

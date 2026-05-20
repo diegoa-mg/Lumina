@@ -253,7 +253,7 @@ function renderAvatarAutorMat(fotoUrl, nombre) {
 function renderPostMateria(post) {
     const id = Number(post.id || 0);
     const titulo = escapeHtmlMat(post.titulo || 'Publicación sin título');
-    const imagen = escapeHtmlMat(post.imagen_url || 'img/default-post.jpg');
+    const imagen = escapeHtmlMat(post.imagen_url || 'img/materias/desarrolloemprendedor.webp');
     const autorNombre = post.autor || 'Autor desconocido';
     const autor = escapeHtmlMat(autorNombre);
     const autorFoto = post.autor_foto || '';

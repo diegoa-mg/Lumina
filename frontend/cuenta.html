@@ -295,31 +295,9 @@
     </footer>
 
     <script src="js/i18n.js?v=10"></script>
-    <script src="js/auth.js?v=10"></script>
+    <script src="js/auth.js?v=11"></script>
     <script src="js/menu_ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
-    <script src="js/cuenta.js?v=4"></script>
+    <script src="js/cuenta.js?v=6"></script>
 </body>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const btnCerrar = document.getElementById('btn-cerrar-cuenta');
-
-    if (btnCerrar) {
-        btnCerrar.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            // 1. Borramos la sesión del navegador
-            
-            // 2. Redirigimos al inicio
-        });
-    }
-
-    // OPCIONAL: Si alguien intenta entrar a cuenta.html sin estar logueado, lo regresamos
-    const estaLogueado = localStorage.getItem('sesion_activa');
-    if (estaLogueado !== 'true') {
-        window.location.href = 'login.html';
-    }
-});
-</script>
 </html>

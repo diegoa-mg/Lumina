@@ -15,47 +15,93 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $datos = json_decode(file_get_contents('php://input'), true);
 $imagen = $datos['imagen'] ?? '';
-
-if (!$imagen || strpos($imagen, 'data:image') !== 0) {
-    http_response_code(400);
-    echo json_encode([
-        'ok' => false,
-        'mensaje' => 'Selecciona una imagen valida.'
-    ]);
-    exit;
-}
-
-if (!preg_match('/^data:image\/(\w+);base64,(.*)$/', $imagen, $matches)) {
-    http_response_code(400);
-    echo json_encode([
-        'ok' => false,
-        'mensaje' => 'Formato de imagen invalido.'
-    ]);
-    exit;
-}
-
-$formato = strtolower($matches[1]);
-$base64 = $matches[2];
+$archivoImagen = $_FILES['image_file'] ?? null;
 $formatosPermitidos = ['jpg', 'jpeg', 'png', 'webp'];
+$contenido = null;
+$formato = '';
 
-if (!in_array($formato, $formatosPermitidos, true)) {
-    http_response_code(400);
-    echo json_encode([
-        'ok' => false,
-        'mensaje' => 'Formato de imagen no permitido.'
-    ]);
-    exit;
-}
+if (is_array($archivoImagen) && intval($archivoImagen['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+    $error = intval($archivoImagen['error'] ?? UPLOAD_ERR_NO_FILE);
 
-$tamanioKb = (strlen($base64) * 0.75) / 1024;
+    if ($error !== UPLOAD_ERR_OK) {
+        http_response_code(400);
+        echo json_encode([
+            'ok' => false,
+            'mensaje' => 'No se pudo recibir la imagen.'
+        ]);
+        exit;
+    }
 
-if ($tamanioKb > 5120) {
-    http_response_code(400);
-    echo json_encode([
-        'ok' => false,
-        'mensaje' => 'La imagen es demasiado pesada.'
-    ]);
-    exit;
+    if (($archivoImagen['size'] ?? 0) > 5 * 1024 * 1024) {
+        http_response_code(400);
+        echo json_encode([
+            'ok' => false,
+            'mensaje' => 'La imagen es demasiado pesada.'
+        ]);
+        exit;
+    }
+
+    $formato = strtolower(pathinfo($archivoImagen['name'] ?? '', PATHINFO_EXTENSION));
+    $mimePermitidos = [
+        'image/jpeg' => true,
+        'image/png' => true,
+        'image/webp' => true
+    ];
+    $mimeDetectado = function_exists('mime_content_type') ? mime_content_type($archivoImagen['tmp_name']) : ($archivoImagen['type'] ?? '');
+
+    if (!in_array($formato, $formatosPermitidos, true) || !isset($mimePermitidos[$mimeDetectado])) {
+        http_response_code(400);
+        echo json_encode([
+            'ok' => false,
+            'mensaje' => 'Formato de imagen no permitido.'
+        ]);
+        exit;
+    }
+
+    $contenido = file_get_contents($archivoImagen['tmp_name']);
+} else {
+    if (!$imagen || strpos($imagen, 'data:image') !== 0) {
+        http_response_code(400);
+        echo json_encode([
+            'ok' => false,
+            'mensaje' => 'Selecciona una imagen valida.'
+        ]);
+        exit;
+    }
+
+    if (!preg_match('/^data:image\/(\w+);base64,(.*)$/', $imagen, $matches)) {
+        http_response_code(400);
+        echo json_encode([
+            'ok' => false,
+            'mensaje' => 'Formato de imagen invalido.'
+        ]);
+        exit;
+    }
+
+    $formato = strtolower($matches[1]);
+    $base64 = $matches[2];
+
+    if (!in_array($formato, $formatosPermitidos, true)) {
+        http_response_code(400);
+        echo json_encode([
+            'ok' => false,
+            'mensaje' => 'Formato de imagen no permitido.'
+        ]);
+        exit;
+    }
+
+    $tamanioKb = (strlen($base64) * 0.75) / 1024;
+
+    if ($tamanioKb > 5120) {
+        http_response_code(400);
+        echo json_encode([
+            'ok' => false,
+            'mensaje' => 'La imagen es demasiado pesada.'
+        ]);
+        exit;
+    }
+
+    $contenido = base64_decode($base64, true);
 }
 
 $usuarioId = (int) $_SESSION['usuario_id'];
@@ -85,8 +131,6 @@ if (!is_dir($directorio) && !mkdir($directorio, 0777, true)) {
     ]);
     exit;
 }
-
-$contenido = base64_decode($base64, true);
 
 if ($contenido === false) {
     http_response_code(400);

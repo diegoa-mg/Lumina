@@ -6,6 +6,10 @@ function getUserRole() {
     return localStorage.getItem('user_role') || 'Usuario';
 }
 
+function isVisitorRole() {
+    return String(getUserRole()).toLowerCase() === 'visitante';
+}
+
 function resolveNavAvatarSrc(fotoUrl) {
     if (!fotoUrl) return '';
     if (fotoUrl.startsWith('http') || fotoUrl.startsWith('data:') || fotoUrl.startsWith('../')) {
@@ -247,7 +251,7 @@ function redirectIfNotAllowed() {
     const currentPage = window.location.pathname.split('/').pop();
     const role = getUserRole();
     const accessMap = {
-        'cuenta.html': ['Usuario', 'Autor', 'Editor', 'Administrador'],
+        'cuenta.html': ['Visitante', 'Usuario', 'Autor', 'Editor', 'Administrador'],
         'dashboard_autor.html': ['Autor', 'Editor', 'Administrador'],
         'dashboard_editor.html': ['Editor', 'Administrador'],
         'dashboard_admin.html': ['Administrador'],
@@ -257,6 +261,9 @@ function redirectIfNotAllowed() {
     if (!allowedRoles) return;
 
     if (!isUserLoggedIn()) {
+        if (currentPage === 'cuenta.html') {
+            return;
+        }
         window.location.href = 'login.html';
         return;
     }
@@ -300,7 +307,7 @@ function disableVisitorInteractions() {
 }
 
 async function validarSesionActiva() {
-    if (!isUserLoggedIn()) {
+    if (!isUserLoggedIn() || isVisitorRole()) {
         return false;
     }
 
@@ -328,13 +335,12 @@ async function applyGuestRestrictions() {
 
     const currentPage = window.location.pathname.split('/').pop();
     const restrictedPages = [
-        'cuenta.html',
         'dashboard_autor.html',
         'dashboard_editor.html',
         'dashboard_admin.html'
     ];
 
-    if (isUserLoggedIn()) {
+    if (isUserLoggedIn() && !isVisitorRole()) {
         const sesionValida = await validarSesionActiva();
         if (!sesionValida) {
             localStorage.clear();

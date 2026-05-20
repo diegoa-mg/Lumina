@@ -103,7 +103,11 @@ $video_url_anterior = $post['video_url'] ?? '';
 $video_url = $video_url_solicitado;
 $archivo_url_anterior = $post['archivo_url'] ?? '';
 $archivo_url = $archivo_url_solicitado;
-$resultado_imagen = guardar_imagen_post_base64($imagen, $seccion . '_' . $autor_id);
+$resultado_imagen = guardar_imagen_post_desde_request(
+    $imagen,
+    $_FILES['image_file'] ?? null,
+    $seccion . '_' . $autor_id
+);
 if (is_array($resultado_imagen) && empty($resultado_imagen['success'])) {
     echo json_encode($resultado_imagen);
     exit;
