@@ -8,7 +8,7 @@ function escapeHtmlLista(valor) {
 }
 
 function resolveImageLista(ruta) {
-    if (!ruta) return 'img/clases/clase2.webp';
+    if (!ruta) return 'img/materias/desarrolloemprendedor.webp';
     if (ruta.startsWith('http') || ruta.startsWith('data:') || ruta.startsWith('../')) return ruta;
     return ruta;
 }
