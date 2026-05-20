@@ -17,9 +17,13 @@ $youtube_select = publicaciones_tiene_columna($conexion, 'youtube_url')
 $video_select = publicaciones_tiene_columna($conexion, 'video_url')
     ? "publicaciones.video_url"
     : "NULL AS video_url";
-$noticia_select = publicaciones_tiene_columna($conexion, 'noticia_url')
-    ? "publicaciones.noticia_url"
-    : "NULL AS noticia_url";
+$archivo_select = publicaciones_tiene_columna($conexion, 'archivo_url')
+    ? "publicaciones.archivo_url"
+    : (publicaciones_tiene_columna($conexion, 'recurso_url')
+        ? "publicaciones.recurso_url"
+    : (publicaciones_tiene_columna($conexion, 'noticia_url')
+        ? "publicaciones.noticia_url"
+        : "NULL"));
 $seccion_select = publicaciones_tiene_columna($conexion, 'seccion')
     ? "CASE WHEN publicaciones.seccion = 'aviso' OR publicaciones.categoria_id = 9 THEN 'aviso' ELSE publicaciones.seccion END AS seccion"
     : "CASE WHEN publicaciones.categoria_id = 9 THEN 'aviso' ELSE 'post' END AS seccion";
@@ -55,7 +59,7 @@ SELECT
     publicaciones.status,
     $youtube_select,
     $video_select,
-    $noticia_select,
+    $archivo_select AS archivo_url,
     $seccion_select,
     $importante_select,
     $tipo_aviso_select,

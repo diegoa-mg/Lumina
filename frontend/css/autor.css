@@ -262,14 +262,44 @@
 .field input, .field textarea, .field select {
     width: 100%;
     background: var(--gris-claro);
-    border: none;
+    border: 0.1rem solid transparent;
     border-radius: 0.8rem; 
     padding: 1rem;
 }
 
 .field select {
+    appearance: none;
+    background-color: var(--gris-claro);
+    background-image: linear-gradient(45deg, transparent 50%, var(--azul-logo) 50%), linear-gradient(135deg, var(--azul-logo) 50%, transparent 50%);
+    background-position: calc(100% - 1.8rem) 1.85rem, calc(100% - 1.3rem) 1.85rem;
+    background-repeat: no-repeat;
+    background-size: 0.5rem 0.5rem, 0.5rem 0.5rem;
+    color: #0f172a;
+    cursor: pointer;
+    font-family: var(--fuente-principal);
+    font-size: 1.45rem;
+    font-weight: 600;
     min-height: 4.2rem;
+    padding-right: 3.8rem;
     display: block;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.field select:hover {
+    background-color: #f1f5f9;
+}
+
+.field select:focus {
+    border-color: var(--principal);
+    box-shadow: 0 0 0 0.3rem rgba(37, 99, 235, 0.16);
+    outline: none;
+}
+
+.field select option {
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 1.45rem;
+    font-weight: 600;
 }
 
 .field textarea{
@@ -306,17 +336,72 @@
     box-shadow: 0 0.4rem 1.2rem rgba(15, 23, 42, 0.08);
 }
 
-.campo-video-file .video-file-upload {
-    display: flex;
+.campo-video-file .video-file-upload,
+.campo-recurso-file .video-file-upload {
     align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+    background: #f8fafc;
+    border: 0.1rem solid #e2e8f0;
+    border-radius: 1.2rem;
+    display: grid;
+    gap: 1.2rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 1rem;
 }
 
-.campo-video-file .video-file-upload .filename {
-    flex: 1 1 18rem;
+.campo-video-file .video-file-upload .filename,
+.campo-recurso-file .video-file-upload .filename {
+    color: #334155;
+    font-size: 1.25rem;
+    font-weight: 700;
     margin: 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-align: left;
+    white-space: nowrap;
+}
+
+.campo-video-file .video-file-upload .filename::before,
+.campo-recurso-file .video-file-upload .filename::before {
+    color: var(--principal);
+    content: 'description';
+    display: inline-block;
+    font-family: 'Material Symbols Outlined';
+    font-size: 1.8rem;
+    font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    margin-right: 0.6rem;
+    vertical-align: -0.35rem;
+}
+
+.campo-video-file .btn-select,
+.campo-recurso-file .btn-select {
+    border-radius: 0.9rem;
+    min-height: 4.2rem;
+    padding: 0 1.6rem;
+    white-space: nowrap;
+}
+
+.campo-video-file > .text-sm,
+.campo-recurso-file > .text-sm {
+    background: #f1f5f9;
+    border-radius: 0.9rem;
+    color: #64748b !important;
+    font-size: 1.1rem !important;
+    line-height: 1.4;
+    margin-top: 0.8rem !important;
+    padding: 0.8rem 1rem;
+}
+
+@media (max-width: 640px) {
+    .campo-video-file .video-file-upload,
+    .campo-recurso-file .video-file-upload {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-video-file .btn-select,
+    .campo-recurso-file .btn-select {
+        width: 100%;
+    }
 }
 
 .video-progress {
@@ -348,6 +433,42 @@
     border-radius: 1.2rem;
     background: #020617;
     object-fit: cover;
+}
+
+.preview-recurso {
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto 1.2rem;
+    max-width: 32rem;
+    width: 100%;
+}
+
+.resource-preview-card {
+    align-items: center;
+    border: 0.2rem dashed #cbd5e1;
+    border-radius: 1.2rem;
+    color: #475569;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    justify-content: center;
+    min-height: 18rem;
+    padding: 2rem;
+    text-align: center;
+    width: 100%;
+}
+
+.resource-preview-card .material-symbols-outlined {
+    color: var(--principal);
+    font-size: 4.8rem;
+}
+
+.resource-preview-card p {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+    overflow-wrap: anywhere;
 }
 
 .check-importante {
@@ -642,12 +763,28 @@
     height: 100%;
     display: flex;
     align-items: center;
+    flex-direction: column;
+    gap: 0.8rem;
     justify-content: center;
+    padding: 1.5rem;
+    text-align: center;
 }
 
 .aviso-icono-lateral .material-symbols-outlined {
     color: #fff;
     font-size: 6rem;
+}
+
+.aviso-icono-lateral p {
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.bg-recurso {
+    background: #0f3ab5;
 }
 
 .aviso-lateral {
@@ -676,8 +813,16 @@
 
 .contenido-derecha h4 {
     font-size: 2rem;
+    font-weight: 700;
     margin: 0;
     color: var(--azul-logo);
+}
+
+.meta-card-autor {
+    color: #334155;
+    font-size: 1.3rem;
+    line-height: 1.45;
+    margin: 0;
 }
 
 /* Badge de estado (Borrador / Revisión) */

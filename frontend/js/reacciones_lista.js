@@ -34,17 +34,38 @@ function etiquetaPublicacionLista(post) {
     const etiquetas = {
         articulo: 'Articulo',
         video: 'Video',
-        noticia: 'Noticia',
         recurso: 'Recurso'
     };
 
     return etiquetas[String(post.tipo || '').toLowerCase()] || 'Post';
 }
 
+function obtenerInicialesLista(nombre) {
+    const partes = String(nombre || 'Usuario')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    if (partes.length === 0) return 'U';
+
+    return partes
+        .slice(0, 2)
+        .map((parte) => parte.charAt(0).toUpperCase())
+        .join('');
+}
+
+function renderAvatarAutorLista(fotoUrl, nombre) {
+    if (fotoUrl) {
+        return `<img src="${escapeHtmlLista(fotoUrl)}" alt="${escapeHtmlLista(nombre)}">`;
+    }
+
+    return `<span class="autor-avatar-iniciales">${escapeHtmlLista(obtenerInicialesLista(nombre))}</span>`;
+}
+
 function renderPublicacionReaccionada(post, tipoPagina) {
     const id = Number(post.id || 0);
     const imagen = resolveImageLista(post.imagen_url);
-    const autorFoto = resolveImageLista(post.autor_foto || 'img/usuarios/usuarios1.webp');
+    const autorFoto = post.autor_foto ? resolveImageLista(post.autor_foto) : '';
     const likeActivo = tipoPagina === 'like' ? 'like-activo' : '';
     const guardadoActivo = tipoPagina === 'guardado' ? 'save-activo' : '';
 
@@ -65,7 +86,7 @@ function renderPublicacionReaccionada(post, tipoPagina) {
                 <h4>${escapeHtmlLista(post.titulo || 'Publicacion sin titulo')}</h4>
 
                 <div class="autor-info">
-                    <img src="${escapeHtmlLista(autorFoto)}" alt="${escapeHtmlLista(post.autor || 'Autor')}">
+                    ${renderAvatarAutorLista(autorFoto, post.autor || 'Autor')}
                     <div>
                         <p class="nombre-autor">${escapeHtmlLista(post.autor || 'Autor desconocido')}</p>
                         <p class="fecha-autor">${escapeHtmlLista(formatearFechaLista(post.fecha_creacion))}</p>

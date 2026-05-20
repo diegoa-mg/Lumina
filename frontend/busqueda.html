@@ -122,6 +122,20 @@
             return limpio.length > 125 ? `${limpio.substring(0, 125)}...` : limpio;
         }
 
+        function obtenerIniciales(nombre) {
+            const partes = String(nombre || 'Usuario')
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean);
+
+            if (partes.length === 0) return 'U';
+
+            return partes
+                .slice(0, 2)
+                .map((parte) => parte.charAt(0).toUpperCase())
+                .join('');
+        }
+
         function renderCard(post) {
             const imagen = post.imagen_url || 'img/clases/clase2.webp';
             const tipo = post.tipo || 'articulo';
@@ -132,9 +146,7 @@
 
             const avatarAutor = autorFoto
                 ? `<img src="${escapeHtml(autorFoto)}" class="w-8 h-8 rounded-full object-cover" alt="${escapeHtml(autor)}">`
-                : `<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                       <span class="material-symbols-outlined text-gray-500 text-lg">person</span>
-                   </div>`;
+                : `<span class="autor-avatar-iniciales avatar-busqueda-iniciales">${escapeHtml(obtenerIniciales(autor))}</span>`;
 
             return `
                 <article class="bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col">

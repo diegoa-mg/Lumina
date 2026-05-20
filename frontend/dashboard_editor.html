@@ -24,8 +24,8 @@
     <link rel="preload" href="css/navbar.css?v=6" as="style">
     <link rel="stylesheet" href="css/navbar.css?v=6">
 
-    <link rel="preload" href="css/editor.css?v=2" as="style">
-    <link rel="stylesheet" href="css/editor.css?v=2">
+    <link rel="preload" href="css/editor.css?v=3" as="style">
+    <link rel="stylesheet" href="css/editor.css?v=3">
 </head>
 
 <body>
@@ -68,6 +68,8 @@
 
             <div id="modalAdmin" class="modal-overlay" style="display: none;">
                 <input type="file" id="fileInputEditor" hidden accept="image/*">
+                <input type="file" id="videoFileInputEditor" hidden accept=".mp4,video/mp4">
+                <input type="file" id="resourceFileInputEditor" hidden accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.rar,.7z,.py,.html,.css,.js,.php,.java,.c,.cpp,.h,.json,.xml,.sql,.md">
                 <div class="modal-content">
                     <span id="btnCerrar" class="close-modal" onclick="cerrarModal()">&times;</span>
                     <h1 class="modal-title">Editar</h1>
@@ -92,7 +94,6 @@
                                     <select id="postTipo">
                                         <option value="articulo">Artículo</option>
                                         <option value="video">Video</option>
-                                        <option value="noticia">Noticia</option>
                                         <option value="recurso">Recurso</option>
                                     </select>
                                 </div>
@@ -108,6 +109,40 @@
                                         <option value="7">Inglés</option>
                                         <option value="8">Orientación y Tutoría</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div id="campos-recurso-editor" class="field campo-recurso-file-editor d-none">
+                                <label>Archivo de recurso</label>
+                                <div class="video-file-upload">
+                                    <p class="filename aviso-imagen-nombre" id="resourceFileNameDisplayEditor">No se ha seleccionado archivo</p>
+                                    <button type="button" class="btn-select" id="btnSubirRecursoEditor">
+                                        Seleccionar recurso
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-2">PDF, Word, PowerPoint, Excel, ZIP o archivos de programación. Máximo 100 MB.</p>
+                            </div>
+
+                            <div id="campos-video-editor" class="campos-video-editor d-none">
+                                <div class="video-mode-toggle">
+                                    <button type="button" id="editorVideoModeLink" class="active">Enlace</button>
+                                    <button type="button" id="editorVideoModeFile">Archivo</button>
+                                </div>
+
+                                <div class="field campo-youtube-editor">
+                                    <label>URL del video</label>
+                                    <input type="url" id="youtubeUrlEditor" placeholder="https://youtube.com/watch?v=...">
+                                </div>
+
+                                <div class="field campo-video-file-editor d-none">
+                                    <label>Archivo de video (.mp4)</label>
+                                    <div class="video-file-upload">
+                                        <p class="filename aviso-imagen-nombre" id="videoFileNameDisplayEditor">No se ha seleccionado video</p>
+                                        <button type="button" class="btn-select" id="btnSubirVideoEditor">
+                                            Seleccionar video
+                                        </button>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-2">Máximo 500 MB. Formato permitido: .mp4</p>
                                 </div>
                             </div>
 
@@ -138,6 +173,19 @@
                         <div class="preview-side">
                             <div class="preview-card" id="previewPost">
                                 <img id="imgPreview" src="" alt="Preview">
+                            </div>
+
+                            <div class="preview-video-editor d-none" id="videoPreviewSectionEditor">
+                                <video id="videoPreviewEditor" class="post-video-preview" controls muted playsinline preload="metadata"></video>
+                                <iframe id="youtubePreviewIframeEditor" class="post-video-preview d-none" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <p class="text-sm text-gray-500 mt-2" id="videoPreviewNoteEditor">Vista previa del video</p>
+                            </div>
+
+                            <div class="preview-recurso-editor d-none" id="resourcePreviewSectionEditor">
+                                <div class="resource-preview-card">
+                                    <span class="material-symbols-outlined">description</span>
+                                    <p id="resourcePreviewNameEditor">Selecciona un archivo</p>
+                                </div>
                             </div>
 
                             <div class="preview-aviso" id="previewAviso" style="display:none;">
@@ -181,6 +229,10 @@
 
                             <div class="actions">
                                 <button class="btn-save" id="btnGuardarCambiosEditor">Guardar Cambios</button>
+                                <a class="btn-download-resource d-none" id="btnDescargarRecursoEditor" href="#" target="_blank" download>
+                                    <span class="material-symbols-outlined">download</span>
+                                    Descargar archivo
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -233,6 +285,38 @@
         });
     }
 
+    function escapeHtmlEditor(valor) {
+        return String(valor ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
+
+    function obtenerYoutubeEmbedUrlEditor(url) {
+        if (!url) return null;
+        const match = String(url).match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w\-]+)/);
+        return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+    }
+
+    function obtenerNombreDesdeRutaEditor(ruta) {
+        if (!ruta) return '';
+        const nombreArchivo = decodeURIComponent(String(ruta).split('/').pop() || '');
+        return nombreArchivo.replace(/^(?:post|aviso|post_editor)(?:_\d+)?_\d+_[a-f0-9]{8}_/i, '');
+    }
+
+    function formatearDuracionVideoEditor(segundos) {
+        if (!Number.isFinite(segundos) || segundos <= 0) return '';
+        const total = Math.round(segundos);
+        const horas = Math.floor(total / 3600);
+        const minutos = Math.floor((total % 3600) / 60);
+        const restantes = total % 60;
+        return horas > 0
+            ? `${horas}:${String(minutos).padStart(2, '0')}:${String(restantes).padStart(2, '0')}`
+            : `${minutos}:${String(restantes).padStart(2, '0')}`;
+    }
+
     async function cargarPostsRevision() {
 
         const contenedor =
@@ -276,30 +360,51 @@
                 const tipoAvisoEditor = post.tipo_aviso || 'academico';
                 const iconoAvisoEditor = tipoAvisoEditor === 'plataforma' ? 'language' : 'school';
                 const colorAvisoEditor = tipoAvisoEditor === 'plataforma' ? '#0f3ab5' : '#f75555';
+                const esVideoEditor = !esAvisoEditor && post.tipo === 'video';
+                const esRecursoEditor = !esAvisoEditor && post.tipo === 'recurso';
+                const videoUrlEditor = post.video_url || '';
+                const youtubeUrlEditor = post.youtube_url || '';
+                const archivoUrlEditor = post.archivo_url || post.noticia_url || '';
+                let bloqueImagenEditor;
 
                 // Aviso no importante: recuadro con icono. Aviso importante: imagen si existe.
-                const bloqueImagenEditor = (esAvisoEditor && (!avisoImportanteEditor || !post.imagen_url))
-                    ? `<div class="w-full h-72 rounded-xl mb-5 flex items-center justify-center" style="background-color:${colorAvisoEditor};">
+                if (esAvisoEditor && (!avisoImportanteEditor || !post.imagen_url)) {
+                    bloqueImagenEditor = `<div class="w-full h-72 rounded-xl mb-5 flex items-center justify-center" style="background-color:${colorAvisoEditor};">
                            <span class="material-symbols-outlined" style="color:#fff;font-size:6rem;">${iconoAvisoEditor}</span>
-                       </div>`
-                    : `<img src="../frontend/${post.imagen_url}" class="w-full h-72 object-cover rounded-xl mb-5">`;
+                       </div>`;
+                } else if (esVideoEditor && videoUrlEditor) {
+                    bloqueImagenEditor = `<video class="editor-card-media" src="${escapeHtmlEditor(resolveEditorImageSrc(videoUrlEditor))}" controls muted playsinline preload="metadata"></video>`;
+                } else if (esVideoEditor && youtubeUrlEditor) {
+                    const embedUrl = obtenerYoutubeEmbedUrlEditor(youtubeUrlEditor);
+                    bloqueImagenEditor = embedUrl
+                        ? `<iframe class="editor-card-media" src="${escapeHtmlEditor(embedUrl)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+                        : `<img src="../frontend/${post.imagen_url || 'img/default-post.jpg'}" class="w-full h-72 object-cover rounded-xl mb-5">`;
+                } else if (esRecursoEditor) {
+                    const nombreArchivo = obtenerNombreDesdeRutaEditor(archivoUrlEditor) || 'Recurso adjunto';
+                    bloqueImagenEditor = `<div class="editor-card-media resource-card-media">
+                        <span class="material-symbols-outlined">description</span>
+                        <p>${escapeHtmlEditor(nombreArchivo)}</p>
+                    </div>`;
+                } else {
+                    bloqueImagenEditor = `<img src="../frontend/${post.imagen_url || 'img/default-post.jpg'}" class="w-full h-72 object-cover rounded-xl mb-5">`;
+                }
 
                 // Los avisos muestran urgencia/importancia; los posts, materia/tipo.
                 const metaInfoEditor = esAvisoEditor
-                    ? `<span class="flex items-center gap-1.5">
-                           <span class="material-symbols-outlined text-base">priority_high</span>
+                    ? `<span class="editor-card-meta-item">
+                           <span class="material-symbols-outlined">priority_high</span>
                            Urgente: ${Number(post.urgente) === 1 ? 'Sí' : 'No'}
                        </span>
-                       <span class="flex items-center gap-1.5">
-                           <span class="material-symbols-outlined text-base">push_pin</span>
+                       <span class="editor-card-meta-item">
+                           <span class="material-symbols-outlined">push_pin</span>
                            Importante: ${Number(post.importante) === 1 ? 'Sí' : 'No'}
                        </span>`
-                    : `<span class="flex items-center gap-1.5">
-                           <span class="material-symbols-outlined text-base">school</span>
+                    : `<span class="editor-card-meta-item">
+                           <span class="material-symbols-outlined">school</span>
                            ${post.materia || 'Sin materia'}
                        </span>
-                       <span class="flex items-center gap-1.5 capitalize">
-                           <span class="material-symbols-outlined text-base">sell</span>
+                       <span class="editor-card-meta-item capitalize">
+                           <span class="material-symbols-outlined">sell</span>
                            ${post.tipo || 'articulo'}
                        </span>`;
 
@@ -316,6 +421,9 @@
                     data-tipo-aviso="${post.tipo_aviso || 'academico'}"
                     data-urgente="${Number(post.urgente) === 1 ? '1' : '0'}"
                     data-importante="${Number(post.importante) === 1 ? '1' : '0'}"
+                    data-youtube-url="${escapeHtmlEditor(post.youtube_url || '')}"
+                    data-video-url="${escapeHtmlEditor(post.video_url || '')}"
+                    data-archivo-url="${escapeHtmlEditor(post.archivo_url || post.noticia_url || '')}"
                 >
 
                     ${bloqueImagenEditor}
@@ -324,14 +432,14 @@
                         ${post.titulo}
                     </h2>
 
-                    <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 mb-4">
-                        <span class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-base">person</span>
+                    <div class="editor-card-meta">
+                        <span class="editor-card-meta-item">
+                            <span class="material-symbols-outlined">person</span>
                             ${post.autor || 'Autor desconocido'}
                         </span>
                         ${metaInfoEditor}
-                        <span class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-base">calendar_today</span>
+                        <span class="editor-card-meta-item">
+                            <span class="material-symbols-outlined">calendar_today</span>
                             ${formatearFecha(post.fecha_creacion)}
                         </span>
                     </div>
@@ -500,14 +608,196 @@
         plataforma: { texto: 'Plataforma', icono: 'language', clase: 'bg-rojo2' }
     };
     const editorFileInput = document.getElementById('fileInputEditor');
+    const editorVideoFileInput = document.getElementById('videoFileInputEditor');
+    const editorResourceFileInput = document.getElementById('resourceFileInputEditor');
     const EDITOR_MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+    const EDITOR_MAX_VIDEO_SIZE = 500 * 1024 * 1024;
+    const EDITOR_MAX_RESOURCE_SIZE = 100 * 1024 * 1024;
     const EDITOR_FORMATOS_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
+    const EDITOR_RESOURCE_EXTENSIONS = [
+        'pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx',
+        'txt', 'csv', 'zip', 'rar', '7z',
+        'py', 'html', 'css', 'js', 'php', 'java', 'c', 'cpp', 'h',
+        'json', 'xml', 'sql', 'md'
+    ];
     let editorArchivoImagen = null;
+    let editorArchivoVideo = null;
+    let editorArchivoRecurso = null;
+    let editorVideoMode = 'link';
+    let editorVideoActualUrl = '';
+    let editorVideoActualNombre = '';
+    let editorRecursoActualUrl = '';
+    let editorRecursoActualNombre = '';
+    let editorVideoPreviewUrl = null;
 
     function resolveEditorImageSrc(imagen) {
         if (!imagen) return '';
         if (/^(https?:|data:|\/)/.test(imagen)) return imagen;
         return `../frontend/${imagen}`;
+    }
+
+    function limpiarPreviewVideoEditor() {
+        const video = document.getElementById('videoPreviewEditor');
+        const iframe = document.getElementById('youtubePreviewIframeEditor');
+        const note = document.getElementById('videoPreviewNoteEditor');
+
+        if (video) {
+            video.pause();
+            video.onloadedmetadata = null;
+            video.removeAttribute('src');
+            video.load();
+        }
+
+        if (iframe) {
+            iframe.removeAttribute('src');
+        }
+
+        if (editorVideoPreviewUrl) {
+            URL.revokeObjectURL(editorVideoPreviewUrl);
+            editorVideoPreviewUrl = null;
+        }
+
+        if (note) {
+            note.textContent = 'Vista previa del video';
+        }
+    }
+
+    function actualizarEstadoVideoEditor(tieneVideo) {
+        const nombre = document.getElementById('videoFileNameDisplayEditor');
+        const boton = document.getElementById('btnSubirVideoEditor');
+
+        if (nombre) {
+            nombre.textContent = tieneVideo
+                ? (editorArchivoVideo ? editorArchivoVideo.name : editorVideoActualNombre || 'Video actual')
+                : 'No se ha seleccionado video';
+        }
+
+        if (boton) {
+            boton.textContent = tieneVideo ? 'Cambiar video' : 'Seleccionar video';
+        }
+    }
+
+    function actualizarPreviewVideoEditor() {
+        const section = document.getElementById('videoPreviewSectionEditor');
+        const video = document.getElementById('videoPreviewEditor');
+        const iframe = document.getElementById('youtubePreviewIframeEditor');
+        const note = document.getElementById('videoPreviewNoteEditor');
+        const youtube = document.getElementById('youtubeUrlEditor');
+
+        if (!section || !video || !iframe || !note) return;
+
+        if (editorVideoMode === 'file') {
+            iframe.classList.add('d-none');
+
+            if (!editorArchivoVideo && !editorVideoActualUrl) {
+                video.classList.add('d-none');
+                note.textContent = 'Selecciona un archivo .mp4 para vista previa.';
+                return;
+            }
+
+            if (editorVideoPreviewUrl) {
+                URL.revokeObjectURL(editorVideoPreviewUrl);
+                editorVideoPreviewUrl = null;
+            }
+
+            let etiqueta = '';
+            if (editorArchivoVideo) {
+                editorVideoPreviewUrl = URL.createObjectURL(editorArchivoVideo);
+                video.src = editorVideoPreviewUrl;
+                etiqueta = editorArchivoVideo.name;
+            } else {
+                video.src = resolveEditorImageSrc(editorVideoActualUrl);
+                etiqueta = editorVideoActualNombre || 'Video actual';
+            }
+
+            video.classList.remove('d-none');
+            note.textContent = etiqueta;
+            video.onloadedmetadata = () => {
+                const duracion = formatearDuracionVideoEditor(video.duration);
+                note.textContent = duracion ? `${etiqueta} • ${duracion}` : etiqueta;
+            };
+            video.load();
+            return;
+        }
+
+        video.classList.add('d-none');
+        const embedUrl = obtenerYoutubeEmbedUrlEditor(youtube?.value.trim() || '');
+
+        if (!embedUrl) {
+            iframe.classList.add('d-none');
+            note.textContent = 'Ingresa una URL válida de YouTube para vista previa.';
+            return;
+        }
+
+        iframe.src = embedUrl;
+        iframe.classList.remove('d-none');
+        note.textContent = 'Vista previa del video de YouTube';
+    }
+
+    function establecerModoVideoEditor(modo) {
+        const btnLink = document.getElementById('editorVideoModeLink');
+        const btnFile = document.getElementById('editorVideoModeFile');
+        const campoLink = document.querySelector('.campo-youtube-editor');
+        const campoFile = document.querySelector('.campo-video-file-editor');
+
+        editorVideoMode = modo === 'file' ? 'file' : 'link';
+        btnLink?.classList.toggle('active', editorVideoMode === 'link');
+        btnFile?.classList.toggle('active', editorVideoMode === 'file');
+        campoLink?.classList.toggle('d-none', editorVideoMode !== 'link');
+        campoFile?.classList.toggle('d-none', editorVideoMode !== 'file');
+        actualizarPreviewVideoEditor();
+    }
+
+    function actualizarCamposVideoEditor() {
+        const esVideo = document.getElementById('postTipo')?.value === 'video' && seccionEditando !== 'aviso';
+        const esRecurso = document.getElementById('postTipo')?.value === 'recurso' && seccionEditando !== 'aviso';
+        document.getElementById('campos-video-editor')?.classList.toggle('d-none', !esVideo);
+        document.getElementById('campos-recurso-editor')?.classList.toggle('d-none', !esRecurso);
+        document.getElementById('previewPost').style.display = esVideo || esRecurso || seccionEditando === 'aviso' ? 'none' : '';
+        document.getElementById('videoPreviewSectionEditor')?.classList.toggle('d-none', !esVideo);
+        document.getElementById('resourcePreviewSectionEditor')?.classList.toggle('d-none', !esRecurso);
+
+        if (esVideo) {
+            actualizarPreviewVideoEditor();
+        } else {
+            limpiarPreviewVideoEditor();
+        }
+
+        if (esRecurso) {
+            actualizarPreviewRecursoEditor();
+        } else {
+            document.getElementById('btnDescargarRecursoEditor')?.classList.add('d-none');
+        }
+    }
+
+    function actualizarPreviewRecursoEditor() {
+        const nombre = editorArchivoRecurso?.name || editorRecursoActualNombre || obtenerNombreDesdeRutaEditor(editorRecursoActualUrl) || 'Selecciona un archivo';
+        const preview = document.getElementById('resourcePreviewNameEditor');
+        const display = document.getElementById('resourceFileNameDisplayEditor');
+        const boton = document.getElementById('btnSubirRecursoEditor');
+        const botonDescarga = document.getElementById('btnDescargarRecursoEditor');
+        const tieneArchivo = Boolean(editorArchivoRecurso || editorRecursoActualUrl);
+
+        if (preview) preview.textContent = nombre;
+        if (display) {
+            display.textContent = tieneArchivo
+                ? nombre
+                : 'No se ha seleccionado archivo';
+        }
+        if (boton) {
+            boton.textContent = tieneArchivo ? 'Cambiar archivo' : 'Seleccionar recurso';
+        }
+        if (botonDescarga) {
+            const mostrarDescarga = Boolean(editorRecursoActualUrl);
+            botonDescarga.classList.toggle('d-none', !mostrarDescarga);
+            if (mostrarDescarga) {
+                botonDescarga.href = resolveEditorImageSrc(editorRecursoActualUrl);
+                botonDescarga.setAttribute('download', nombre);
+            } else {
+                botonDescarga.href = '#';
+                botonDescarga.removeAttribute('download');
+            }
+        }
     }
 
     function actualizarEstadoImagenAvisoEditor(tieneImagen) {
@@ -524,6 +814,12 @@
 
     document.getElementById('avisoImagenBoxEditor')?.addEventListener('click', abrirSelectorImagenAvisoEditor);
     document.getElementById('btnCambiarImagenAvisoEditor')?.addEventListener('click', abrirSelectorImagenAvisoEditor);
+    document.getElementById('editorVideoModeLink')?.addEventListener('click', () => establecerModoVideoEditor('link'));
+    document.getElementById('editorVideoModeFile')?.addEventListener('click', () => establecerModoVideoEditor('file'));
+    document.getElementById('btnSubirVideoEditor')?.addEventListener('click', () => editorVideoFileInput?.click());
+    document.getElementById('btnSubirRecursoEditor')?.addEventListener('click', () => editorResourceFileInput?.click());
+    document.getElementById('youtubeUrlEditor')?.addEventListener('input', actualizarPreviewVideoEditor);
+    document.getElementById('postTipo')?.addEventListener('change', actualizarCamposVideoEditor);
 
     editorFileInput?.addEventListener('change', (event) => {
         const file = event.target.files[0];
@@ -550,6 +846,53 @@
         };
         reader.readAsDataURL(file);
     });
+
+    editorVideoFileInput?.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const nombre = (file.name || '').toLowerCase();
+        if (file.size > EDITOR_MAX_VIDEO_SIZE) {
+            alert('Video muy pesado. El maximo es 500 MB.');
+            editorVideoFileInput.value = '';
+            return;
+        }
+
+        if (file.type !== 'video/mp4' && !nombre.endsWith('.mp4')) {
+            alert('Formato de video invalido. Solo .mp4 permitidos');
+            editorVideoFileInput.value = '';
+            return;
+        }
+
+        editorArchivoVideo = file;
+        actualizarEstadoVideoEditor(true);
+        actualizarPreviewVideoEditor();
+    });
+
+    editorResourceFileInput?.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const extension = (file.name || '').split('.').pop().toLowerCase();
+
+        if (file.size > EDITOR_MAX_RESOURCE_SIZE) {
+            alert('Archivo muy pesado. El maximo es 100 MB.');
+            editorResourceFileInput.value = '';
+            return;
+        }
+
+        if (!EDITOR_RESOURCE_EXTENSIONS.includes(extension)) {
+            alert('Formato de recurso no permitido');
+            editorResourceFileInput.value = '';
+            return;
+        }
+
+        editorArchivoRecurso = file;
+        editorRecursoActualUrl = '';
+        editorRecursoActualNombre = file.name;
+        actualizarPreviewRecursoEditor();
+    });
+
 
     function convertirImagenEditorABase64(file) {
         return new Promise((resolve, reject) => {
@@ -600,13 +943,27 @@
         postEditandoId = tarjeta.dataset.postId;
         seccionEditando = tarjeta.dataset.seccion || 'post';
         editorArchivoImagen = null;
+        editorArchivoVideo = null;
+        editorArchivoRecurso = null;
+        editorVideoActualUrl = tarjeta.dataset.videoUrl || '';
+        editorVideoActualNombre = obtenerNombreDesdeRutaEditor(editorVideoActualUrl);
+        editorRecursoActualUrl = tarjeta.dataset.archivoUrl || tarjeta.dataset.noticiaUrl || '';
+        editorRecursoActualNombre = obtenerNombreDesdeRutaEditor(editorRecursoActualUrl);
+        limpiarPreviewVideoEditor();
         if (editorFileInput) {
             editorFileInput.value = '';
+        }
+        if (editorVideoFileInput) {
+            editorVideoFileInput.value = '';
+        }
+        if (editorResourceFileInput) {
+            editorResourceFileInput.value = '';
         }
 
         document.getElementById('postTitle').value = tarjeta.dataset.titulo;
         document.getElementById('postDesc').value = tarjeta.dataset.descripcion;
-        document.getElementById('imgPreview').src = tarjeta.dataset.imagen || '';
+        document.getElementById('imgPreview').src = resolveEditorImageSrc(tarjeta.dataset.imagen || '');
+        document.getElementById('youtubeUrlEditor').value = tarjeta.dataset.youtubeUrl || '';
 
         const esAviso = seccionEditando === 'aviso';
         document.getElementById('campos-post').style.display = esAviso ? 'none' : '';
@@ -628,12 +985,35 @@
         } else {
             document.getElementById('postTipo').value = tarjeta.dataset.tipo || 'articulo';
             document.getElementById('postMateria').value = tarjeta.dataset.categoriaId || '1';
+
+            if (tarjeta.dataset.tipo === 'video') {
+                if (editorVideoActualUrl) {
+                    document.getElementById('youtubeUrlEditor').value = '';
+                    establecerModoVideoEditor('file');
+                    actualizarEstadoVideoEditor(true);
+                } else {
+                    establecerModoVideoEditor('link');
+                }
+            } else {
+                editorVideoActualUrl = '';
+                editorVideoActualNombre = '';
+                establecerModoVideoEditor('link');
+                actualizarEstadoVideoEditor(false);
+            }
+
+            if (tarjeta.dataset.tipo === 'recurso') {
+                actualizarPreviewRecursoEditor();
+            } else {
+                editorRecursoActualUrl = '';
+                editorRecursoActualNombre = '';
+            }
         }
 
         document.getElementById('previewPost').style.display = esAviso ? 'none' : '';
         document.getElementById('previewAviso').style.display = esAviso ? '' : 'none';
         document.getElementById('previewAvisoImportanteEditor').style.display = esAviso ? '' : 'none';
         document.getElementById('btnCambiarImagenAvisoEditor').style.display = esAviso ? '' : 'none';
+        actualizarCamposVideoEditor();
         if (esAviso) {
             actualizarPreviewAvisoEditor();
         }
@@ -677,17 +1057,65 @@
                 ? await convertirImagenEditorABase64(editorArchivoImagen)
                 : null;
         } else {
-            payload.tipo = document.getElementById('postTipo').value;
+            const tipoPost = document.getElementById('postTipo').value;
+            payload.tipo = tipoPost;
             payload.categoria_id = document.getElementById('postMateria').value;
+            payload.youtube_url = tipoPost === 'video' && editorVideoMode === 'link'
+                ? document.getElementById('youtubeUrlEditor').value.trim()
+                : '';
+            payload.video_url = tipoPost === 'video' && editorVideoMode === 'file'
+                ? editorVideoActualUrl
+                : '';
+            payload.archivo_url = tipoPost === 'recurso'
+                ? editorRecursoActualUrl
+                : '';
+
+            if (tipoPost === 'video' && editorVideoMode === 'link' && !payload.youtube_url) {
+                alert('Debes ingresar la URL de YouTube');
+                return;
+            }
+
+            if (tipoPost === 'video' && editorVideoMode === 'file' && !editorArchivoVideo && !editorVideoActualUrl) {
+                alert('Debes seleccionar un archivo .mp4 desde tu PC');
+                return;
+            }
+
+            if (tipoPost === 'recurso' && !editorArchivoRecurso && !editorRecursoActualUrl) {
+                alert('Debes seleccionar un archivo de recurso');
+                return;
+            }
         }
 
         try {
-            const respuesta = await fetch('../backend/editar_post_editor.php', {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            let respuesta;
+
+            if ((editorArchivoVideo && payload.tipo === 'video') || (editorArchivoRecurso && payload.tipo === 'recurso')) {
+                const formData = new FormData();
+                Object.entries(payload).forEach(([key, value]) => {
+                    if (value !== undefined && value !== null) {
+                        formData.append(key, value);
+                    }
+                });
+                if (editorArchivoVideo && payload.tipo === 'video') {
+                    formData.append('video_file', editorArchivoVideo);
+                }
+                if (editorArchivoRecurso && payload.tipo === 'recurso') {
+                    formData.append('resource_file', editorArchivoRecurso);
+                }
+
+                respuesta = await fetch('../backend/editar_post_editor.php', {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+            } else {
+                respuesta = await fetch('../backend/editar_post_editor.php', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            }
 
             const resultado = await respuesta.json();
 

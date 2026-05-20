@@ -39,9 +39,13 @@ $youtube_select = publicaciones_tiene_columna($conexion, 'youtube_url')
 $video_select = publicaciones_tiene_columna($conexion, 'video_url')
     ? 'publicaciones.video_url'
     : "NULL AS video_url";
-$noticia_select = publicaciones_tiene_columna($conexion, 'noticia_url')
-    ? 'publicaciones.noticia_url'
-    : "NULL AS noticia_url";
+$archivo_select = publicaciones_tiene_columna($conexion, 'archivo_url')
+    ? 'publicaciones.archivo_url'
+    : (publicaciones_tiene_columna($conexion, 'recurso_url')
+        ? 'publicaciones.recurso_url'
+    : (publicaciones_tiene_columna($conexion, 'noticia_url')
+        ? 'publicaciones.noticia_url'
+        : "NULL"));
 
 $query = "
 SELECT
@@ -57,7 +61,7 @@ SELECT
     $importante_select,
     $youtube_select,
     $video_select,
-    $noticia_select,
+    $archivo_select AS archivo_url,
     publicaciones.categoria_id,
     categorias.nombre_categoria AS materia,
     publicaciones.fecha_creacion,

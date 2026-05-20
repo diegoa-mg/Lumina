@@ -62,7 +62,12 @@
             
             <div class="py-4">
               <span class="mb-2 text-md">Contraseña</span>
-              <input type="password" name="pass" id="pass" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" required/>
+              <div class="password-field">
+                <input type="password" name="pass" id="pass" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" required/>
+                <button type="button" class="password-toggle" data-password-toggle="pass" aria-label="Mostrar contraseña" aria-pressed="false">
+                  <span class="material-symbols-outlined">visibility</span>
+                </button>
+              </div>
             </div>
             
             <div class="flex justify-between w-full py-4">
@@ -118,6 +123,7 @@
     </footer>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="js/password-toggle.js"></script>
     <script src="js/google-login.js"></script>
   </body>
 </html>

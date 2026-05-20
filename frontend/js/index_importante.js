@@ -13,7 +13,6 @@ const INDEX_PREF_DEFAULTS = {
     tipos: {
         articulo: true,
         video: true,
-        noticia: true,
         recurso: true
     }
 };
@@ -57,11 +56,32 @@ function etiquetaTipoIndex(tipo) {
     const etiquetas = {
         articulo: 'Artículo',
         video: 'Video',
-        noticia: 'Noticia',
         recurso: 'Recurso'
     };
 
     return etiquetas[String(tipo || '').toLowerCase()] || String(tipo || '');
+}
+
+function obtenerInicialesIndex(nombre) {
+    const partes = String(nombre || 'Usuario')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    if (partes.length === 0) return 'U';
+
+    return partes
+        .slice(0, 2)
+        .map((parte) => parte.charAt(0).toUpperCase())
+        .join('');
+}
+
+function renderAvatarAutorIndex(fotoUrl, nombre) {
+    if (fotoUrl) {
+        return `<img src="${escapeHtmlIndex(fotoUrl)}" alt="${escapeHtmlIndex(nombre)}">`;
+    }
+
+    return `<span class="autor-avatar-iniciales">${escapeHtmlIndex(obtenerInicialesIndex(nombre))}</span>`;
 }
 
 function cargarPreferenciasIndex() {
@@ -106,7 +126,7 @@ function normalizarPostIndex(post) {
         materia: post.materia || 'Materia sin asignar',
         fecha: formatearFechaIndex(post.fecha_creacion),
         autor: post.autor || 'Autor desconocido',
-        autorFoto: post.autor_foto || 'img/usuarios/usuarios1.webp'
+        autorFoto: post.autor_foto || ''
     };
 }
 
@@ -133,7 +153,7 @@ function renderPostImportanteIndex(postOriginal) {
                 </div>
                 <h3 style="font-size: 2.2rem; margin-bottom: 15px;">${escapeHtmlIndex(post.titulo)}</h3>
                 <div class="autor-info">
-                    <img src="${escapeHtmlIndex(post.autorFoto)}" alt="${escapeHtmlIndex(post.autor)}">
+                    ${renderAvatarAutorIndex(post.autorFoto, post.autor)}
                     <div>
                         <p style="font-weight: bold; margin: 0;">${escapeHtmlIndex(post.autor)}</p>
                         <p style="color: #6b7280; font-size: 1.1rem; margin: 0;">${escapeHtmlIndex(post.fecha)}</p>

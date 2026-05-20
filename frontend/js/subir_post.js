@@ -32,6 +32,24 @@ function obtenerYoutubeEmbedUrl(url) {
     return match ? `https://www.youtube.com/embed/${match[1]}` : null;
 }
 
+function obtenerNombreDesdeRuta(ruta) {
+    if (!ruta) return '';
+
+    const nombreArchivo = decodeURIComponent(String(ruta).split('/').pop() || '');
+
+    return nombreArchivo.replace(/^(?:post|aviso|post_editor)(?:_\d+)?_\d+_[a-f0-9]{8}_/i, '');
+}
+
+function formatearTipoPost(tipo) {
+    const tipos = {
+        articulo: 'Artículo',
+        video: 'Video',
+        recurso: 'Recurso'
+    };
+
+    return tipos[String(tipo || '').toLowerCase()] || 'Artículo';
+}
+
 const MATERIAS_POST = {
     1: 'POO',
     2: 'Servicios de Internet',
@@ -66,10 +84,12 @@ function renderizarTarjetaEnPanel(post) {
     const descripcion = escapeHtml(post.descripcion);
     const imagen = escapeHtml(post.imagen);
     const tipo = escapeHtml(post.tipo || 'articulo');
+    const tipoTexto = escapeHtml(formatearTipoPost(post.tipo));
     const categoriaId = Number(post.categoria_id || 1);
     const materia = escapeHtml(post.materia || MATERIAS_POST[categoriaId] || 'POO');
     const videoUrl = post.video_url || '';
     const youtubeUrlRaw = post.youtube_url || '';
+    const archivoUrlRaw = post.archivo_url || post.noticia_url || '';
     const imagenFinal = escapeHtml(resolveImageSrc(post.imagen));
     let previewHtml = `<img src="${imagenFinal}" alt="Preview">`;
 
@@ -87,6 +107,14 @@ function renderizarTarjetaEnPanel(post) {
                 `
                 : `<img src="${imagenFinal}" alt="Preview">`;
         }
+    } else if (tipo === 'recurso') {
+        const nombreArchivo = escapeHtml(obtenerNombreDesdeRuta(archivoUrlRaw) || 'Recurso adjunto');
+        previewHtml = `
+            <div class="aviso-icono-lateral bg-recurso">
+                <span class="material-symbols-outlined">description</span>
+                <p>${nombreArchivo}</p>
+            </div>
+        `;
     }
 
     const estadoTexto = {
@@ -102,7 +130,7 @@ function renderizarTarjetaEnPanel(post) {
     const urgente = Number(post.urgente) === 1 ? '1' : '0';
     const importante = Number(post.importante) === 1 ? '1' : '0';
     const youtubeUrl = escapeHtml(post.youtube_url || '');
-    const noticiaUrl = escapeHtml(post.noticia_url || '');
+    const archivoUrl = escapeHtml(post.archivo_url || post.noticia_url || '');
 
     // Avisos no importantes: se rellena el recuadro con el icono y color del tipo de aviso.
     const iconoAviso = tipoAviso === 'plataforma' ? 'language' : 'school';
@@ -117,10 +145,10 @@ function renderizarTarjetaEnPanel(post) {
 
     // Los avisos muestran urgencia e importancia en lugar de tipo y materia.
     const metaInfo = seccion === 'aviso'
-        ? `<p class="text-sm">Urgente: ${urgente === '1' ? 'Sí' : 'No'}</p>
-            <p class="text-sm">Importante: ${importante === '1' ? 'Sí' : 'No'}</p>`
-        : `<p class="text-sm">Tipo: ${tipo}</p>
-            <p class="text-sm">Materia: ${materia}</p>`;
+        ? `<p class="meta-card-autor">Urgente: ${urgente === '1' ? 'Sí' : 'No'}</p>
+            <p class="meta-card-autor">Importante: ${importante === '1' ? 'Sí' : 'No'}</p>`
+        : `<p class="meta-card-autor">Tipo: ${tipoTexto}</p>
+            <p class="meta-card-autor">Materia: ${materia}</p>`;
 
     const nuevaTarjeta = `
     <article
@@ -138,7 +166,7 @@ function renderizarTarjetaEnPanel(post) {
         data-importante="${importante}"
         data-video-url="${escapeHtml(videoUrl)}"
         data-youtube-url="${youtubeUrl}"
-        data-noticia-url="${noticiaUrl}"
+        data-archivo-url="${archivoUrl}"
     >
         <button
             class="btn-eliminar-post"
@@ -164,7 +192,7 @@ function renderizarTarjetaEnPanel(post) {
             <p class="extracto">${descripcion}</p>
 
             ${metaInfo}
-            ${status === 'rechazado' && observaciones ? `<p class="text-sm text-red-600 mt-3"><strong>Observación:</strong> ${observaciones}</p>` : ''}
+            ${status === 'rechazado' && observaciones ? `<p class="meta-card-autor text-red-600 mt-3"><strong>Observación:</strong> ${observaciones}</p>` : ''}
         </div>
 
         <div class="footer-card-autor">
@@ -260,7 +288,7 @@ async function cargarPostsDelAutor() {
                 urgente: post.urgente,
                 importante: post.importante,
                 youtube_url: post.youtube_url || '',
-                noticia_url: post.noticia_url || '',
+                archivo_url: post.archivo_url || post.noticia_url || '',
                 video_url: post.video_url || ''
             });
         });

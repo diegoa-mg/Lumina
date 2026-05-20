@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const avatarBtn = document.getElementById('btn-avatar');
     const avatarImg = document.getElementById('foto-perfil');
+    const avatarIniciales = document.getElementById('avatar-iniciales');
     const modalFoto = document.getElementById('modal-foto-perfil');
     const btnCerrarFoto = document.getElementById('btn-cerrar-foto');
     const btnSeleccionarFoto = document.getElementById('btn-seleccionar-foto');
@@ -42,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tipos: {
             articulo: true,
             video: true,
-            noticia: true,
             recurso: true
         }
     };
@@ -60,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tipos: [
             ['articulo', 'Articulos'],
             ['video', 'Videos'],
-            ['noticia', 'Noticias'],
             ['recurso', 'Recursos']
         ]
     };
@@ -157,8 +156,26 @@ document.addEventListener('DOMContentLoaded', () => {
         campo.value = valor || 'Sin dato';
     };
 
-    const setFotoPerfil = (fotoUrl) => {
+    const obtenerIniciales = (nombre) => {
+        const partes = String(nombre || 'Usuario')
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+        if (partes.length === 0) return 'U';
+
+        return partes
+            .slice(0, 2)
+            .map((parte) => parte.charAt(0).toUpperCase())
+            .join('');
+    };
+
+    const setFotoPerfil = (fotoUrl, nombre = valoresActuales.nombre) => {
         if (!avatarBtn || !avatarImg) return;
+
+        if (avatarIniciales) {
+            avatarIniciales.textContent = obtenerIniciales(nombre);
+        }
 
         if (!fotoUrl) {
             avatarBtn.classList.remove('has-photo');
@@ -274,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setCampo(campos.usuario, valoresActuales.usuario);
             setCampo(campos.correo, valoresActuales.correo);
             setCampo(campos.password, valoresActuales.password);
-            setFotoPerfil(datos.usuario.foto_url);
+            setFotoPerfil(datos.usuario.foto_url, valoresActuales.nombre);
         } catch (error) {
             setCampo(campos.nombre, 'Error al cargar datos');
             setCampo(campos.usuario, 'Error al cargar datos');
@@ -436,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(datos.mensaje || 'No se pudo guardar la foto.');
             }
 
-            setFotoPerfil(datos.foto_url);
+            setFotoPerfil(datos.foto_url, valoresActuales.nombre);
             cerrarModalFoto();
             mostrarAviso(datos.mensaje || 'Foto actualizada correctamente.', 'ok');
         } catch (error) {

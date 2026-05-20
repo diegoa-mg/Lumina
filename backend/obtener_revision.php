@@ -41,6 +41,19 @@ $urgente_select = publicaciones_tiene_columna($conexion, 'urgente')
 $importante_select = publicaciones_tiene_columna($conexion, 'importante')
     ? "publicaciones.importante"
     : "0 AS importante";
+$youtube_select = publicaciones_tiene_columna($conexion, 'youtube_url')
+    ? "publicaciones.youtube_url"
+    : "NULL AS youtube_url";
+$video_select = publicaciones_tiene_columna($conexion, 'video_url')
+    ? "publicaciones.video_url"
+    : "NULL AS video_url";
+$archivo_select = publicaciones_tiene_columna($conexion, 'archivo_url')
+    ? "publicaciones.archivo_url"
+    : (publicaciones_tiene_columna($conexion, 'recurso_url')
+        ? "publicaciones.recurso_url"
+    : (publicaciones_tiene_columna($conexion, 'noticia_url')
+        ? "publicaciones.noticia_url"
+        : "NULL"));
 
 $sql = "
 SELECT
@@ -50,6 +63,9 @@ SELECT
     publicaciones.imagen_url,
     publicaciones.status,
     $tipo_select,
+    $youtube_select,
+    $video_select,
+    $archivo_select AS archivo_url,
     $seccion_select,
     $tipo_aviso_select,
     $urgente_select,
