@@ -413,7 +413,7 @@ document.addEventListener('lumina-idioma-cambiado', () => {
 </script>
 
 <script src="js/i18n.js?v=10"></script>
-    <script src="js/auth.js?v=9"></script>
+    <script src="js/auth.js?v=10"></script>
 <script src="js/menu_ui.js?v=5"></script>
 <script src="js/reacciones.js?v=4"></script>
 <script src="js/lumina_modal_post.js?v=4"></script>

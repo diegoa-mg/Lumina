@@ -147,9 +147,6 @@ function renderNav() {
             <a href="recursos.html">${tt('nav.recursos', 'Recursos')}</a>
             <a href="calendario.html">${tt('nav.calendario', 'Calendario')}</a>
             <div class="nav-tools" aria-label="${tt('toggle.idioma_aria', 'Opciones de interfaz')}">
-                <button id="btn-theme-toggle" class="nav-tool-btn" type="button" aria-label="Cambiar a modo noche">
-                    <span id="theme-toggle-icon" class="material-symbols-outlined">dark_mode</span>
-                </button>
                 <button id="btn-language-toggle" class="nav-language-btn" type="button" aria-label="${tt('toggle.idioma_aria', 'Cambiar idioma')}">
                     <span data-lang-option="es">ESP</span>
                     <span class="nav-language-separator">/</span>
@@ -197,9 +194,6 @@ function renderNav() {
         const esLoginORegistro = paginaActual === 'login.html' || paginaActual === 'registro.html';
         const herramientas = `
             <div class="nav-tools" aria-label="${tt('toggle.idioma_aria', 'Opciones de interfaz')}">
-                <button id="btn-theme-toggle" class="nav-tool-btn" type="button" aria-label="Cambiar a modo noche">
-                    <span id="theme-toggle-icon" class="material-symbols-outlined">dark_mode</span>
-                </button>
                 <button id="btn-language-toggle" class="nav-language-btn" type="button" aria-label="${tt('toggle.idioma_aria', 'Cambiar idioma')}">
                     <span data-lang-option="es">ESP</span>
                     <span class="nav-language-separator">/</span>
