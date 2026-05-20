@@ -47,14 +47,29 @@ if ($campo === 'correo' && !filter_var($valor, FILTER_VALIDATE_EMAIL)) {
     http_response_code(400);
     echo json_encode([
         'ok' => false,
-        'mensaje' => 'Ingresa un correo valido.'
+        'mensaje' => 'Ingresa un correo válido que incluya @ y dominio.'
     ]);
     exit;
 }
 
+if ($campo === 'usuario') {
+    $valor = preg_replace('/[^a-zA-Z0-9\.\-_]/', '', $valor);
+
+    if ($valor === '') {
+        http_response_code(400);
+        echo json_encode([
+            'ok' => false,
+            'mensaje' => 'El nombre de usuario no es válido.'
+        ]);
+        exit;
+    }
+}
+
 if ($campo === 'correo' || $campo === 'usuario') {
     $columnaDuplicada = $columnasPermitidas[$campo];
-    $sqlDuplicado = "SELECT id FROM usuarios WHERE $columnaDuplicada = ? AND id <> ? LIMIT 1";
+    $sqlDuplicado = $campo === 'usuario'
+        ? "SELECT id FROM usuarios WHERE LOWER($columnaDuplicada) = LOWER(?) AND id <> ? LIMIT 1"
+        : "SELECT id FROM usuarios WHERE $columnaDuplicada = ? AND id <> ? LIMIT 1";
     $stmtDuplicado = $conexion->prepare($sqlDuplicado);
     $stmtDuplicado->bind_param('si', $valor, $usuario_id);
     $stmtDuplicado->execute();

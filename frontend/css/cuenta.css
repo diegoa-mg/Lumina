@@ -146,6 +146,15 @@
     font-family: inherit;
 }
 
+.cuenta-password-field {
+    flex: 1;
+    min-width: 0;
+}
+
+.cuenta-password-toggle.d-none {
+    display: none;
+}
+
 .btn-editar {
     border: none;
     background-color: var(--celeste);
@@ -169,6 +178,26 @@
 .btn-editar:disabled {
     cursor: wait;
     opacity: 0.7;
+}
+
+.btn-cancelar-edicion {
+    border: none;
+    background-color: #e5e7eb;
+    color: #475569;
+    font-size: 1.35rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-cancelar-edicion:hover {
+    transform: translateY(-1px);
+    opacity: 0.95;
+}
+
+.btn-cancelar-edicion.d-none {
+    display: none;
 }
 
 .cuenta-aviso {

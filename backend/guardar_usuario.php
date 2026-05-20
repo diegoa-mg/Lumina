@@ -100,11 +100,37 @@ function guardar_foto_usuario_admin($conexion, $usuarioId, $imagen) {
     return $ok;
 }
 
+function responder_error_usuario($status, $mensaje) {
+    http_response_code($status);
+    echo json_encode(['ok' => false, 'mensaje' => $mensaje]);
+    exit;
+}
+
+function validar_correo_usuario($correo) {
+    return filter_var($correo, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+function validar_password_usuario($password) {
+    return strlen($password) >= 8
+        && preg_match('/[A-Z]/', $password)
+        && preg_match('/[a-z]/', $password)
+        && preg_match('/\d/', $password)
+        && preg_match('/[\W_]/', $password);
+}
+
 if ($id <= 0) {
     if ($nombre === '' || $correo === '' || $rol_id <= 0 || $password === '') {
         http_response_code(400);
         echo json_encode(['ok' => false, 'mensaje' => 'Todos los campos son obligatorios y la contraseña es necesaria.']);
         exit;
+    }
+
+    if (!validar_correo_usuario($correo)) {
+        responder_error_usuario(400, 'Ingresa un correo válido que incluya @ y dominio.');
+    }
+
+    if (!validar_password_usuario($password)) {
+        responder_error_usuario(400, 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.');
     }
 
     $stmt = $conexion->prepare('SELECT COUNT(*) AS total FROM usuarios WHERE correo = ?');
@@ -128,7 +154,7 @@ if ($id <= 0) {
             exit;
         }
 
-        $check = $conexion->prepare('SELECT id FROM usuarios WHERE usuarios = ? LIMIT 1');
+        $check = $conexion->prepare('SELECT id FROM usuarios WHERE LOWER(usuarios) = LOWER(?) LIMIT 1');
         $check->bind_param('s', $username);
         $check->execute();
         $existeUsuario = $check->get_result()->num_rows > 0;
@@ -144,7 +170,7 @@ if ($id <= 0) {
         $username = $usernameBase ?: 'usuario' . rand(10000, 99999);
         $counter = 1;
         while (true) {
-            $check = $conexion->prepare('SELECT id FROM usuarios WHERE usuarios = ? LIMIT 1');
+            $check = $conexion->prepare('SELECT id FROM usuarios WHERE LOWER(usuarios) = LOWER(?) LIMIT 1');
             $check->bind_param('s', $username);
             $check->execute();
             $existing = $check->get_result();
@@ -203,6 +229,10 @@ if ($nombre !== '') {
 }
 
 if ($correo !== '') {
+    if (!validar_correo_usuario($correo)) {
+        responder_error_usuario(400, 'Ingresa un correo válido que incluya @ y dominio.');
+    }
+
     $stmt = $conexion->prepare('SELECT COUNT(*) AS total FROM usuarios WHERE correo = ? AND id <> ?');
     $stmt->bind_param('si', $correo, $id);
     $stmt->execute();
@@ -234,7 +264,7 @@ if ($usuario !== '') {
         exit;
     }
 
-    $stmt = $conexion->prepare('SELECT COUNT(*) AS total FROM usuarios WHERE usuarios = ? AND id <> ?');
+    $stmt = $conexion->prepare('SELECT COUNT(*) AS total FROM usuarios WHERE LOWER(usuarios) = LOWER(?) AND id <> ?');
     $stmt->bind_param('si', $username, $id);
     $stmt->execute();
     $row = $stmt->get_result()->fetch_assoc();
@@ -268,6 +298,10 @@ if ($rol_id > 0) {
 }
 
 if ($password !== '') {
+    if (!validar_password_usuario($password)) {
+        responder_error_usuario(400, 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.');
+    }
+
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
     $stmt = $conexion->prepare('UPDATE usuarios SET password = ? WHERE id = ?');
     $stmt->bind_param('si', $passwordHash, $id);

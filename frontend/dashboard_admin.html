@@ -596,7 +596,12 @@
                 </div>
                 <div class="lumina-field">
                     <label data-i18n="admin.modal_user_password">Contraseña</label>
-                    <input type="password" id="user-password" placeholder="Contraseña para el usuario" data-i18n-placeholder="admin.modal_user_ph_password">
+                    <div class="password-field">
+                        <input type="password" id="user-password" placeholder="Contraseña para el usuario" data-i18n-placeholder="admin.modal_user_ph_password">
+                        <button type="button" class="password-toggle" data-password-toggle="user-password" aria-label="Mostrar contraseña" aria-pressed="false">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="lumina-field">
                     <label data-i18n="admin.modal_user_rol">Rol</label>
@@ -617,6 +622,7 @@
     <script src="js/i18n.js?v=10"></script>
     <script src="js/auth.js?v=10"></script>
     <script src="js/menu_ui.js"></script>
+    <script src="js/password-toggle.js"></script>
     <script src="js/categorias_imagenes.js"></script>
     <script>
         const mainContent = document.getElementById('main-content');
@@ -701,6 +707,7 @@
             document.getElementById('user-email').value = '';
             document.getElementById('user-password').value = '';
             document.getElementById('user-password').placeholder = 'Contraseña para el usuario';
+            resetPasswordToggleAdmin();
             categoriasSeleccionadas = [];
             if (!rolesList.length) {
                 await fetchRoles();
@@ -725,8 +732,27 @@
                 return;
             }
 
+            if (!emailPatternAdmin.test(email)) {
+                alert(mensajeEmailInvalidoAdmin);
+                document.getElementById('user-email').focus();
+                return;
+            }
+
+            if (usuario !== '' && !usuarioPatternAdmin.test(usuario)) {
+                alert(mensajeUsuarioInvalidoAdmin);
+                document.getElementById('user-usuario').focus();
+                return;
+            }
+
             if (!idActual && password.trim() === '') {
                 alert('Debes ingresar una contraseña para el nuevo usuario.');
+                document.getElementById('user-password').focus();
+                return;
+            }
+
+            if (password.trim() !== '' && !passwordPatternAdmin.test(password)) {
+                alert(mensajePasswordInvalidoAdmin);
+                document.getElementById('user-password').focus();
                 return;
             }
 
@@ -939,6 +965,12 @@
         let categoriasList = [];
         let idActual = null;
         let categoriasSeleccionadas = [];
+        const emailPatternAdmin = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const passwordPatternAdmin = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        const usuarioPatternAdmin = /^[a-zA-Z0-9._-]+$/;
+        const mensajeEmailInvalidoAdmin = 'Ingresa un correo válido que incluya @ y dominio.';
+        const mensajePasswordInvalidoAdmin = 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.';
+        const mensajeUsuarioInvalidoAdmin = 'El usuario solo puede usar letras, números, punto, guion y guion bajo.';
 
         async function fetchCategorias() {
             try {
@@ -981,6 +1013,19 @@
                 container.classList.remove('hidden');
             } else if (container) {
                 container.classList.add('hidden');
+            }
+        }
+
+        function resetPasswordToggleAdmin() {
+            const input = document.getElementById('user-password');
+            const boton = document.querySelector('[data-password-toggle="user-password"]');
+            const icono = boton?.querySelector('.material-symbols-outlined');
+
+            if (input) input.type = 'password';
+            if (icono) icono.textContent = 'visibility';
+            if (boton) {
+                boton.setAttribute('aria-label', 'Mostrar contraseña');
+                boton.setAttribute('aria-pressed', 'false');
             }
         }
 
@@ -1159,6 +1204,7 @@
             document.getElementById('user-email').value = email;
             document.getElementById('user-password').value = '';
             document.getElementById('user-password').placeholder = 'Dejar vacío si no cambia';
+            resetPasswordToggleAdmin();
             document.getElementById('user-rol').value = rolId;
             document.getElementById('btnPrincipalModalUser').innerText = 'Guardar Cambios';
 
