@@ -144,12 +144,27 @@
 
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        const usuarioPattern = /^[a-zA-Z0-9._-]+$/;
 
         if (!form) return;
 
         form.addEventListener('submit', function (event) {
+          const nombre = form.nombre.value.trim();
+          const usuario = form.usuario.value.trim();
           const email = form.email.value.trim();
           const password = form.password.value;
+
+          if (!nombre || !usuario || !email || !password) {
+            event.preventDefault();
+            errorBox.textContent = 'Completa todos los campos.';
+            return;
+          }
+
+          if (!usuarioPattern.test(usuario)) {
+            event.preventDefault();
+            errorBox.textContent = 'El usuario solo puede usar letras, números, punto, guion y guion bajo.';
+            return;
+          }
 
           if (!emailPattern.test(email)) {
             event.preventDefault();

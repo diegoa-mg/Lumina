@@ -24,6 +24,12 @@ if ($nombre === '' || $usuario === '' || $correo === '' || $password === '') {
     redirectWithError('Completa todos los campos.');
 }
 
+$usuario = preg_replace('/[^a-zA-Z0-9\.\-_]/', '', $usuario);
+
+if ($usuario === '') {
+    redirectWithError('El nombre de usuario no es válido.');
+}
+
 if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
     redirectWithError('Ingresa un correo válido.');
 }
@@ -51,7 +57,7 @@ if ($stmtCorreo->num_rows > 0) {
 }
 $stmtCorreo->close();
 
-$stmtUsuario = $conexion->prepare('SELECT id FROM usuarios WHERE usuarios = ? LIMIT 1');
+$stmtUsuario = $conexion->prepare('SELECT id FROM usuarios WHERE LOWER(usuarios) = LOWER(?) LIMIT 1');
 if (!$stmtUsuario) {
     redirectWithError('Error interno al validar el usuario.');
 }

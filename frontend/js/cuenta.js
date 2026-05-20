@@ -72,6 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     let modoVisitante = false;
     const esVisitante = () => modoVisitante;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    const usuarioPattern = /^[a-zA-Z0-9._-]+$/;
+    const mensajeEmailInvalido = 'Ingresa un correo válido que incluya @ y dominio.';
+    const mensajePasswordInvalido = 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.';
+    const mensajeUsuarioInvalido = 'El usuario solo puede usar letras, números, punto, guion y guion bajo.';
 
     const mostrarAviso = (mensaje, tipo = 'ok') => {
         let aviso = document.querySelector('.cuenta-aviso');
@@ -204,6 +210,12 @@ document.addEventListener('DOMContentLoaded', () => {
         boton.textContent = 'Confirmar';
         boton.dataset.modo = 'confirmar';
         boton.classList.add('btn-confirmar');
+        document.querySelector(`.btn-cancelar-edicion[data-campo="${campo}"]`)?.classList.remove('d-none');
+
+        if (campo === 'password') {
+            const toggle = document.querySelector('[data-password-toggle="cuenta-password"]');
+            toggle?.classList.remove('d-none');
+        }
     };
 
     const desactivarEdicion = (campo, boton) => {
@@ -214,9 +226,21 @@ document.addEventListener('DOMContentLoaded', () => {
         input.placeholder = '';
         setCampo(input, campo === 'password' ? '********' : valoresActuales[campo]);
 
+        if (campo === 'password') {
+            const toggle = document.querySelector('[data-password-toggle="cuenta-password"]');
+            const icono = toggle?.querySelector('.material-symbols-outlined');
+
+            input.type = 'password';
+            toggle?.classList.add('d-none');
+            toggle?.setAttribute('aria-label', 'Mostrar contraseña');
+            toggle?.setAttribute('aria-pressed', 'false');
+            if (icono) icono.textContent = 'visibility';
+        }
+
         boton.textContent = 'Editar';
         boton.dataset.modo = 'editar';
         boton.classList.remove('btn-confirmar');
+        document.querySelector(`.btn-cancelar-edicion[data-campo="${campo}"]`)?.classList.add('d-none');
     };
 
     const guardarCambio = async (campo, boton) => {
@@ -225,6 +249,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (valor === '') {
             mostrarAviso('Debes agregar informacion para guardar cambios.', 'error');
+            input.focus();
+            return;
+        }
+
+        if (campo === 'correo' && !emailPattern.test(valor)) {
+            mostrarAviso(mensajeEmailInvalido, 'error');
+            input.focus();
+            return;
+        }
+
+        if (campo === 'usuario' && !usuarioPattern.test(valor)) {
+            mostrarAviso(mensajeUsuarioInvalido, 'error');
+            input.focus();
+            return;
+        }
+
+        if (campo === 'password' && !passwordPattern.test(valor)) {
+            mostrarAviso(mensajePasswordInvalido, 'error');
             input.focus();
             return;
         }
@@ -542,6 +584,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             activarEdicion(campo, boton);
+        });
+    });
+
+    document.querySelectorAll('.btn-cancelar-edicion[data-campo]').forEach((boton) => {
+        boton.addEventListener('click', () => {
+            const campo = boton.dataset.campo;
+            const btnEditar = document.querySelector(`.btn-editar[data-campo="${campo}"]`);
+
+            if (btnEditar) {
+                desactivarEdicion(campo, btnEditar);
+            }
         });
     });
 
