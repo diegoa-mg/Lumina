@@ -41,13 +41,16 @@ function obtenerNombreDesdeRuta(ruta) {
 }
 
 function formatearTipoPost(tipo) {
-    const tipos = {
+    const tipoNormalizado = String(tipo || '').toLowerCase();
+    const fallback = {
         articulo: 'Artículo',
         video: 'Video',
         recurso: 'Recurso'
     };
 
-    return tipos[String(tipo || '').toLowerCase()] || 'Artículo';
+    return typeof t === 'function'
+        ? t(`tipo.${tipoNormalizado}`, fallback[tipoNormalizado] || fallback.articulo)
+        : (fallback[tipoNormalizado] || fallback.articulo);
 }
 
 const MATERIAS_POST = {
@@ -83,10 +86,14 @@ function renderizarTarjetaEnPanel(post) {
     const titulo = escapeHtml(post.titulo);
     const descripcion = escapeHtml(post.descripcion);
     const imagen = escapeHtml(post.imagen);
-    const tipo = escapeHtml(post.tipo || 'articulo');
-    const tipoTexto = escapeHtml(formatearTipoPost(post.tipo));
+    const tipoRaw = String(post.tipo || 'articulo').toLowerCase();
+    const tipo = escapeHtml(tipoRaw);
+    const tipoTexto = escapeHtml(formatearTipoPost(tipoRaw));
     const categoriaId = Number(post.categoria_id || 1);
-    const materia = escapeHtml(post.materia || MATERIAS_POST[categoriaId] || 'POO');
+    const materiaTexto = typeof traducirMateriaLumina === 'function'
+        ? traducirMateriaLumina(post.materia || MATERIAS_POST[categoriaId] || 'POO', categoriaId)
+        : (post.materia || MATERIAS_POST[categoriaId] || 'POO');
+    const materia = escapeHtml(materiaTexto);
     const videoUrl = post.video_url || '';
     const youtubeUrlRaw = post.youtube_url || '';
     const archivoUrlRaw = post.archivo_url || post.noticia_url || '';
@@ -117,12 +124,19 @@ function renderizarTarjetaEnPanel(post) {
         `;
     }
 
+    const tt = (k, f) => (typeof t === 'function' ? t(k, f) : f);
     const estadoTexto = {
-        borrador: 'Borrador',
-        rechazado: 'Rechazado',
-        publicado: 'Publicado',
-        revision: 'En revision'
-    }[status] || 'Borrador';
+        borrador: tt('estado.borrador', 'Borrador'),
+        rechazado: tt('estado.rechazado', 'Rechazado'),
+        publicado: tt('estado.publicado', 'Publicado'),
+        revision: tt('estado.revision', 'En revisión')
+    }[status] || tt('estado.borrador', 'Borrador');
+    const estadoClave = {
+        borrador: 'estado.borrador',
+        rechazado: 'estado.rechazado',
+        publicado: 'estado.publicado',
+        revision: 'estado.revision'
+    }[status] || 'estado.borrador';
     const observaciones = escapeHtml(post.observaciones || '');
     // Los avisos no tienen columna propia: se identifican por categoria_id 9.
     const seccion = categoriaId === 9 ? 'aviso' : 'post';
@@ -145,10 +159,10 @@ function renderizarTarjetaEnPanel(post) {
 
     // Los avisos muestran urgencia e importancia en lugar de tipo y materia.
     const metaInfo = seccion === 'aviso'
-        ? `<p class="meta-card-autor">Urgente: ${urgente === '1' ? 'Sí' : 'No'}</p>
-            <p class="meta-card-autor">Importante: ${importante === '1' ? 'Sí' : 'No'}</p>`
-        : `<p class="meta-card-autor">Tipo: ${tipoTexto}</p>
-            <p class="meta-card-autor">Materia: ${materia}</p>`;
+        ? `<p class="meta-card-autor"><span data-i18n="meta.urgente">Urgente:</span> <span data-i18n="${urgente === '1' ? 'comun.si' : 'comun.no'}">${urgente === '1' ? 'Sí' : 'No'}</span></p>
+            <p class="meta-card-autor"><span data-i18n="meta.importante">Importante:</span> <span data-i18n="${importante === '1' ? 'comun.si' : 'comun.no'}">${importante === '1' ? 'Sí' : 'No'}</span></p>`
+        : `<p class="meta-card-autor"><span data-i18n="meta.tipo">Tipo:</span> <span data-i18n="tipo.${tipoRaw}">${tipoTexto}</span></p>
+            <p class="meta-card-autor"><span data-i18n="meta.materia">Materia:</span> ${materia}</p>`;
 
     const nuevaTarjeta = `
     <article
@@ -172,6 +186,7 @@ function renderizarTarjetaEnPanel(post) {
             class="btn-eliminar-post"
             onclick="eliminarPost(${id})"
             title="Eliminar post"
+            data-i18n-title="comun.eliminar_post_title"
         >
             <span class="material-symbols-outlined">delete</span>
         </button>
@@ -182,7 +197,7 @@ function renderizarTarjetaEnPanel(post) {
 
         <div class="contenido-derecha">
             <div class="header-card-autor">
-                <span class="etiqueta-borrador ${status === 'rechazado' ? 'etiqueta-rechazado' : ''}">
+                <span class="etiqueta-borrador ${status === 'rechazado' ? 'etiqueta-rechazado' : ''}" data-i18n="${estadoClave}">
                     ${estadoTexto}
                 </span>
             </div>
@@ -192,7 +207,7 @@ function renderizarTarjetaEnPanel(post) {
             <p class="extracto">${descripcion}</p>
 
             ${metaInfo}
-            ${status === 'rechazado' && observaciones ? `<p class="meta-card-autor text-red-600 mt-3"><strong>Observación:</strong> ${observaciones}</p>` : ''}
+            ${status === 'rechazado' && observaciones ? `<p class="meta-card-autor text-red-600 mt-3"><strong data-i18n="meta.observacion">Observación:</strong> ${observaciones}</p>` : ''}
         </div>
 
         <div class="footer-card-autor">
@@ -201,7 +216,7 @@ function renderizarTarjetaEnPanel(post) {
                 onclick="prepararEdicion(this)"
             >
                 <span class="material-symbols-outlined">edit</span>
-                Editar
+                <span data-i18n="comun.editar">Editar</span>
             </button>
 
             ${
@@ -212,7 +227,7 @@ function renderizarTarjetaEnPanel(post) {
                     onclick="cambiarARevision(${id})"
                 >
                     <span class="material-symbols-outlined">send</span>
-                    Mandar a revision
+                    <span data-i18n="comun.mandar_revision">Mandar a revisión</span>
                 </button>
                 `
                 : ''
@@ -299,12 +314,26 @@ async function cargarPostsDelAutor() {
             listaPublicados: 'Aún no tienes posts publicados. ¡Sigue adelante!'
         };
 
+        const clavesVacias = {
+            listaBorradores: 'dash.sin_borradores',
+            listaRevision:   'dash.sin_revision',
+            listaPublicados: 'dash.sin_publicados'
+        };
+
         for (const [id, mensaje] of Object.entries(mensajesVacios)) {
             const contenedor = document.getElementById(id);
             if (contenedor && contenedor.children.length === 0) {
+                const clave = clavesVacias[id];
+                const texto = (typeof t === 'function' && clave) ? t(clave, mensaje) : mensaje;
                 contenedor.innerHTML =
-                    `<div class="seccion-vacia">${mensaje}</div>`;
+                    `<div class="seccion-vacia"${clave ? ` data-i18n="${clave}"` : ''}>${texto}</div>`;
             }
+        }
+
+        if (typeof aplicarTraducciones === 'function') {
+            aplicarTraducciones(document.getElementById('listaBorradores'));
+            aplicarTraducciones(document.getElementById('listaRevision'));
+            aplicarTraducciones(document.getElementById('listaPublicados'));
         }
     } catch (error) {
         console.error('Error al cargar posts:', error);
@@ -347,3 +376,5 @@ async function eliminarPost(postId) {
 document.addEventListener('DOMContentLoaded', function() {
     cargarPostsDelAutor();
 });
+
+document.addEventListener('lumina-idioma-cambiado', cargarPostsDelAutor);

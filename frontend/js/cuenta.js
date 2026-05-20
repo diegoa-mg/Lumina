@@ -48,19 +48,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const PREF_LABELS = {
         materias: [
-            ['1', 'Programacion Orientada a Objetos'],
-            ['2', 'Servicios de Internet'],
-            ['3', 'Ciclo de Vida del Software'],
-            ['4', 'Metodos Numericos'],
-            ['5', 'Desarrollo Emprendedor'],
-            ['6', 'Sistemas Digitales'],
-            ['7', 'Ingles'],
-            ['8', 'Orientacion y Tutoria']
+            ['1', 'materia.poo', 'Programacion Orientada a Objetos'],
+            ['2', 'materia.si', 'Servicios de Internet'],
+            ['3', 'materia.cv', 'Ciclo de Vida del Software'],
+            ['4', 'materia.mn', 'Metodos Numericos'],
+            ['5', 'materia.de', 'Desarrollo Emprendedor'],
+            ['6', 'materia.sd', 'Sistemas Digitales'],
+            ['7', 'materia.ing', 'Ingles'],
+            ['8', 'materia.ot', 'Orientacion y Tutoria']
         ],
         tipos: [
-            ['articulo', 'Articulos'],
-            ['video', 'Videos'],
-            ['recurso', 'Recursos']
+            ['articulo', 'materia.filtro_articulos', 'Articulos'],
+            ['video', 'materia.filtro_videos', 'Videos'],
+            ['recurso', 'materia.filtro_recursos', 'Recursos']
         ]
     };
 
@@ -112,9 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(PREF_KEY, JSON.stringify(preferencias));
     };
 
-    const crearItemPreferencia = (grupo, valor, texto, activo) => `
+    const crearItemPreferencia = (grupo, valor, clave, texto, activo) => `
         <div class="pref-item">
-            <span>${texto}</span>
+            <span data-i18n="${clave}">${typeof t === 'function' ? t(clave, texto) : texto}</span>
             <label class="switch">
                 <input type="checkbox" class="pref-control" data-pref-group="${grupo}" data-pref-value="${valor}" ${activo ? 'checked' : ''}>
                 <span class="slider"></span>
@@ -130,16 +130,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         contenedor.innerHTML = `
             <div class="preferencias-card">
-                ${PREF_LABELS.materias.map(([valor, texto]) => (
-                    crearItemPreferencia('materias', valor, texto, preferencias.materias[valor] !== false)
+                ${PREF_LABELS.materias.map(([valor, clave, texto]) => (
+                    crearItemPreferencia('materias', valor, clave, texto, preferencias.materias[valor] !== false)
                 )).join('')}
             </div>
             <div class="preferencias-card">
-                ${PREF_LABELS.tipos.map(([valor, texto]) => (
-                    crearItemPreferencia('tipos', valor, texto, preferencias.tipos[valor] !== false)
+                ${PREF_LABELS.tipos.map(([valor, clave, texto]) => (
+                    crearItemPreferencia('tipos', valor, clave, texto, preferencias.tipos[valor] !== false)
                 )).join('')}
             </div>
         `;
+
+        if (typeof aplicarTraducciones === 'function') aplicarTraducciones(contenedor);
 
         contenedor.querySelectorAll('.pref-control').forEach((input) => {
             input.addEventListener('change', () => {

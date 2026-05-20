@@ -18,14 +18,14 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter&family=Libre+Baskerville&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="css/recursos.css?v=4">
     <link rel="stylesheet" href="css/navbar.css?v=6">
-    <link rel="stylesheet" href="css/styles.css?v=17">
-    <link rel="stylesheet" href="css/comentarios_materia.css?v=3">
+    <link rel="stylesheet" href="css/styles.css?v=23">
+    <link rel="stylesheet" href="css/comentarios_materia.css?v=4">
 </head>
 
 <body class="bg-gray-100">
@@ -45,12 +45,12 @@
                 search
             </span>
 
-            <input class="search" type="search" placeholder="Buscar...">
+            <input class="search" type="search" placeholder="Buscar..." data-i18n-placeholder="nav.buscar">
         </div>
 
         <nav class="nav-principal">
-            <a href="index.html">Inicio</a>
-            <a href="login.html">Iniciar Sesión</a>
+            <a href="index.html" data-i18n="nav.inicio">Inicio</a>
+            <a href="login.html" data-i18n="nav.iniciar_sesion">Iniciar Sesión</a>
         </nav>
 
     </div>
@@ -60,109 +60,51 @@
 
 <!-- ================= MAIN ================= -->
 
-<main class="w-full">
+<main>
+    <div class="contenedor-principal">
 
-    <div class="max-w-[1400px] mx-auto px-4 py-6">
+        <div class="encabezado-pagina">
+            <h1 id="materiaNombre">POO</h1>
+        </div>
 
-        <section class="bg-gray-200 rounded-xl p-4 flex flex-col md:flex-row justify-between gap-4">
-
-            <div>
-                <h1 class="text-2xl md:text-3xl font-bold">
-                    <span id="materiaNombre">POO</span>
-                </h1>
+        <section class="materia-bloque">
+            <div class="materia-bloque-header">
+                <h2 data-i18n="materia.explora">Explora la clase</h2>
             </div>
 
-            <div class="materia-autor-card">
-                <img id="autorFoto" src="" alt="Foto del autor" class="materia-autor-foto">
-                <div class="text-xl text-right">
-                    <p class="font-bold">
-                        Mtro. <span id="autorNombre">cargando...</span>
-                    </p>
-
-                    <p class="text-gray-500">
-                        12/09/2025
-                    </p>
-                </div>
+            <div class="materia-filtros">
+                <button class="filter-btn active" data-filter="all" type="button" data-i18n="materia.filtro_todo">Todo</button>
+                <button class="filter-btn" data-filter="articulo" type="button" data-i18n="materia.filtro_articulos">Artículos</button>
+                <button class="filter-btn" data-filter="video" type="button" data-i18n="materia.filtro_videos">Videos</button>
+                <button class="filter-btn" data-filter="recurso" type="button" data-i18n="materia.filtro_recursos">Recursos</button>
             </div>
 
+            <div id="contenedorPosts" class="materia-posts-grid"></div>
         </section>
 
 
-        <div class="bg-gray-200 rounded-xl mt-6">
-
-            <h2 class="text-3xl font-bold mt-8 mb-6 px-4 py-4">
-                Explora la Clase
-            </h2>
-
-            <!-- FILTROS -->
-
-            <div class="flex gap-8 border-b mb-6 overflow-x-auto px-4">
-
-                <button class="filter-btn pb-3 font-bold border-b-2 border-blue-600 text-blue-600"
-                        data-filter="all">
-                    Todo
-                </button>
-
-                <button class="filter-btn pb-3 text-gray-500"
-                        data-filter="articulo">
-                    Artículos
-                </button>
-
-                <button class="filter-btn pb-3 text-gray-500"
-                        data-filter="video">
-                    Videos
-                </button>
-
-                <button class="filter-btn pb-3 text-gray-500"
-                        data-filter="recurso">
-                    Recursos
-                </button>
-
+        <section class="materia-bloque">
+            <div class="materia-bloque-header">
+                <h2 data-i18n="comentarios.titulo">Comentarios</h2>
             </div>
 
-
-            <!-- GRID POSTS -->
-
-            <div id="contenedorPosts"
-                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 py-4">
-
-            </div>
-
-        </div>
-
-
-        <!-- COMENTARIOS -->
-
-        <section class="mt-10">
-
-            <h3 class="text-xl font-bold mb-4">
-                Comentarios
-            </h3>
-
-            <div class="comentario-form flex gap-3 mb-6">
-
+            <div class="comentario-form">
                 <div class="comentario-avatar-form">
                     <span class="material-symbols-outlined comentario-avatar-icon">person</span>
                 </div>
-
                 <textarea id="inputComentarioMateria"
-                          placeholder="Anadir comentario..."
+                          placeholder="Añadir comentario..." data-i18n-placeholder="comentarios.placeholder"
                           class="flex-1 bg-white border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-
                 <button id="btnPublicarComentarioMateria"
                         type="button"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-bold transition">
-                    Publicar
-                </button>
-
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-bold transition"
+                        data-i18n="comun.publicar">Publicar</button>
             </div>
 
             <div id="listaComentariosMateria" class="space-y-4"></div>
-
         </section>
 
     </div>
-
 </main>
 
 
@@ -174,64 +116,34 @@
 
         <div class="footer-brand">
             <h1>Lumina</h1>
-
-        <p>
-            Plataforma de difusión digital académica
-        </p>
+            <p data-i18n="footer.tagline">Plataforma de difusión digital académica</p>
+        </div>
+        <nav class="footer-links" aria-label="Enlaces del sitio" data-i18n-aria="footer.aria_enlaces">
+            <div class="footer-link-group">
+                <a href="index.html" data-i18n="nav.inicio">Inicio</a>
+                <a href="avisos.html" data-i18n="nav.avisos">Avisos</a>
+                <a href="recursos.html" data-i18n="nav.recursos">Recursos</a>
+                <a href="calendario.html" data-i18n="nav.calendario">Calendario</a>
             </div>
-            <nav class="footer-links" aria-label="Enlaces del sitio">
-                <div class="footer-link-group">
-                    <a href="index.html">Inicio</a>
-                    <a href="avisos.html">Avisos</a>
-                    <a href="recursos.html">Recursos</a>
-                    <a href="calendario.html">Calendario</a>
-                </div>
-                <div class="footer-link-group">
-                    <a href="materia1.php">POO</a>
-                    <a href="materia2.php">Servicios de Internet</a>
-                    <a href="materia3.php">Ciclo de Vida</a>
-                    <a href="materia4.php">Métodos Numéricos</a>
-                </div>
-                <div class="footer-link-group">
-                    <a href="materia5.php">Desarrollo Emprendedor</a>
-                    <a href="materia6.php">Sistemas Digitales</a>
-                    <a href="materia7.php">Inglés</a>
-                    <a href="materia8.php">Orientación y Tutoría</a>
-                </div>
-            </nav>
+            <div class="footer-link-group">
+                <a href="materia1.php" data-i18n="footer.materia1">POO</a>
+                <a href="materia2.php" data-i18n="footer.materia2">Servicios de Internet</a>
+                <a href="materia3.php" data-i18n="footer.materia3">Ciclo de Vida</a>
+                <a href="materia4.php" data-i18n="footer.materia4">Métodos Numéricos</a>
+            </div>
+            <div class="footer-link-group">
+                <a href="materia5.php" data-i18n="footer.materia5">Desarrollo Emprendedor</a>
+                <a href="materia6.php" data-i18n="footer.materia6">Sistemas Digitales</a>
+                <a href="materia7.php" data-i18n="footer.materia7">Inglés</a>
+                <a href="materia8.php" data-i18n="footer.materia8">Orientación y Tutoría</a>
+            </div>
+        </nav>
 
     </section>
 
-    <p class="copy">
-        © 2026 Lumina
-    </p>
+    <p class="copy">© 2026 Lumina</p>
 
 </footer>
-
-
-<!-- ================= MODAL ================= -->
-
-<div id="modal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50">
-
-    <div id="modalBox"
-         class="bg-white w-[95%] max-w-3xl rounded-2xl p-6 relative max-h-[85vh] overflow-y-auto transform scale-95 opacity-0 transition-all duration-300">
-
-        <button id="cerrarModal"
-                class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl">
-
-            ✕
-
-        </button>
-
-        <div id="modalContenido"
-             class="space-y-4">
-
-        </div>
-
-    </div>
-
-</div>
 
 
 <!-- ================= JS ================= -->
@@ -252,102 +164,181 @@ const MATERIAS = {
 const archivoMateria = window.location.pathname.split('/').pop();
 const materiaActual = MATERIAS[archivoMateria] || MATERIAS['materia1.php'];
 
-document.title = `Lumina - ${materiaActual.nombre}`;
-document.getElementById('materiaNombre').textContent = materiaActual.nombre;
+function aplicarNombreMateriaActual() {
+    const nombreTraducido = typeof traducirMateriaLumina === 'function'
+        ? traducirMateriaLumina(materiaActual.nombre, materiaActual.id)
+        : materiaActual.nombre;
+    document.title = "Lumina - " + nombreTraducido;
+    document.getElementById('materiaNombre').textContent = nombreTraducido;
+}
+
+aplicarNombreMateriaActual();
+
+// ============================================
+// HELPERS
+// ============================================
+
+function escapeHtmlMat(valor) {
+    return String(valor ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
 
 function getAutorFallback(nombre) {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre || 'Autor')}&background=2D50D1&color=fff`;
 }
 
 function resolverFotoAutor(fotoUrl, nombre) {
-    if (!fotoUrl) {
-        return getAutorFallback(nombre);
-    }
-    if (/^(https?:)?\/\//.test(fotoUrl) || fotoUrl.startsWith('data:image')) {
-        return fotoUrl;
-    }
+    if (!fotoUrl) return getAutorFallback(nombre);
+    if (/^(https?:)?\/\//.test(fotoUrl) || fotoUrl.startsWith('data:image')) return fotoUrl;
     return fotoUrl.replace(/^(\.\.\/)+/, '').replace(/^frontend\//, '');
 }
 
-// Obtener y cargar el autor de la categoria
-async function cargarAutorCategoria() {
-    const autorNombre = document.getElementById('autorNombre');
-    const autorFoto = document.getElementById('autorFoto');
-
-    try {
-        const response = await fetch(`../backend/obtener_autor_categoria.php?categoria_id=${materiaActual.id}`);
-        const data = await response.json();
-        if (data.ok && data.autor) {
-            autorNombre.textContent = data.autor.nombre;
-            autorFoto.src = resolverFotoAutor(data.autor.foto_url, data.autor.nombre);
-            autorFoto.onerror = () => {
-                autorFoto.src = getAutorFallback(data.autor.nombre);
-            };
-        } else {
-            autorNombre.textContent = 'Sin asignar';
-            autorFoto.src = getAutorFallback('Sin asignar');
-        }
-    } catch (error) {
-        console.error('Error al cargar el autor:', error);
-        autorNombre.textContent = 'Error';
-        autorFoto.src = getAutorFallback('Autor');
-    }
+function formatearFechaMat(fecha) {
+    if (typeof formatearFechaLumina === 'function') return formatearFechaLumina(fecha, 'larga');
+    if (!fecha) return '';
+    const fechaObj = new Date(String(fecha).replace(' ', 'T'));
+    if (Number.isNaN(fechaObj.getTime())) return fecha;
+    return fechaObj.toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 
-cargarAutorCategoria();
+function recorteMat(texto, limite = 120) {
+    const limpio = String(texto ?? '');
+    return limpio.length > limite ? `${limpio.substring(0, limite)}...` : limpio;
+}
+
+function etiquetaTipoMat(tipo) {
+    const tt = (k, f) => (typeof t === 'function' ? t(k, f) : f);
+    const claves = { articulo: 'tipo.articulo', video: 'tipo.video', recurso: 'tipo.recurso' };
+    const fallback = { articulo: 'Artículo', video: 'Video', recurso: 'Recurso' };
+    const key = String(tipo || '').toLowerCase();
+    if (claves[key]) return tt(claves[key], fallback[key]);
+    return tt('tipo.publicacion', 'Publicación');
+}
+
+function obtenerNombreArchivoMat(ruta) {
+    if (!ruta) return '';
+    const nombre = decodeURIComponent(String(ruta).split('/').pop() || '');
+    return nombre.replace(/^(?:post|aviso|post_editor)(?:_\d+)?_\d+_[a-f0-9]{8}_/i, '');
+}
+
+function obtenerYoutubeEmbedMat(url) {
+    if (!url) return '';
+    const match = String(url).match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w\-]+)/);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : '';
+}
+
+function obtenerInicialesMat(nombre) {
+    const partes = String(nombre || 'Usuario').trim().split(/\s+/).filter(Boolean);
+    if (partes.length === 0) return 'U';
+    return partes.slice(0, 2).map(p => p.charAt(0).toUpperCase()).join('');
+}
+
+function renderAvatarAutorMat(fotoUrl, nombre) {
+    if (fotoUrl) {
+        return `<img src="${escapeHtmlMat(fotoUrl)}" alt="${escapeHtmlMat(nombre)}">`;
+    }
+    return `<span class="autor-avatar-iniciales">${escapeHtmlMat(obtenerInicialesMat(nombre))}</span>`;
+}
+
 
 
 // ============================================
-// FILTROS
+// RENDER DE TARJETA (estilo inicio / recursos)
 // ============================================
 
-document.addEventListener("click", (e) => {
+function renderPostMateria(post) {
+    const id = Number(post.id || 0);
+    const titulo = escapeHtmlMat(post.titulo || 'Publicación sin título');
+    const imagen = escapeHtmlMat(post.imagen_url || 'img/default-post.jpg');
+    const autorNombre = post.autor || 'Autor desconocido';
+    const autor = escapeHtmlMat(autorNombre);
+    const autorFoto = post.autor_foto || '';
+    const fecha = escapeHtmlMat(formatearFechaMat(post.fecha_creacion));
+    const tipoRaw = String(post.tipo || 'articulo').toLowerCase();
+    const tipo = escapeHtmlMat(etiquetaTipoMat(tipoRaw));
+    const materiaTexto = typeof traducirMateriaLumina === 'function'
+        ? traducirMateriaLumina(post.materia || materiaActual.nombre, post.categoria_id || materiaActual.id)
+        : (post.materia || materiaActual.nombre);
+    const materia = escapeHtmlMat(materiaTexto);
+    const extracto = escapeHtmlMat(recorteMat(post.descripcion));
+    const descCompleta = escapeHtmlMat(post.descripcion || '');
+    const likes = Number(post.likes_count || 0);
+    const archivoUrl = post.archivo_url || post.noticia_url || '';
+    const videoUrl = post.video_url || '';
+    const youtubeUrl = post.youtube_url || '';
+    const youtubeEmbed = obtenerYoutubeEmbedMat(youtubeUrl);
 
-    if (!e.target.classList.contains("filter-btn")) return;
+    const media = tipoRaw === 'recurso' && archivoUrl
+        ? `<div class="lumina-resource-media">
+                <span class="material-symbols-outlined">description</span>
+                <span>${escapeHtmlMat(obtenerNombreArchivoMat(archivoUrl) || 'Recurso adjunto')}</span>
+            </div>`
+        : tipoRaw === 'video' && videoUrl
+            ? `<video src="${escapeHtmlMat(videoUrl)}" controls muted playsinline preload="metadata"></video>`
+        : tipoRaw === 'video' && youtubeEmbed
+            ? `<iframe src="${escapeHtmlMat(youtubeEmbed)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+        : `<img src="${imagen}" alt="${titulo}">`;
 
-    const buttons = document.querySelectorAll(".filter-btn");
+    const cta = tipoRaw === 'recurso' && archivoUrl
+        ? `<a class="lumina-post-cta" href="${escapeHtmlMat(archivoUrl)}" target="_blank" download="${escapeHtmlMat(obtenerNombreArchivoMat(archivoUrl) || 'recurso')}" data-i18n="comun.descargar">Descargar</a>`
+        : `<button class="lumina-post-cta" type="button" data-i18n="comun.leer_mas">Leer más</button>`;
 
-    buttons.forEach(btn => {
-
-        btn.classList.remove(
-            "border-blue-600",
-            "text-blue-600",
-            "font-bold"
-        );
-
-        btn.classList.add("text-gray-500");
-
-    });
-
-    e.target.classList.add(
-        "border-blue-600",
-        "text-blue-600",
-        "font-bold"
-    );
-
-    e.target.classList.remove("text-gray-500");
-
-    const filter = e.target.dataset.filter;
-
-    const items = document.querySelectorAll(".content-box");
-
-    items.forEach(item => {
-
-        if (filter === "all") {
-
-            item.style.display = "flex";
-
-        } else {
-
-            item.style.display =
-                item.dataset.type === filter
-                ? "flex"
-                : "none";
-        }
-
-    });
-
-});
+    return `
+        <article class="lumina-post-card card-reciente" data-type="${tipoRaw}">
+            <div class="lumina-post-media">
+                ${media}
+            </div>
+            <div class="card-content lumina-post-body">
+                <div class="meta-info lumina-post-topline">
+                    <span class="lumina-post-badge" data-i18n="tipo.${tipoRaw}">${tipo}</span>
+                    <button class="btn-icon" data-reaccion-id="${id}" data-reaccion-seccion="recursos" data-reaccion-tipo="guardado" onclick="reaccionar(this, ${id}, 'recursos', 'guardado')">
+                        <span class="material-symbols-outlined">bookmark</span>
+                    </button>
+                </div>
+                <h4 class="lumina-post-title">${titulo}</h4>
+                <div class="autor-info lumina-post-author-row">
+                    ${renderAvatarAutorMat(autorFoto, autorNombre)}
+                    <div>
+                        <p class="nombre-autor lumina-post-author-name">${autor}</p>
+                        <p class="fecha-autor lumina-post-date" data-fecha-iso="${escapeHtmlMat(post.fecha_creacion || '')}" data-fecha-formato="larga">${fecha}</p>
+                    </div>
+                </div>
+                <p class="extracto lumina-post-excerpt">${extracto}</p>
+                <span class="lumina-post-materia">${materia}</span>
+                <div class="footer-card lumina-post-footer">
+                    ${cta}
+                    <button class="lumina-like-button" data-reaccion-id="${id}" data-reaccion-seccion="recursos" data-reaccion-tipo="like" onclick="reaccionar(this, ${id}, 'recursos', 'like')" aria-label="Me gusta">
+                        <span class="material-symbols-outlined">favorite</span>
+                        <span data-like-count-for="${id}">${likes}</span>
+                    </button>
+                </div>
+                <div class="lumina-post-completo" hidden>
+                    <span class="lumina-modal-badge" data-i18n="tipo.${tipoRaw}">${tipo}</span>
+                    <div class="lumina-modal-titulo-row">
+                        <h2 class="lumina-modal-title">${titulo}</h2>
+                        <div class="lumina-modal-acciones">
+                            <button class="btn-icon" data-reaccion-id="${id}" data-reaccion-seccion="recursos" data-reaccion-tipo="guardado" onclick="reaccionar(this, ${id}, 'recursos', 'guardado')" aria-label="Guardar">
+                                <span class="material-symbols-outlined">bookmark</span>
+                            </button>
+                            <button class="lumina-like-button" data-reaccion-id="${id}" data-reaccion-seccion="recursos" data-reaccion-tipo="like" onclick="reaccionar(this, ${id}, 'recursos', 'like')" aria-label="Me gusta">
+                                <span class="material-symbols-outlined">favorite</span>
+                                <span data-like-count-for="${id}">${likes}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="lumina-modal-author">Por ${autor}</p>
+                    <div class="lumina-modal-media">${media}</div>
+                    <p class="lumina-modal-description">${descCompleta}</p>
+                    <span class="lumina-modal-materia">${materia}</span>
+                </div>
+            </div>
+        </article>
+    `;
+}
 
 
 // ============================================
@@ -355,275 +346,78 @@ document.addEventListener("click", (e) => {
 // ============================================
 
 async function cargarPublicaciones() {
+    const contenedor = document.getElementById('contenedorPosts');
 
     try {
-
-        const respuesta =
-            await fetch(`../backend/obtener_publicaciones.php?categoria_id=${materiaActual.id}`);
-
+        const respuesta = await fetch(`../backend/obtener_publicaciones.php?categoria_id=${materiaActual.id}`);
         const posts = await respuesta.json();
 
-        const contenedor =
-            document.getElementById('contenedorPosts');
-
-        contenedor.innerHTML = '';
-
-        // SOLO PUBLICADOS
-        const publicaciones = posts.filter(
-            post => post.status === 'publicado'
-        );
+        const publicaciones = Array.isArray(posts)
+            ? posts.filter((p) => p.status === 'publicado')
+            : [];
 
         if (publicaciones.length === 0) {
-
-            contenedor.innerHTML = `
-
-                <div class="col-span-full text-center py-10">
-
-                    <h3 class="text-2xl font-bold text-gray-500">
-                        No hay publicaciones aún
-                    </h3>
-
-                </div>
-
-            `;
-
+            contenedor.innerHTML = '<div class="materia-vacio">' + (typeof t === 'function' ? t('materia.sin_publicaciones') : 'No hay publicaciones aún') + '</div>';
             return;
         }
 
-        publicaciones.forEach(post => {
+        contenedor.innerHTML = publicaciones.map(renderPostMateria).join('');
 
-            const imagen = post.imagen_url
-                ? post.imagen_url
-                : 'img/default-post.jpg';
-
-            const youtubeUrl = post.youtube_url || '';
-            const videoFileUrl = post.video_url || '';
-
-            const autor = post.autor
-                ? post.autor
-                : 'Autor desconocido';
-
-            const tipo = post.tipo
-                ? post.tipo
-                : 'articulo';
-
-            const descripcionCorta =
-                post.descripcion.length > 120
-                ? post.descripcion.substring(0, 120) + '...'
-                : post.descripcion;
-
-            const tarjeta = `
-
-            <div class="content-box bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-lg transition duration-300 flex flex-col"
-                 data-type="${tipo}">
-
-                <span class="w-fit text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full">
-
-                    ${tipo.toUpperCase()}
-
-                </span>
-
-                <h3 class="text-xl font-bold mt-4 mb-2 text-gray-800">
-
-                    ${post.titulo}
-
-                </h3>
-
-                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
-
-                    ${descripcionCorta}
-
-                </p>
-
-                ${tipo === 'video' && (videoFileUrl || youtubeUrl) ? (
-                    videoFileUrl
-                    ? `\n                        <video class="w-full h-52 rounded-xl mb-4 object-cover" controls preload="metadata" poster="${imagen}">\n                            <source src="${videoFileUrl}">\n                            Tu navegador no soporta este video.\n                        </video>\n                    `
-                    : (function(){
-                        let videoId = '';
-                        if (youtubeUrl.includes('watch?v=')) videoId = youtubeUrl.split('watch?v=')[1].split('&')[0];
-                        else if (youtubeUrl.includes('youtu.be/')) videoId = youtubeUrl.split('youtu.be/')[1];
-                        return `\n                            <iframe class="w-full h-52 rounded-xl mb-4 object-cover" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>\n                        `;
-                    })()
-                ) : (`\n                    <img src="${imagen}" class="w-full h-52 object-cover rounded-xl mb-4" alt="Imagen publicación">\n                `)}
-
-                <div class="contenido-completo hidden">
-
-                    <span class="text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full">
-
-                        ${tipo.toUpperCase()}
-
-                    </span>
-
-                    <h2 class="text-3xl font-bold mt-4 mb-2 text-gray-900">
-
-                        ${post.titulo}
-
-                    </h2>
-
-                    <p class="text-sm text-gray-500 mb-5">
-
-                        Por ${autor}
-
-                    </p>
-
-                    ${tipo === 'video' && (videoFileUrl || youtubeUrl) ? (
-                        videoFileUrl
-                        ? `\n                            <video class="w-full h-72 rounded-2xl mb-6 object-cover" controls preload="metadata" poster="${imagen}">\n                                <source src="${videoFileUrl}">\n                                Tu navegador no soporta este video.\n                            </video>\n                        `
-                        : (function(){
-                            let videoId = '';
-                            if (youtubeUrl.includes('watch?v=')) videoId = youtubeUrl.split('watch?v=')[1].split('&')[0];
-                            else if (youtubeUrl.includes('youtu.be/')) videoId = youtubeUrl.split('youtu.be/')[1];
-                            return `\n                                <iframe class="w-full h-72 rounded-2xl mb-6 object-cover" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>\n                            `;
-                        })()
-                    ) : (`\n                        <img src="${imagen}" class="w-full h-72 object-cover rounded-2xl mb-6">\n                    `)}
-
-                    <div class="space-y-4 text-gray-700 text-[15px] leading-relaxed">
-
-                        <p>${post.descripcion}</p>
-
-                    </div>
-
-                </div>
-
-                <div class="flex justify-between items-center mt-auto pt-4">
-
-                    <button class="abrir-modal text-blue-600 font-bold hover:text-blue-800 transition">
-
-                        Leer más →
-
-                    </button>
-
-                </div>
-
-            </div>
-            `;
-
-            contenedor.insertAdjacentHTML(
-                'beforeend',
-                tarjeta
-            );
-
-        });
-
-        activarModales();
-
-    } catch(error) {
-
-        console.error(
-            "Error cargando publicaciones:",
-            error
-        );
-
-    }
-
-}
-
-
-// ============================================
-// MODALES
-// ============================================
-
-function activarModales() {
-
-    const botones =
-        document.querySelectorAll(".abrir-modal");
-
-    const modal =
-        document.getElementById("modal");
-
-    const modalBox =
-        document.getElementById("modalBox");
-
-    const modalContenido =
-        document.getElementById("modalContenido");
-
-    const cerrar =
-        document.getElementById("cerrarModal");
-
-    botones.forEach(btn => {
-
-        btn.addEventListener("click", () => {
-
-            const card =
-                btn.closest(".content-box");
-
-            const contenido =
-                card.querySelector(".contenido-completo").innerHTML;
-
-            modalContenido.innerHTML = contenido;
-
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
-
-            setTimeout(() => {
-
-                modalBox.classList.remove(
-                    "scale-95",
-                    "opacity-0"
-                );
-
-                modalBox.classList.add(
-                    "scale-100",
-                    "opacity-100"
-                );
-
-            }, 10);
-
-        });
-
-    });
-
-    function cerrarModal() {
-
-        modalBox.classList.remove(
-            "scale-100",
-            "opacity-100"
-        );
-
-        modalBox.classList.add(
-            "scale-95",
-            "opacity-0"
-        );
-
-        setTimeout(() => {
-
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
-
-        }, 200);
-
-    }
-
-    cerrar.addEventListener(
-        "click",
-        cerrarModal
-    );
-
-    modal.addEventListener("click", (e) => {
-
-        if (e.target === modal) {
-            cerrarModal();
+        if (typeof inicializarReacciones === 'function') {
+            inicializarReacciones(contenedor);
         }
-
-    });
-
+        if (typeof activarModalesLumina === 'function') {
+            activarModalesLumina(contenedor);
+        }
+        if (typeof aplicarTraducciones === 'function') {
+            aplicarTraducciones(contenedor);
+        }
+    } catch (error) {
+        console.error("Error cargando publicaciones:", error);
+        contenedor.innerHTML = '<div class="materia-vacio">' + (typeof t === 'function' ? t('materia.no_se_cargaron') : 'No se pudieron cargar las publicaciones.') + '</div>';
+    }
 }
+
+
+// ============================================
+// FILTROS
+// ============================================
+
+document.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("filter-btn")) return;
+
+    document.querySelectorAll(".filter-btn").forEach((btn) => btn.classList.remove("active"));
+    e.target.classList.add("active");
+
+    const filter = e.target.dataset.filter;
+    document.querySelectorAll(".lumina-post-card").forEach((card) => {
+        card.style.display = (filter === "all" || card.dataset.type === filter) ? "" : "none";
+    });
+});
 
 
 // ============================================
 // INICIAR
 // ============================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    cargarPublicaciones
-);
+document.addEventListener("DOMContentLoaded", () => {
+    aplicarNombreMateriaActual();
+    cargarPublicaciones();
+});
+
+document.addEventListener('lumina-idioma-cambiado', () => {
+    aplicarNombreMateriaActual();
+    cargarPublicaciones();
+});
 
 </script>
 
-<script src="js/auth.js"></script>
-<script src="js/menu_ui.js"></script>
-<script src="js/comentarios_materia.js?v=3"></script>
+<script src="js/i18n.js?v=10"></script>
+    <script src="js/auth.js?v=9"></script>
+<script src="js/menu_ui.js?v=5"></script>
+<script src="js/reacciones.js?v=4"></script>
+<script src="js/lumina_modal_post.js?v=4"></script>
+<script src="js/comentarios_materia.js?v=4"></script>
 
 </body>
 </html>

@@ -78,7 +78,9 @@ function aplicarEstadoThemeNav() {
 
 function aplicarEstadoIdiomaNav() {
     const boton = document.getElementById('btn-language-toggle');
-    const idioma = localStorage.getItem('lumina_language') || 'es';
+    const idioma = (typeof obtenerIdiomaLumina === 'function')
+        ? obtenerIdiomaLumina()
+        : (localStorage.getItem('lumina_language') || 'es');
 
     if (!boton) return;
 
@@ -105,8 +107,15 @@ function inicializarControlesNav() {
 
     if (botonIdioma) {
         botonIdioma.addEventListener('click', () => {
-            const idiomaActual = localStorage.getItem('lumina_language') || 'es';
-            localStorage.setItem('lumina_language', idiomaActual === 'es' ? 'en' : 'es');
+            const idiomaActual = (typeof obtenerIdiomaLumina === 'function')
+                ? obtenerIdiomaLumina()
+                : (localStorage.getItem('lumina_language') || 'es');
+            const nuevo = idiomaActual === 'es' ? 'en' : 'es';
+            if (typeof setIdiomaLumina === 'function') {
+                setIdiomaLumina(nuevo);
+            } else {
+                localStorage.setItem('lumina_language', nuevo);
+            }
             aplicarEstadoIdiomaNav();
         });
     }
@@ -116,37 +125,39 @@ function renderNav() {
     const nav = document.querySelector('.nav-principal');
     if (!nav) return;
 
+    const tt = (clave, fallback) => (typeof t === 'function' ? t(clave, fallback) : fallback);
+
     if (isUserLoggedIn()) {
         const userRole = getUserRole();
         const panelLinks = [];
 
         if (userRole === 'Autor' || userRole === 'Editor' || userRole === 'Administrador') {
-            panelLinks.push('<a href="dashboard_autor.html" class="autor-opt">Panel Autor</a>');
+            panelLinks.push(`<a href="dashboard_autor.html" class="autor-opt">${tt('nav.panel_autor', 'Panel Autor')}</a>`);
         }
         if (userRole === 'Editor' || userRole === 'Administrador') {
-            panelLinks.push('<a href="dashboard_editor.html" class="editor-opt">Panel Editor</a>');
+            panelLinks.push(`<a href="dashboard_editor.html" class="editor-opt">${tt('nav.panel_editor', 'Panel Editor')}</a>`);
         }
         if (userRole === 'Administrador') {
-            panelLinks.push('<a href="dashboard_admin.html" class="admin-opt">Panel Admin</a>');
+            panelLinks.push(`<a href="dashboard_admin.html" class="admin-opt">${tt('nav.panel_admin', 'Panel Admin')}</a>`);
         }
 
         nav.innerHTML = `
-            <a href="index.html">Inicio</a>
-            <a href="avisos.html">Avisos</a>
-            <a href="recursos.html">Recursos</a>
-            <a href="calendario.html">Calendario</a>
-            <div class="nav-tools" aria-label="Opciones de interfaz">
+            <a href="index.html">${tt('nav.inicio', 'Inicio')}</a>
+            <a href="avisos.html">${tt('nav.avisos', 'Avisos')}</a>
+            <a href="recursos.html">${tt('nav.recursos', 'Recursos')}</a>
+            <a href="calendario.html">${tt('nav.calendario', 'Calendario')}</a>
+            <div class="nav-tools" aria-label="${tt('toggle.idioma_aria', 'Opciones de interfaz')}">
                 <button id="btn-theme-toggle" class="nav-tool-btn" type="button" aria-label="Cambiar a modo noche">
                     <span id="theme-toggle-icon" class="material-symbols-outlined">dark_mode</span>
                 </button>
-                <button id="btn-language-toggle" class="nav-language-btn" type="button" aria-label="Cambiar idioma">
+                <button id="btn-language-toggle" class="nav-language-btn" type="button" aria-label="${tt('toggle.idioma_aria', 'Cambiar idioma')}">
                     <span data-lang-option="es">ESP</span>
                     <span class="nav-language-separator">/</span>
                     <span data-lang-option="en">ENG</span>
                 </button>
             </div>
             <div class="dropdown-container">
-                <button id="btn-cuenta" class="btn-cuenta-estilo btn-cuenta-avatar" aria-label="Abrir menú de cuenta">
+                <button id="btn-cuenta" class="btn-cuenta-estilo btn-cuenta-avatar" aria-label="${tt('nav.cuenta', 'Abrir menú de cuenta')}">
                     <span class="nav-avatar">
                         <img id="nav-avatar-img" class="nav-avatar-img d-none" src="" alt="Foto de perfil">
                         <span id="nav-avatar-initials" class="nav-avatar-initials d-none">U</span>
@@ -155,10 +166,10 @@ function renderNav() {
                     <span class="material-symbols-outlined">expand_more</span>
                 </button>
                 <div id="menu-dropdown" class="dropdown-content">
-                    <a href="cuenta.html">Ajustes</a>
+                    <a href="cuenta.html">${tt('nav.ajustes', 'Ajustes')}</a>
                     ${panelLinks.join('')}
                     <hr>
-                    <a href="#" id="cerrar-sesion" class="logout">Cerrar Sesión</a>
+                    <a href="#" id="cerrar-sesion" class="logout">${tt('nav.cerrar_sesion', 'Cerrar Sesión')}</a>
                 </div>
             </div>
         `;
@@ -182,16 +193,48 @@ function renderNav() {
         cargarAvatarNav();
         inicializarControlesNav();
     } else {
-        nav.innerHTML = `
-            <a href="index.html">Inicio</a>
-            <a href="login.html">Iniciar Sesión</a>
+        const paginaActual = window.location.pathname.split('/').pop();
+        const esLoginORegistro = paginaActual === 'login.html' || paginaActual === 'registro.html';
+        const herramientas = `
+            <div class="nav-tools" aria-label="${tt('toggle.idioma_aria', 'Opciones de interfaz')}">
+                <button id="btn-theme-toggle" class="nav-tool-btn" type="button" aria-label="Cambiar a modo noche">
+                    <span id="theme-toggle-icon" class="material-symbols-outlined">dark_mode</span>
+                </button>
+                <button id="btn-language-toggle" class="nav-language-btn" type="button" aria-label="${tt('toggle.idioma_aria', 'Cambiar idioma')}">
+                    <span data-lang-option="es">ESP</span>
+                    <span class="nav-language-separator">/</span>
+                    <span data-lang-option="en">ENG</span>
+                </button>
+            </div>
         `;
+
+        if (esLoginORegistro) {
+            nav.innerHTML = `
+                <a href="index.html">${tt('nav.inicio', 'Inicio')}</a>
+                ${herramientas}
+            `;
+        } else {
+            nav.innerHTML = `
+                <a href="index.html">${tt('nav.inicio', 'Inicio')}</a>
+                ${herramientas}
+                <a href="login.html">${tt('nav.iniciar_sesion', 'Iniciar Sesión')}</a>
+            `;
+        }
+        inicializarControlesNav();
     }
 }
+
+// Cuando el idioma cambia, redibuja la navbar para usar las nuevas etiquetas.
+document.addEventListener('lumina-idioma-cambiado', () => {
+    renderNav();
+    renderFooter();
+});
 
 function renderFooter() {
     const footerLinks = document.querySelector('.footer-links');
     if (!footerLinks) return;
+
+    const tt = (clave, fallback) => (typeof t === 'function' ? t(clave, fallback) : fallback);
 
     // Con sesión activa se dejan los enlaces por defecto del HTML
     if (isUserLoggedIn()) return;
@@ -199,9 +242,9 @@ function renderFooter() {
     footerLinks.classList.add('footer-links--guest');
     footerLinks.innerHTML = `
         <div class="footer-link-group">
-            <a href="index.html">Inicio</a>
-            <a href="login.html">Iniciar Sesión</a>
-            <a href="registro.html">Registrarse</a>
+            <a href="index.html">${tt('nav.inicio', 'Inicio')}</a>
+            <a href="login.html">${tt('nav.iniciar_sesion', 'Iniciar Sesión')}</a>
+            <a href="registro.html">${tt('nav.registrarse', 'Registrarse')}</a>
         </div>
     `;
 }
@@ -238,7 +281,7 @@ function disableVisitorInteractions() {
         button.classList.add('opacity-50', 'cursor-not-allowed');
         button.addEventListener('click', (event) => {
             event.preventDefault();
-            alert('Debes registrarte e iniciar sesión para reaccionar.');
+            alert(typeof t === 'function' ? t('alert.debes_iniciar_sesion') : 'Debes registrarte e iniciar sesión para reaccionar.');
             window.location.href = 'login.html';
         });
     });
@@ -246,7 +289,7 @@ function disableVisitorInteractions() {
     const commentInputs = document.querySelectorAll('input[placeholder*="coment"], textarea[placeholder*="coment"]');
     commentInputs.forEach(input => {
         input.disabled = true;
-        input.placeholder = 'Inicia sesión para comentar';
+        input.placeholder = typeof t === 'function' ? t('alert.iniciar_sesion_comentar') : 'Inicia sesión para comentar';
         input.classList.add('cursor-not-allowed', 'opacity-50');
     });
 
@@ -256,7 +299,7 @@ function disableVisitorInteractions() {
         button.classList.add('opacity-50', 'cursor-not-allowed');
         button.addEventListener('click', (event) => {
             event.preventDefault();
-            alert('Debes iniciar sesión para usar esta función.');
+            alert(typeof t === 'function' ? t('alert.iniciar_sesion_funcion') : 'Debes iniciar sesión para usar esta función.');
             window.location.href = 'login.html';
         });
     });

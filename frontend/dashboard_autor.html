@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="icon" type="image/png" href="img/logo/Logo Lumina - Sin texto.png">
-    <title>Lumina - Panel Autor</title>
+    <title data-i18n-title-key="page.dashboard_autor">Lumina - Panel Autor</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +18,8 @@
 
     <link rel="preload" href="css/base.css?v=3" as="style">
     <link rel="stylesheet" href="css/base.css?v=3">
-    <link rel="preload" href="css/styles.css?v=17" as="style">
-    <link rel="stylesheet" href="css/styles.css?v=17">
+    <link rel="preload" href="css/styles.css?v=23" as="style">
+    <link rel="stylesheet" href="css/styles.css?v=23">
 
     <link rel="preload" href="css/navbar.css?v=6" as="style">
     <link rel="stylesheet" href="css/navbar.css?v=6">
@@ -42,12 +42,12 @@
             <!-- Barra de busqueda -->
             <div class="search-container">
                 <span class="search-icon material-symbols-outlined">search</span>
-                <input class="search" type="search" placeholder="Buscar...">
+                <input class="search" type="search" placeholder="Buscar..." data-i18n-placeholder="nav.buscar">
             </div>
 
             <nav class="nav-principal">
-                <a href="index.html">Inicio</a>
-                <a href="login.html">Iniciar Sesion</a>
+                <a href="index.html" data-i18n="nav.inicio">Inicio</a>
+                <a href="login.html" data-i18n="nav.iniciar_sesion">Iniciar Sesion</a>
             </nav>
 
         </div>
@@ -56,20 +56,20 @@
     <main>
         <div class="contenedor-principal">
             <div class="encabezado-pagina">
-                <h1>Panel Autor</h1>
-                <p>Crea nuevos post y mándalos a revisión.</p>
+                <h1 data-i18n="dash.autor_titulo">Panel Autor</h1>
+                <p data-i18n="dash.autor_desc">Crea nuevos post y mándalos a revisión.</p>
             </div>
             <!-- Termina encabezado -->
             <button class="boton-crear" id="btnAbrirModal" type="button">
                 <span class="material-symbols-outlined">add</span>
-                Crear
+                <span data-i18n="comun.crear">Crear</span>
             </button>
 
             <!-- SECCIÓN DE BORRADORES -->
             <section class="bloque-cuenta">
                 <div class="bloque-header">
-                    <h2 style="color: var(--principal);">Borradores</h2>
-                    <p>Tus borradores se mostrarán en este apartado.</p>
+                    <h2 style="color: var(--principal);" data-i18n="dash.borradores">Borradores</h2>
+                    <p data-i18n="dash.borradores_desc">Tus borradores se mostrarán en este apartado.</p>
                 </div>
                 <div class="contenedor-tarjetas" id="listaBorradores">
                     <!-- Aquí es donde JavaScript "dibujará" las tarjetas -->
@@ -79,8 +79,8 @@
             <!-- SECCIÓN EN REVISIÓN -->
             <section class="bloque-cuenta">
                 <div class="bloque-header">
-                    <h2 style="color: #e9b141;">En revisión</h2>
-                    <p>Tu contenido está siendo evaluado por un editor.</p>
+                    <h2 style="color: #e9b141;" data-i18n="dash.revision">En revisión</h2>
+                    <p data-i18n="dash.revision_desc">Tu contenido está siendo evaluado por un editor.</p>
                 </div>
                 <div class="contenedor-tarjetas" id="listaRevision">
                     <!-- Las tarjetas aquí se verán igual pero en esta sección -->
@@ -90,8 +90,8 @@
             <!-- SECCIÓN DE PUBLICADOS -->
             <section class="bloque-cuenta">
                 <div class="bloque-header">
-                    <h2 style="color: #49e941;">Publicados</h2>
-                    <p>Tu contenido está publicado.</p>
+                    <h2 style="color: #49e941;" data-i18n="dash.publicados">Publicados</h2>
+                    <p data-i18n="dash.publicados_desc">Tu contenido está publicado.</p>
                 </div>
                 <div class="contenedor-tarjetas" id="listaPublicados">
                     <!-- Las tarjetas aquí se verán igual pero en esta sección -->
@@ -107,19 +107,19 @@
             <!-- PANTALLA 0: ELEGIR TIPO DE PUBLICACION -->
             <div class="modal-content" id="pantallaSelector">
                 <span class="close-modal" id="btnCerrar">&times;</span>
-                <h1 class="modal-title">Crear</h1>
+                <h1 class="modal-title" data-i18n="crear.titulo">Crear</h1>
 
                 <div class="selector-publicacion">
                     <button class="opcion-publicacion" type="button" id="btnCrearPost">
                         <span class="material-symbols-outlined">article</span>
-                        <strong>Subir post</strong>
-                        <small>Publicacion para materias, videos o recursos academicos.</small>
+                        <strong data-i18n="crear.subir_post_strong">Subir post</strong>
+                        <small data-i18n="crear.subir_post_desc">Publicacion para materias, videos o recursos academicos.</small>
                     </button>
 
                     <button class="opcion-publicacion" type="button" id="btnCrearAviso">
                         <span class="material-symbols-outlined">notifications</span>
-                        <strong>Subir aviso</strong>
-                        <small>Anuncio para la seccion de avisos.</small>
+                        <strong data-i18n="crear.subir_aviso_strong">Subir aviso</strong>
+                        <small data-i18n="crear.subir_aviso_desc">Anuncio para la seccion de avisos.</small>
                     </button>
                 </div>
             </div>
@@ -128,19 +128,19 @@
                 <span class="close-modal btnCerrarSecundario">&times;</span>
                 <a class="btnVolverSelector">
                     <span class="material-symbols-outlined icono">arrow_back_ios</span>
-                    <span>Volver</span>
+                    <span data-i18n="crear.volver">Volver</span>
                 </a>
-                <h1 class="modal-title">Crear post</h1>
+                <h1 class="modal-title" data-i18n="crear.crear_post">Crear post</h1>
                 
                 <div class="upload-box" id="dropZone">
                     <div class="cloud-icon">
                         <span class="material-symbols-outlined main-cloud">cloud_upload</span>
                     </div>
-                    <p class="text-main">Arrastra y suelta archivos para subirlos</p>
-                    <p class="text-sub">Tus publicaciones serán privadas hasta que el editor las apruebe.</p>
+                    <p class="text-main" data-i18n="crear.arrastra">Arrastra y suelta archivos para subirlos</p>
+                    <p class="text-sub" data-i18n="crear.privadas">Tus publicaciones serán privadas hasta que el editor las apruebe.</p>
                     
                     <button class="btn-select" onclick="document.getElementById('fileInput').click()">
-                        Seleccionar Archivos
+                        <span data-i18n="crear.seleccionar_archivos">Seleccionar Archivos</span>
                     </button>
                 </div>
             </div>
@@ -150,23 +150,23 @@
 
                 <a class="btnVolver">
                     <span class="material-symbols-outlined icono">arrow_back_ios</span>
-                    <span>Volver</span>
+                    <span data-i18n="crear.volver">Volver</span>
                 </a>
 
-                <h1 class="modal-title">Crear</h1>
+                <h1 class="modal-title" data-i18n="crear.titulo">Crear</h1>
                 <div class="admin-grid">
                     <!-- Formulario -->
                     <div class="form-side">
 
-    <h2>Detalles</h2>
+    <h2 data-i18n="crear.detalles">Detalles</h2>
 
     <div class="field">
-        <label>Título</label>
+        <label data-i18n="crear.titulo_label">Título</label>
         <input type="text" id="postTitle" required>
     </div>
 
     <div class="field">
-        <label class="field-titulo">Descripción</label>
+        <label class="field-titulo" data-i18n="crear.descripcion">Descripción</label>
         <textarea id="postDesc" required></textarea>
     </div>
 
@@ -174,19 +174,19 @@
 
     <div class="field">
 
-        <label>Tipo</label>
+        <label data-i18n="crear.tipo">Tipo</label>
 
         <select id="postTipo">
 
-            <option value="articulo">
+            <option value="articulo" data-i18n="crear.opcion_articulo">
                 Artículo
             </option>
 
-            <option value="video">
+            <option value="video" data-i18n="crear.opcion_video">
                 Video
             </option>
 
-            <option value="recurso">
+            <option value="recurso" data-i18n="crear.opcion_recurso">
                 Recurso
             </option>
 
@@ -196,18 +196,18 @@
 
     <div class="field">
 
-        <label>Materia</label>
+        <label data-i18n="crear.materia">Materia</label>
 
         <select id="postMateria">
 
-            <option value="1">POO</option>
-            <option value="2">Servicios de Internet</option>
-            <option value="3">Ciclo de Vida del Software</option>
-            <option value="4">Metodos Numericos</option>
-            <option value="5">Desarrollo Emprendedor</option>
-            <option value="6">Sistemas Digitales</option>
-            <option value="7">Ingles</option>
-            <option value="8">Orientacion y Tutoria</option>
+            <option value="1" data-i18n="footer.materia1">POO</option>
+            <option value="2" data-i18n="footer.materia2">Servicios de Internet</option>
+            <option value="3" data-i18n="footer.materia3">Ciclo de Vida del Software</option>
+            <option value="4" data-i18n="footer.materia4">Metodos Numericos</option>
+            <option value="5" data-i18n="footer.materia5">Desarrollo Emprendedor</option>
+            <option value="6" data-i18n="footer.materia6">Sistemas Digitales</option>
+            <option value="7" data-i18n="footer.materia7">Ingles</option>
+            <option value="8" data-i18n="footer.materia8">Orientacion y Tutoria</option>
 
         </select>
 
@@ -217,40 +217,40 @@
 
     <div class="field campo-video-toggle d-none">
         <div class="video-mode-toggle">
-            <button type="button" id="videoModeLink" class="active">Enlace</button>
-            <button type="button" id="videoModeFile">Archivo</button>
+            <button type="button" id="videoModeLink" class="active" data-i18n="crear.enlace">Enlace</button>
+            <button type="button" id="videoModeFile" data-i18n="crear.archivo">Archivo</button>
         </div>
     </div>
 
     <div class="field campo-youtube d-none">
-        <label>URL del video</label>
+        <label data-i18n="crear.url_video">URL del video</label>
         <input type="url" id="youtubeUrl" placeholder="https://youtube.com/watch?v=...">
     </div>
 
     <div class="field campo-video-file d-none">
-        <label>Archivo de video (.mp4)</label>
+        <label data-i18n="crear.archivo_video">Archivo de video (.mp4)</label>
         <div class="video-file-upload">
-            <p class="filename aviso-imagen-nombre" id="videoFileNameDisplay">No se ha seleccionado video</p>
+            <p class="filename aviso-imagen-nombre" id="videoFileNameDisplay" data-i18n="crear.no_video">No se ha seleccionado video</p>
             <button type="button" class="btn-select" id="btnSubirVideo" onclick="document.getElementById('videoFileInput').click()">
                 Seleccionar video (.mp4)
             </button>
         </div>
         <div class="video-progress d-none" id="videoUploadProgressContainer">
             <progress id="videoProgressBar" value="0" max="100" class="w-full h-3 rounded-full bg-slate-200"></progress>
-            <p class="text-sm text-gray-600 mt-2" id="videoProgressText">Subiendo video...</p>
+            <p class="text-sm text-gray-600 mt-2" id="videoProgressText" data-i18n="crear.video_subiendo">Subiendo video...</p>
         </div>
-        <p class="text-sm text-gray-500 mt-2" id="videoUploadNote">Máximo 500 MB. Formato permitido: .mp4</p>
+        <p class="text-sm text-gray-500 mt-2" id="videoUploadNote" data-i18n="crear.video_note">Máximo 500 MB. Formato permitido: .mp4</p>
     </div>
 
     <div class="field campo-recurso-file d-none">
-        <label>Archivo de recurso</label>
+        <label data-i18n="crear.archivo_recurso">Archivo de recurso</label>
         <div class="video-file-upload">
-            <p class="filename aviso-imagen-nombre" id="resourceFileNameDisplay">No se ha seleccionado archivo</p>
+            <p class="filename aviso-imagen-nombre" id="resourceFileNameDisplay" data-i18n="crear.no_archivo">No se ha seleccionado archivo</p>
             <button type="button" class="btn-select" id="btnSubirRecurso" onclick="document.getElementById('resourceFileInput').click()">
                 Seleccionar recurso
             </button>
         </div>
-        <p class="text-sm text-gray-500 mt-2">PDF, Word, PowerPoint, Excel, ZIP o archivos de programación. Máximo 100 MB.</p>
+        <p class="text-sm text-gray-500 mt-2" data-i18n="crear.recurso_note">PDF, Word, PowerPoint, Excel, ZIP o archivos de programación. Máximo 100 MB.</p>
     </div>
 
 </div>
@@ -262,21 +262,21 @@
                                 <img id="imgPreview" src="" alt="Imagen del post">
                                 <div class="aviso-imagen-placeholder" id="postImagenPlaceholder">
                                     <span class="material-symbols-outlined">add_photo_alternate</span>
-                                    <p>Imagen del post</p>
+                                    <p data-i18n="crear.imagen_post">Imagen del post</p>
                                 </div>
                             </div>
-                            <p class="filename aviso-imagen-nombre" id="fileNameDisplay">Selecciona una imagen</p>
-                            <p class="text-sm text-gray-500 mt-2 d-none" id="imagenOpcionalNote">Imagen opcional para publicaciones de video.</p>
+                            <p class="filename aviso-imagen-nombre" id="fileNameDisplay" data-i18n="crear.selecciona_imagen">Selecciona una imagen</p>
+                            <p class="text-sm text-gray-500 mt-2 d-none" id="imagenOpcionalNote" data-i18n="crear.imagen_opcional">Imagen opcional para publicaciones de video.</p>
                         </div>
                         <div class="preview-video d-none" id="videoPreviewSection" style="display:none;">
                             <video id="videoPreview" class="post-video-preview" controls muted playsinline preload="metadata"></video>
                             <iframe id="youtubePreviewIframe" class="post-video-preview d-none" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            <p class="text-sm text-gray-500 mt-2" id="videoPreviewNote">Vista previa del video</p>
+                            <p class="text-sm text-gray-500 mt-2" id="videoPreviewNote" data-i18n="crear.vista_previa_video">Vista previa del video</p>
                         </div>
                         <div class="preview-recurso d-none" id="resourcePreviewSection" style="display:none;">
                             <div class="resource-preview-card">
                                 <span class="material-symbols-outlined">description</span>
-                                <p id="resourcePreviewName">Selecciona un archivo</p>
+                                <p id="resourcePreviewName" data-i18n="crear.selecciona_archivo">Selecciona un archivo</p>
                             </div>
                         </div>
                         <button
@@ -286,11 +286,11 @@
                             onclick="document.getElementById('fileInput').click()"
                         >
                             <span class="material-symbols-outlined">photo_camera</span>
-                            <span id="btnTextoImagenPost">Subir imagen</span>
+                            <span id="btnTextoImagenPost" data-i18n="crear.subir_imagen">Subir imagen</span>
                         </button>
                         <div class="actions">
-                            <button class="btn-save" id="btnGuardarBorrador">Guardar</button>
-                            <button class="btn-revision" id="btnEnviarRevision">Enviar a revisión</button>
+                            <button class="btn-save" id="btnGuardarBorrador" data-i18n="crear.guardar">Guardar</button>
+                            <button class="btn-revision" id="btnEnviarRevision" data-i18n="crear.enviar_revision">Enviar a revisión</button>
                         </div>
                     </div>
                 </div>
@@ -302,44 +302,44 @@
 
                 <a class="btnVolverSelector">
                     <span class="material-symbols-outlined icono">arrow_back_ios</span>
-                    <span>Volver</span>
+                    <span data-i18n="crear.volver">Volver</span>
                 </a>
 
-                <h1 class="modal-title">Crear aviso</h1>
+                <h1 class="modal-title" data-i18n="crear.crear_aviso">Crear aviso</h1>
 
                 <div class="admin-grid">
                     <div class="form-side">
-                        <h2>Detalles</h2>
+                        <h2 data-i18n="crear.detalles">Detalles</h2>
 
                         <div class="field">
-                            <label>Titulo</label>
+                            <label data-i18n="crear.titulo_label">Titulo</label>
                             <input type="text" id="avisoTitle" required>
                         </div>
 
                         <div class="field">
-                            <label class="field-titulo">Descripcion</label>
+                            <label class="field-titulo" data-i18n="crear.descripcion">Descripcion</label>
                             <textarea id="avisoDesc" required></textarea>
                         </div>
 
                         <label class="check-importante">
                             <input type="checkbox" id="avisoImportante">
-                            <span>Marcar como Importante</span>
+                            <span data-i18n="crear.marcar_importante">Marcar como Importante</span>
                         </label>
 
                         <div class="tipo-materia-row">
                             <div class="field">
-                                <label>Tipo de aviso</label>
+                                <label data-i18n="crear.tipo_aviso">Tipo de aviso</label>
                                 <select id="avisoTipo">
-                                    <option value="academico">Academico</option>
-                                    <option value="plataforma">Plataforma</option>
+                                    <option value="academico" data-i18n="crear.tipo_academico">Academico</option>
+                                    <option value="plataforma" data-i18n="crear.tipo_plataforma">Plataforma</option>
                                 </select>
                             </div>
 
                             <div class="field">
-                                <label>Urgencia</label>
+                                <label data-i18n="crear.urgencia">Urgencia</label>
                                 <select id="avisoUrgente">
-                                    <option value="0">No urgente</option>
-                                    <option value="1">Urgente</option>
+                                    <option value="0" data-i18n="crear.opcion_no_urgente">No urgente</option>
+                                    <option value="1" data-i18n="crear.opcion_urgente">Urgente</option>
                                 </select>
                             </div>
                         </div>
@@ -352,16 +352,16 @@
                                     <span class="material-symbols-outlined" id="avisoIconoTexto">school</span>
                                 </div>
                                 <div>
-                                    <h3 id="avisoPreviewTitulo">Titulo del aviso</h3>
-                                    <p id="avisoPreviewFecha">Vista previa</p>
+                                    <h3 id="avisoPreviewTitulo" data-i18n="crear.titulo_aviso_ph">Titulo del aviso</h3>
+                                    <p id="avisoPreviewFecha" data-i18n="crear.vista_previa">Vista previa</p>
                                 </div>
-                                <span class="badge-urgente d-none" id="avisoPreviewUrgente">Urgente</span>
+                                <span class="badge-urgente d-none" id="avisoPreviewUrgente" data-i18n="crear.opcion_urgente">Urgente</span>
                             </div>
-                            <p id="avisoPreviewDesc">La descripcion del aviso aparecera aqui.</p>
+                            <p id="avisoPreviewDesc" data-i18n="crear.desc_aviso_ph">La descripcion del aviso aparecera aqui.</p>
                             <div class="preview-aviso-footer">
                                 <div class="linea-negra"></div>
                                 <span class="material-symbols-outlined" id="avisoFooterIcono">school</span>
-                                <span class="etiqueta-blanca" id="avisoPreviewTipo">Academico</span>
+                                <span class="etiqueta-blanca" id="avisoPreviewTipo" data-i18n="crear.tipo_academico">Academico</span>
                             </div>
                         </div>
 
@@ -370,10 +370,10 @@
                                 <img id="avisoImgPreview" src="" alt="Imagen del aviso importante">
                                 <div class="aviso-imagen-placeholder" id="avisoImagenPlaceholder">
                                     <span class="material-symbols-outlined">add_photo_alternate</span>
-                                    <p>Imagen del aviso</p>
+                                    <p data-i18n="crear.imagen_aviso">Imagen del aviso</p>
                                 </div>
                             </div>
-                            <p class="filename aviso-imagen-nombre" id="avisoFileNameDisplay">Selecciona una imagen</p>
+                            <p class="filename aviso-imagen-nombre" id="avisoFileNameDisplay" data-i18n="crear.selecciona_imagen">Selecciona una imagen</p>
                         </div>
 
                         <button
@@ -383,12 +383,12 @@
                             onclick="document.getElementById('fileInput').click()"
                         >
                             <span class="material-symbols-outlined">photo_camera</span>
-                            <span id="btnTextoImagenAviso">Subir imagen</span>
+                            <span id="btnTextoImagenAviso" data-i18n="crear.subir_imagen">Subir imagen</span>
                         </button>
 
                         <div class="actions">
-                            <button class="btn-save" id="btnGuardarAviso">Guardar</button>
-                            <button class="btn-revision" id="btnEnviarAvisoRevision">Enviar a revision</button>
+                            <button class="btn-save" id="btnGuardarAviso" data-i18n="crear.guardar">Guardar</button>
+                            <button class="btn-revision" id="btnEnviarAvisoRevision" data-i18n="crear.enviar_revision">Enviar a revision</button>
                         </div>
                     </div>
                 </div>
@@ -401,35 +401,36 @@
         <section class="contenido-footer">
             <div class="footer-brand">
             <h1>Lumina</h1>
-            <p>Plataforma de difusión digital académica</p>
+            <p data-i18n="footer.tagline">Plataforma de difusión digital académica</p>
             </div>
-            <nav class="footer-links" aria-label="Enlaces del sitio">
+            <nav class="footer-links" aria-label="Enlaces del sitio" data-i18n-aria="footer.aria_enlaces">
                 <div class="footer-link-group">
-                    <a href="index.html">Inicio</a>
-                    <a href="avisos.html">Avisos</a>
-                    <a href="recursos.html">Recursos</a>
-                    <a href="calendario.html">Calendario</a>
+                    <a href="index.html" data-i18n="nav.inicio">Inicio</a>
+                    <a href="avisos.html" data-i18n="nav.avisos">Avisos</a>
+                    <a href="recursos.html" data-i18n="nav.recursos">Recursos</a>
+                    <a href="calendario.html" data-i18n="nav.calendario">Calendario</a>
                 </div>
                 <div class="footer-link-group">
-                    <a href="materia1.php">POO</a>
-                    <a href="materia2.php">Servicios de Internet</a>
-                    <a href="materia3.php">Ciclo de Vida</a>
-                    <a href="materia4.php">Métodos Numéricos</a>
+                    <a href="materia1.php" data-i18n="footer.materia1">POO</a>
+                    <a href="materia2.php" data-i18n="footer.materia2">Servicios de Internet</a>
+                    <a href="materia3.php" data-i18n="footer.materia3">Ciclo de Vida</a>
+                    <a href="materia4.php" data-i18n="footer.materia4">Métodos Numéricos</a>
                 </div>
                 <div class="footer-link-group">
-                    <a href="materia5.php">Desarrollo Emprendedor</a>
-                    <a href="materia6.php">Sistemas Digitales</a>
-                    <a href="materia7.php">Inglés</a>
-                    <a href="materia8.php">Orientación y Tutoría</a>
+                    <a href="materia5.php" data-i18n="footer.materia5">Desarrollo Emprendedor</a>
+                    <a href="materia6.php" data-i18n="footer.materia6">Sistemas Digitales</a>
+                    <a href="materia7.php" data-i18n="footer.materia7">Inglés</a>
+                    <a href="materia8.php" data-i18n="footer.materia8">Orientación y Tutoría</a>
                 </div>
             </nav>
         </section>
-        <p class="copy">© 2026 Lumina: Claridad a la información</p>
+        <p class="copy" data-i18n="footer.copy">© 2026 Lumina: Claridad a la información</p>
     </footer>
 
-    <script src="js/auth.js?v=5"></script>
+    <script src="js/i18n.js?v=10"></script>
+    <script src="js/auth.js?v=9"></script>
     <script src="js/menu_ui.js?v=5"></script>
-    <script src="js/crear.js?v=11"></script>
-    <script src="js/subir_post.js?v=11"></script>
+    <script src="js/crear.js?v=12"></script>
+    <script src="js/subir_post.js?v=13"></script>
 </body>
 </html>

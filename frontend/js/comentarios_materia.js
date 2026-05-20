@@ -41,18 +41,11 @@ function obtenerInicialesComentario(nombre) {
 }
 
 function formatearFechaComentario(fecha) {
-    if (!fecha) return 'Fecha no disponible';
-
+    if (typeof formatearFechaLumina === 'function') return formatearFechaLumina(fecha, 'larga-hora');
+    if (!fecha) return '';
     const fechaObj = new Date(String(fecha).replace(' ', 'T'));
     if (Number.isNaN(fechaObj.getTime())) return fecha;
-
-    return fechaObj.toLocaleDateString('es-MX', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    return fechaObj.toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
 function renderAvatarComentario(comentario) {
@@ -81,7 +74,7 @@ function renderComentarioMateria(comentario) {
             <div class="comentario-contenido">
                 <div class="comentario-header">
                     <strong>${escapeHtmlComentario(comentario.nombre || 'Usuario')}</strong>
-                    <span>${escapeHtmlComentario(formatearFechaComentario(comentario.fecha_creacion))}</span>
+                    <span data-fecha-iso="${escapeHtmlComentario(comentario.fecha_creacion || '')}" data-fecha-formato="larga-hora">${escapeHtmlComentario(formatearFechaComentario(comentario.fecha_creacion))}</span>
                     ${botonEliminar}
                 </div>
                 <p>${escapeHtmlComentario(comentario.comentario || '')}</p>
@@ -121,14 +114,14 @@ async function cargarComentariosMateria(categoriaId) {
     const lista = document.getElementById('listaComentariosMateria');
     if (!lista) return;
 
-    lista.innerHTML = '<div class="comentarios-vacio">Cargando comentarios...</div>';
+    lista.innerHTML = `<div class="comentarios-vacio" data-i18n="comentarios.cargando">${typeof t === 'function' ? t('comentarios.cargando') : 'Cargando comentarios...'}</div>`;
 
     try {
         const respuesta = await fetch(`../backend/obtener_comentarios_materia.php?categoria_id=${categoriaId}`);
         const resultado = await respuesta.json();
 
         if (!respuesta.ok || !resultado.success) {
-            throw new Error(resultado.error || 'No se pudieron cargar los comentarios');
+            throw new Error(resultado.error || (typeof t === 'function' ? t('alert.no_cargar_comentarios') : 'No se pudieron cargar los comentarios.'));
         }
 
         const comentarios = Array.isArray(resultado.comentarios)
@@ -136,14 +129,18 @@ async function cargarComentariosMateria(categoriaId) {
             : [];
 
         if (comentarios.length === 0) {
-            lista.innerHTML = '<div class="comentarios-vacio">Todavia no hay comentarios en esta materia.</div>';
+            lista.innerHTML = `<div class="comentarios-vacio" data-i18n="comentarios.vacio">${typeof t === 'function' ? t('comentarios.vacio') : 'Todavía no hay comentarios en esta materia.'}</div>`;
             return;
         }
 
         lista.innerHTML = comentarios.map(renderComentarioMateria).join('');
+
+        if (typeof aplicarTraducciones === 'function') {
+            aplicarTraducciones(lista);
+        }
     } catch (error) {
         console.error(error);
-        lista.innerHTML = '<div class="comentarios-vacio">No se pudieron cargar los comentarios.</div>';
+        lista.innerHTML = `<div class="comentarios-vacio" data-i18n="alert.no_cargar_comentarios">${typeof t === 'function' ? t('alert.no_cargar_comentarios') : 'No se pudieron cargar los comentarios.'}</div>`;
     }
 }
 
@@ -208,4 +205,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+});
+
+document.addEventListener('lumina-idioma-cambiado', () => {
+    cargarComentariosMateria(categoriaComentariosActual);
 });

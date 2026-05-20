@@ -69,12 +69,21 @@ SELECT
     categorias.nombre_categoria AS materia,
     publicaciones.fecha_creacion,
     usuarios.nombre AS autor,
-    usuarios.foto_url AS autor_foto
+    usuarios.foto_url AS autor_foto,
+    COALESCE(reacciones_conteo.likes, 0) AS likes_count
 FROM publicaciones
 INNER JOIN usuarios
 ON publicaciones.autor_id = usuarios.id
 LEFT JOIN categorias
 ON publicaciones.categoria_id = categorias.id
+LEFT JOIN (
+    SELECT elemento_id, COUNT(*) AS likes
+    FROM reacciones
+    WHERE seccion = 'recursos'
+    AND tipo_reaccion = 'like'
+    GROUP BY elemento_id
+) AS reacciones_conteo
+ON reacciones_conteo.elemento_id = publicaciones.id
 WHERE publicaciones.status = 'publicado'
 $where_categoria
 $where_seccion

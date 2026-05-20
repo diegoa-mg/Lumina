@@ -51,12 +51,14 @@ const RESOURCE_EXTENSIONS_PERMITIDAS = [
 
 const CONFIG_AVISOS = {
     academico: {
-        texto: 'Academico',
+        texto: 'Académico',
+        clave: 'crear.tipo_academico',
         icono: 'school',
         clase: 'bg-rojo'
     },
     plataforma: {
         texto: 'Plataforma',
+        clave: 'crear.tipo_plataforma',
         icono: 'language',
         clase: 'bg-rojo2'
     }
@@ -175,9 +177,11 @@ function actualizarCamposTipoPost() {
 
     if (btnTextoImagenPost) {
         if ((tipo === 'video' || tipo === 'recurso') && !archivoSeleccionado) {
-            btnTextoImagenPost.textContent = 'Subir imagen (opcional)';
+            btnTextoImagenPost.setAttribute('data-i18n', 'crear.subir_imagen_opc');
+            btnTextoImagenPost.textContent = (typeof t === 'function') ? t('crear.subir_imagen_opc') : 'Subir imagen (opcional)';
         } else if (!archivoSeleccionado) {
-            btnTextoImagenPost.textContent = 'Subir imagen';
+            btnTextoImagenPost.setAttribute('data-i18n', 'crear.subir_imagen');
+            btnTextoImagenPost.textContent = (typeof t === 'function') ? t('crear.subir_imagen') : 'Subir imagen';
         }
     }
 }
@@ -367,13 +371,20 @@ function actualizarEstadoPreviewVideoSeleccionado(tieneVideo) {
     const btnSubirVideo = document.getElementById('btnSubirVideo');
 
     if (videoFileNameDisplay) {
-        videoFileNameDisplay.textContent = tieneVideo
-            ? (archivoVideoSeleccionado ? archivoVideoSeleccionado.name : videoActualNombre || 'Video actual')
-            : 'No se ha seleccionado video';
+        if (tieneVideo) {
+            videoFileNameDisplay.removeAttribute('data-i18n');
+            videoFileNameDisplay.textContent = archivoVideoSeleccionado ? archivoVideoSeleccionado.name : (videoActualNombre || 'Video actual');
+        } else {
+            videoFileNameDisplay.setAttribute('data-i18n', 'crear.no_video');
+            videoFileNameDisplay.textContent = (typeof t === 'function') ? t('crear.no_video') : 'No se ha seleccionado video';
+        }
     }
 
     if (btnSubirVideo) {
-        btnSubirVideo.textContent = tieneVideo ? 'Cambiar video' : 'Seleccionar video';
+        const clave = tieneVideo ? 'crear.cambiar_video' : 'crear.seleccionar_video_corto';
+        const fb = tieneVideo ? 'Cambiar video' : 'Seleccionar video';
+        btnSubirVideo.setAttribute('data-i18n', clave);
+        btnSubirVideo.textContent = (typeof t === 'function') ? t(clave) : fb;
     }
 }
 
@@ -397,13 +408,20 @@ function actualizarPreviewRecurso() {
     }
 
     if (nombreDisplay) {
-        nombreDisplay.textContent = tieneArchivo
-            ? nombre
-            : 'No se ha seleccionado archivo';
+        if (tieneArchivo) {
+            nombreDisplay.removeAttribute('data-i18n');
+            nombreDisplay.textContent = nombre;
+        } else {
+            nombreDisplay.setAttribute('data-i18n', 'crear.no_archivo');
+            nombreDisplay.textContent = (typeof t === 'function') ? t('crear.no_archivo') : 'No se ha seleccionado archivo';
+        }
     }
 
     if (boton) {
-        boton.textContent = tieneArchivo ? 'Cambiar archivo' : 'Seleccionar recurso';
+        const clave = tieneArchivo ? 'crear.cambiar_archivo' : 'crear.seleccionar_recurso';
+        const fb = tieneArchivo ? 'Cambiar archivo' : 'Seleccionar recurso';
+        boton.setAttribute('data-i18n', clave);
+        boton.textContent = (typeof t === 'function') ? t(clave) : fb;
     }
 }
 
@@ -457,7 +475,8 @@ function limpiarPreviewVideo() {
     }
 
     if (note) {
-        note.textContent = 'Vista previa del video';
+        note.setAttribute('data-i18n', 'crear.vista_previa_video');
+        note.textContent = typeof t === 'function' ? t('crear.vista_previa_video') : 'Vista previa del video';
     }
 }
 
@@ -475,7 +494,8 @@ function actualizarPreviewVideo() {
 
         if (!archivoVideoSeleccionado && !videoActualUrl) {
             video.classList.add('d-none');
-            note.textContent = 'Selecciona un archivo .mp4 para vista previa.';
+            note.setAttribute('data-i18n', 'crear.selecciona_mp4_preview');
+            note.textContent = typeof t === 'function' ? t('crear.selecciona_mp4_preview') : 'Selecciona un archivo .mp4 para vista previa.';
             return;
         }
 
@@ -498,6 +518,7 @@ function actualizarPreviewVideo() {
         }
 
         video.classList.remove('d-none');
+        note.removeAttribute('data-i18n');
         note.textContent = etiquetaVideo;
         video.onloadedmetadata = () => {
             const duracion = formatearDuracionVideo(video.duration);
@@ -515,13 +536,15 @@ function actualizarPreviewVideo() {
 
         if (!embedUrl) {
             iframe.classList.add('d-none');
-            note.textContent = 'Ingresa una URL válida de YouTube para vista previa.';
+            note.setAttribute('data-i18n', 'crear.url_youtube_invalida');
+            note.textContent = typeof t === 'function' ? t('crear.url_youtube_invalida') : 'Ingresa una URL válida de YouTube para vista previa.';
             return;
         }
 
         iframe.src = embedUrl;
         iframe.classList.remove('d-none');
-        note.textContent = 'Vista previa del video de YouTube';
+        note.setAttribute('data-i18n', 'crear.video_youtube_preview');
+        note.textContent = typeof t === 'function' ? t('crear.video_youtube_preview') : 'Vista previa del video de YouTube';
         return;
     }
 }
@@ -861,10 +884,10 @@ function prepararEdicion(boton) {
     recursoActualNombre = obtenerNombreDesdeRuta(archivoUrl);
     modal.classList.add('modal-editando');
 
+    const claveEditar = seccion === 'aviso' ? 'crear.editar_aviso' : 'crear.editar_post';
     document.querySelectorAll('.modal-title').forEach((tituloModal) => {
-        tituloModal.textContent = seccion === 'aviso'
-            ? 'Editar aviso'
-            : 'Editar post';
+        tituloModal.setAttribute('data-i18n', claveEditar);
+        tituloModal.textContent = (typeof t === 'function') ? t(claveEditar) : (seccion === 'aviso' ? 'Editar aviso' : 'Editar post');
     });
 
     if (seccion === 'aviso') {
@@ -889,7 +912,8 @@ function prepararEdicion(boton) {
         const avisoFileNameDisplay = document.getElementById('avisoFileNameDisplay');
 
         if (avisoFileNameDisplay && imagen) {
-            avisoFileNameDisplay.textContent = 'Imagen actual';
+            avisoFileNameDisplay.setAttribute('data-i18n', 'crear.imagen_actual');
+            avisoFileNameDisplay.textContent = (typeof t === 'function') ? t('crear.imagen_actual') : 'Imagen actual';
         }
 
         if (imagen) {
@@ -951,9 +975,10 @@ function prepararEdicion(boton) {
                 : imagen;
         }
 
-        document.getElementById('fileNameDisplay').textContent = imagen
-            ? 'Imagen actual'
-            : 'Selecciona una imagen';
+        const fdNombre = document.getElementById('fileNameDisplay');
+        const claveFD = imagen ? 'crear.imagen_actual' : 'crear.selecciona_imagen';
+        fdNombre.setAttribute('data-i18n', claveFD);
+        fdNombre.textContent = (typeof t === 'function') ? t(claveFD) : (imagen ? 'Imagen actual' : 'Selecciona una imagen');
         actualizarEstadoPreviewImagenPost(Boolean(imagen));
     }
 
@@ -963,11 +988,17 @@ function prepararEdicion(boton) {
     // El boton de revision solo aparece si la publicacion es borrador o rechazada.
     const puedeEnviarRevision = status === 'borrador' || status === 'rechazado';
 
+    const aplicarGuardarCambios = (boton) => {
+        if (!boton) return;
+        boton.setAttribute('data-i18n', 'comun.guardar_cambios');
+        boton.textContent = (typeof t === 'function') ? t('comun.guardar_cambios') : 'Guardar cambios';
+    };
+
     if (seccion === 'aviso') {
-        document.getElementById('btnGuardarAviso').textContent = 'Guardar cambios';
+        aplicarGuardarCambios(document.getElementById('btnGuardarAviso'));
         document.getElementById('btnEnviarAvisoRevision').style.display = puedeEnviarRevision ? 'block' : 'none';
     } else {
-        document.getElementById('btnGuardarBorrador').textContent = 'Guardar cambios';
+        aplicarGuardarCambios(document.getElementById('btnGuardarBorrador'));
         document.getElementById('btnEnviarRevision').style.display = puedeEnviarRevision ? 'block' : 'none';
     }
 }
@@ -1008,19 +1039,28 @@ function actualizarPreviewAviso() {
     }
 
     if (previewTitulo) {
-        previewTitulo.textContent = titulo || 'Titulo del aviso';
+        const clave = titulo ? '' : 'crear.titulo_aviso_ph';
+        if (clave) previewTitulo.setAttribute('data-i18n', clave);
+        else previewTitulo.removeAttribute('data-i18n');
+        previewTitulo.textContent = titulo || (typeof t === 'function' ? t('crear.titulo_aviso_ph') : 'Título del aviso');
     }
 
     if (previewDesc) {
-        previewDesc.textContent = descripcion || 'La descripcion del aviso aparecera aqui.';
+        const clave = descripcion ? '' : 'crear.desc_aviso_ph';
+        if (clave) previewDesc.setAttribute('data-i18n', clave);
+        else previewDesc.removeAttribute('data-i18n');
+        previewDesc.textContent = descripcion || (typeof t === 'function' ? t('crear.desc_aviso_ph') : 'La descripción del aviso aparecerá aquí.');
     }
 
     if (previewTipo) {
-        previewTipo.textContent = config.texto;
+        previewTipo.setAttribute('data-i18n', config.clave);
+        previewTipo.textContent = typeof t === 'function' ? t(config.clave, config.texto) : config.texto;
     }
 
     if (previewUrgente) {
         previewUrgente.classList.toggle('d-none', !urgente);
+        previewUrgente.setAttribute('data-i18n', 'crear.opcion_urgente');
+        previewUrgente.textContent = typeof t === 'function' ? t('crear.opcion_urgente') : 'Urgente';
     }
 
     if (iconoTexto) {
@@ -1050,6 +1090,10 @@ function actualizarPreviewAviso() {
 
     elemento.addEventListener('input', actualizarPreviewAviso);
     elemento.addEventListener('change', actualizarPreviewAviso);
+});
+document.addEventListener('lumina-idioma-cambiado', () => {
+    actualizarPreviewAviso();
+    actualizarPreviewVideo();
 });
 const youtubeUrlInput = document.getElementById('youtubeUrl');
 if (youtubeUrlInput) {
@@ -1088,9 +1132,14 @@ function resetearFormulario() {
     if (youtubeInput) youtubeInput.value = '';
     if (imgPreview) imgPreview.src = '';
     if (avisoImgPreview) avisoImgPreview.src = '';
-    if (fileNameDisplay) fileNameDisplay.textContent = 'Selecciona una imagen';
-    if (avisoFileNameDisplay) avisoFileNameDisplay.textContent = 'Selecciona una imagen';
-    if (resourceFileNameDisplay) resourceFileNameDisplay.textContent = 'No se ha seleccionado archivo';
+    const setI18nReset = (el, clave, fb) => {
+        if (!el) return;
+        el.setAttribute('data-i18n', clave);
+        el.textContent = (typeof t === 'function') ? t(clave) : fb;
+    };
+    setI18nReset(fileNameDisplay, 'crear.selecciona_imagen', 'Selecciona una imagen');
+    setI18nReset(avisoFileNameDisplay, 'crear.selecciona_imagen', 'Selecciona una imagen');
+    setI18nReset(resourceFileNameDisplay, 'crear.no_archivo', 'No se ha seleccionado archivo');
     actualizarEstadoPreviewImagenPost(false);
     actualizarEstadoPreviewImagenAviso(false);
 
@@ -1144,7 +1193,8 @@ function resetearFormulario() {
     actualizarPreviewAviso();
 
     document.querySelectorAll('.modal-title').forEach((titulo) => {
-        titulo.textContent = 'Crear';
+        titulo.setAttribute('data-i18n', 'crear.titulo');
+        titulo.textContent = (typeof t === 'function') ? t('crear.titulo') : 'Crear';
     });
 
     const btnGuardarBorrador = document.getElementById('btnGuardarBorrador');
@@ -1152,9 +1202,14 @@ function resetearFormulario() {
     const btnGuardarAvisoReset = document.getElementById('btnGuardarAviso');
     const btnEnviarAvisoRevision = document.getElementById('btnEnviarAvisoRevision');
 
-    if (btnGuardarBorrador) btnGuardarBorrador.textContent = 'Guardar';
+    const setGuardar = (btn) => {
+        if (!btn) return;
+        btn.setAttribute('data-i18n', 'crear.guardar');
+        btn.textContent = (typeof t === 'function') ? t('crear.guardar') : 'Guardar';
+    };
+    setGuardar(btnGuardarBorrador);
+    setGuardar(btnGuardarAvisoReset);
     if (btnEnviarRevision) btnEnviarRevision.style.display = 'block';
-    if (btnGuardarAvisoReset) btnGuardarAvisoReset.textContent = 'Guardar';
     if (btnEnviarAvisoRevision) btnEnviarAvisoRevision.style.display = 'block';
 
     mostrarPantalla('pantallaSelector');
@@ -1179,7 +1234,10 @@ function actualizarEstadoPreviewImagenAviso(tieneImagen) {
     }
 
     if (textoBoton) {
-        textoBoton.textContent = tieneImagen ? 'Cambiar imagen' : 'Subir imagen';
+        const clave = tieneImagen ? 'crear.cambiar_imagen' : 'crear.subir_imagen';
+        const fb = tieneImagen ? 'Cambiar imagen' : 'Subir imagen';
+        textoBoton.setAttribute('data-i18n', clave);
+        textoBoton.textContent = (typeof t === 'function') ? t(clave) : fb;
     }
 }
 
@@ -1197,6 +1255,9 @@ function actualizarEstadoPreviewImagenPost(tieneImagen) {
     }
 
     if (textoBoton) {
-        textoBoton.textContent = tieneImagen ? 'Cambiar imagen' : 'Subir imagen';
+        const clave = tieneImagen ? 'crear.cambiar_imagen' : 'crear.subir_imagen';
+        const fb = tieneImagen ? 'Cambiar imagen' : 'Subir imagen';
+        textoBoton.setAttribute('data-i18n', clave);
+        textoBoton.textContent = (typeof t === 'function') ? t(clave) : fb;
     }
 }

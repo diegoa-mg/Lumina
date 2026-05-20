@@ -53,7 +53,8 @@ SELECT
     publicaciones.fecha_creacion,
     usuarios.nombre AS autor,
     usuarios.foto_url AS autor_foto,
-    reacciones.fecha AS fecha_reaccion
+    reacciones.fecha AS fecha_reaccion,
+    COALESCE(reacciones_conteo.likes, 0) AS likes_count
 FROM reacciones
 INNER JOIN publicaciones
 ON publicaciones.id = reacciones.elemento_id
@@ -61,6 +62,14 @@ INNER JOIN usuarios
 ON usuarios.id = publicaciones.autor_id
 LEFT JOIN categorias
 ON categorias.id = publicaciones.categoria_id
+LEFT JOIN (
+    SELECT elemento_id, COUNT(*) AS likes
+    FROM reacciones
+    WHERE seccion = 'recursos'
+    AND tipo_reaccion = 'like'
+    GROUP BY elemento_id
+) AS reacciones_conteo
+ON reacciones_conteo.elemento_id = publicaciones.id
 WHERE reacciones.usuario_id = ?
 AND reacciones.tipo_reaccion = ?
 AND publicaciones.status = 'publicado'

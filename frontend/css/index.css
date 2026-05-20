@@ -234,6 +234,25 @@
     right: 0.5rem;
 }
 
+/* En el carrusel de avisos importantes las flechas viven fuera de la tarjeta */
+.importante-index-carousel .recursos-carousel-prev {
+    left: -7.5rem;
+}
+
+.importante-index-carousel .recursos-carousel-next {
+    right: -7.5rem;
+}
+
+/* En pantallas chicas vuelven dentro para no salirse del viewport */
+@media (max-width: 900px) {
+    .importante-index-carousel .recursos-carousel-prev {
+        left: 0.5rem;
+    }
+    .importante-index-carousel .recursos-carousel-next {
+        right: 0.5rem;
+    }
+}
+
 .card-importante {
     display: flex;
     flex-direction: column;

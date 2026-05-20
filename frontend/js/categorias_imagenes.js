@@ -3,18 +3,18 @@
  * Usar en admin y en recursos para que se vean igual.
  */
 window.CategoriasImagenes = {
-    DEFAULT: 'img/materias/DEMPRENDEDOR.webp',
+    DEFAULT: 'img/materias/desarrolloemprendedor.webp',
 
     POR_ID: {
-        1: 'img/materias/POO1.webp',
-        2: 'img/materias/INTERNETS.avif',
-        3: 'img/materias/DSOFTWARE.webp',
-        4: 'img/materias/MNUMERICOS.webp',
-        5: 'img/materias/DESARROLLO.webp',
-        6: 'img/materias/SISTEMAS.webp',
-        7: 'img/materias/INGLES.webp',
-        8: 'img/materias/ORIENTACION.avif',
-        9: 'img/materias/DEMPRENDEDOR.webp',
+        1: 'img/materias/poo.webp',
+        2: 'img/materias/serviciosinternet.avif',
+        3: 'img/materias/ciclovidadesarrollosoftware.webp',
+        4: 'img/materias/metodosnumericos.webp',
+        5: 'img/materias/desarrolloemprendedor.webp',
+        6: 'img/materias/sistemasdigitales.webp',
+        7: 'img/materias/ingles.webp',
+        8: 'img/materias/orientacion.avif',
+        9: 'img/materias/avisos.webp',
     },
 
     resolver(cat) {
@@ -26,9 +26,9 @@ window.CategoriasImagenes = {
         // Categoría nueva (sin mapa): usar solo lo guardado en BD
         if (url && !tieneImagenFija) return url;
 
-        // Materias 1–9: imagen de recursos; ignorar placeholder genérico en BD
+        // Materias 1–9: mantener fallback por ID si la BD no trae imagen.
         if (tieneImagenFija) {
-            if (!url || url.includes('DEMPRENDEDOR')) {
+            if (!url) {
                 return this.POR_ID[id];
             }
         }
