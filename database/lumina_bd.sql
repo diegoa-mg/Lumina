@@ -41,23 +41,24 @@ CREATE TABLE `autor_categoria` (
 
 CREATE TABLE `categorias` (
   `id` int(11) NOT NULL,
-  `nombre_categoria` varchar(100) NOT NULL
+  `nombre_categoria` varchar(100) NOT NULL,
+  `imagen_url` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `categorias`
 --
 
-INSERT INTO `categorias` (`id`, `nombre_categoria`) VALUES
-(9, 'Avisos Generales'),
-(3, 'Ciclo de Vida del Software'),
-(5, 'Desarrollo Emprendedor'),
-(7, 'Inglés'),
-(4, 'Métodos Numéricos'),
-(8, 'Orientación y Tutoría'),
-(1, 'Programación Orientada a Objetos'),
-(2, 'Servicios de Internet'),
-(6, 'Sistemas Digitales');
+INSERT INTO `categorias` (`id`, `nombre_categoria`, `imagen_url`) VALUES
+(9, 'Avisos Generales', 'img/materias/avisos.webp'),
+(3, 'Ciclo de Vida del Software', 'img/materias/ciclovidadesarrollosoftware.webp'),
+(5, 'Desarrollo Emprendedor', 'img/materias/desarrolloemprendedor.webp'),
+(7, 'Inglés', 'img/materias/ingles.webp'),
+(4, 'Métodos Numéricos', 'img/materias/metodosnumericos.webp'),
+(8, 'Orientación y Tutoría', 'img/materias/orientacion.avif'),
+(1, 'Programación Orientada a Objetos', 'img/materias/poo.webp'),
+(2, 'Servicios de Internet', 'img/materias/serviciosinternet.avif'),
+(6, 'Sistemas Digitales', 'img/materias/sistemasdigitales.webp');
 
 -- --------------------------------------------------------
 

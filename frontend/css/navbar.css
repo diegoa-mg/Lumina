@@ -3,6 +3,26 @@ header {
     background-color: var(--blanco);
 }
 
+/* Boton para cambiar idioma */
+.btn-toggle-idioma {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    border-radius: 0.8rem;
+    color: var(--azul-logo);
+    cursor: pointer;
+    font-family: var(--fuente-principal);
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 0.4rem 0.9rem;
+    margin: 0 1rem;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-toggle-idioma:hover {
+    background: var(--azul-logo);
+    color: #fff;
+}
+
 .nav-bg {
     background-color: var(--blanco);
     box-sizing: border-box;

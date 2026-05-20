@@ -8,25 +8,18 @@ function escapeHtml(valor) {
 }
 
 function formatearFechaAviso(fecha) {
-    if (!fecha) return 'Fecha no disponible';
-
+    if (typeof formatearFechaLumina === 'function') return formatearFechaLumina(fecha, 'larga');
+    if (!fecha) return '';
     const fechaObj = new Date(String(fecha).replace(' ', 'T'));
-
-    if (Number.isNaN(fechaObj.getTime())) {
-        return 'Fecha no disponible';
-    }
-
-    return fechaObj.toLocaleDateString('es-MX', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
+    if (Number.isNaN(fechaObj.getTime())) return '';
+    return fechaObj.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function obtenerConfigAviso(tipoAviso) {
     if (tipoAviso === 'plataforma') {
         return {
             texto: 'Plataforma',
+            clave: 'crear.tipo_plataforma',
             icono: 'language',
             clase: 'bg-rojo2'
         };
@@ -34,6 +27,7 @@ function obtenerConfigAviso(tipoAviso) {
 
     return {
         texto: 'Academico',
+        clave: 'crear.tipo_academico',
         icono: 'school',
         clase: 'bg-rojo'
     };
@@ -54,10 +48,10 @@ function renderAviso(aviso) {
 
                 <div class="titulos">
                     <h2>${escapeHtml(aviso.titulo)}</h2>
-                    <p class="fecha">Publicado el ${escapeHtml(formatearFechaAviso(fecha))}</p>
+                    <p class="fecha"><span data-i18n="avisos.publicado_el">Publicado el</span> <span data-fecha-iso="${escapeHtml(fecha || '')}" data-fecha-formato="larga">${escapeHtml(formatearFechaAviso(fecha))}</span></p>
                 </div>
 
-                ${urgente ? '<div class="badge-urgente">Urgente</div>' : ''}
+                ${urgente ? '<div class="badge-urgente" data-i18n="crear.opcion_urgente">Urgente</div>' : ''}
             </div>
 
             <div class="tarjeta-body">
@@ -67,7 +61,7 @@ function renderAviso(aviso) {
             <div class="tarjeta-footer">
                 <div class="linea-negra"></div>
                 <span class="material-symbols-outlined icono-etiqueta">${config.icono}</span>
-                <div class="etiqueta-blanca">${config.texto}</div>
+                <div class="etiqueta-blanca" data-i18n="${config.clave}">${config.texto}</div>
             </div>
         </article>
     `;
@@ -83,14 +77,17 @@ async function cargarAvisos() {
         const avisos = await respuesta.json();
 
         if (!Array.isArray(avisos) || avisos.length === 0) {
-            contenedor.innerHTML = '<div class="avisos-vacio">No hay avisos publicados por ahora.</div>';
+            contenedor.innerHTML = '<div class="avisos-vacio" data-i18n="avisos.sin_avisos">No hay avisos publicados por ahora.</div>';
+            if (typeof aplicarTraducciones === 'function') aplicarTraducciones(contenedor);
             return;
         }
 
         contenedor.innerHTML = avisos.map(renderAviso).join('');
+        if (typeof aplicarTraducciones === 'function') aplicarTraducciones(contenedor);
     } catch (error) {
         console.error('Error al cargar avisos:', error);
-        contenedor.innerHTML = '<div class="avisos-vacio">No se pudieron cargar los avisos.</div>';
+        contenedor.innerHTML = '<div class="avisos-vacio" data-i18n="avisos.no_se_cargaron">No se pudieron cargar los avisos.</div>';
+        if (typeof aplicarTraducciones === 'function') aplicarTraducciones(contenedor);
     }
 }
 

@@ -27,19 +27,11 @@ function escapeHtmlRecursos(valor) {
 }
 
 function formatearFechaRecursos(fecha) {
+    if (typeof formatearFechaLumina === 'function') return formatearFechaLumina(fecha, 'larga');
     if (!fecha) return '';
-
-    const fechaObj = new Date(fecha.replace(' ', 'T'));
-
-    if (Number.isNaN(fechaObj.getTime())) {
-        return fecha;
-    }
-
-    return fechaObj.toLocaleDateString('es-MX', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-    });
+    const fechaObj = new Date(String(fecha).replace(' ', 'T'));
+    if (Number.isNaN(fechaObj.getTime())) return fecha;
+    return fechaObj.toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 
 function descripcionCortaRecursos(texto, limite = 125) {
@@ -49,14 +41,26 @@ function descripcionCortaRecursos(texto, limite = 125) {
         : limpio;
 }
 
-function etiquetaTipoRecurso(tipo) {
-    const etiquetas = {
-        articulo: 'Artículo',
-        video: 'Video',
-        recurso: 'Recurso'
-    };
+function obtenerNombreArchivoRecursos(ruta) {
+    if (!ruta) return '';
 
-    return etiquetas[String(tipo || '').toLowerCase()] || String(tipo || '');
+    const nombreArchivo = decodeURIComponent(String(ruta).split('/').pop() || '');
+
+    return nombreArchivo.replace(/^(?:post|aviso|post_editor)(?:_\d+)?_\d+_[a-f0-9]{8}_/i, '');
+}
+
+function obtenerYoutubeEmbedUrlRecursos(url) {
+    if (!url) return '';
+
+    const match = String(url).match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w\-]+)/);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : '';
+}
+
+function etiquetaTipoRecurso(tipo) {
+    const tipoNormalizado = String(tipo || '').toLowerCase();
+    return typeof t === 'function'
+        ? t(`tipo.${tipoNormalizado}`, t('tipo.publicacion', 'Publicación'))
+        : ({ articulo: 'Artículo', video: 'Video', recurso: 'Recurso' }[tipoNormalizado] || String(tipo || ''));
 }
 
 function obtenerInicialesRecursos(nombre) {
@@ -119,15 +123,17 @@ function filtrarPostsRecursos(posts) {
 function normalizarPostRecurso(post) {
     return {
         id: Number(post.id || 0),
-        titulo: post.titulo || 'Publicacion sin titulo',
+        titulo: post.titulo || (typeof t === 'function' ? t('meta.publicacion_sin_titulo') : 'Publicación sin título'),
         descripcion: post.descripcion || '',
         imagen: post.imagen_url || 'img/clases/clase2.webp',
         tipo: post.tipo || 'articulo',
         seccion: post.seccion || 'post',
         importante: Number(post.importante || 0) === 1,
-        materia: post.materia || 'Materia sin asignar',
+        materia: typeof traducirMateriaLumina === 'function'
+            ? (traducirMateriaLumina(post.materia || '', post.categoria_id) || (typeof t === 'function' ? t('meta.materia_sin_asignar') : 'Materia sin asignar'))
+            : (post.materia || (typeof t === 'function' ? t('meta.materia_sin_asignar') : 'Materia sin asignar')),
         fecha: formatearFechaRecursos(post.fecha_creacion),
-        autor: post.autor || 'Autor desconocido',
+        autor: post.autor || (typeof t === 'function' ? t('meta.autor_desconocido') : 'Autor desconocido'),
         autorFoto: post.autor_foto || ''
     };
 }
@@ -135,35 +141,77 @@ function normalizarPostRecurso(post) {
 function renderPostRecienteRecurso(postOriginal) {
     const post = normalizarPostRecurso(postOriginal);
     const etiquetaTipo = `<span>${escapeHtmlRecursos(etiquetaTipoRecurso(post.tipo))}</span>`;
+    const likes = Number(postOriginal.likes_count || 0);
+    const archivoUrl = postOriginal.archivo_url || postOriginal.noticia_url || '';
+    const tipoRaw = String(post.tipo || '').toLowerCase();
+    const videoUrl = postOriginal.video_url || '';
+    const youtubeUrl = postOriginal.youtube_url || '';
+    const youtubeEmbed = obtenerYoutubeEmbedUrlRecursos(youtubeUrl);
+    const media = tipoRaw === 'recurso' && archivoUrl
+        ? `<div class="lumina-resource-media">
+                <span class="material-symbols-outlined">description</span>
+                <span>${escapeHtmlRecursos(obtenerNombreArchivoRecursos(archivoUrl) || (typeof t === 'function' ? t('meta.recurso_adjunto') : 'Recurso adjunto'))}</span>
+            </div>`
+        : tipoRaw === 'video' && videoUrl
+            ? `<video src="${escapeHtmlRecursos(videoUrl)}" controls muted playsinline preload="metadata"></video>`
+        : tipoRaw === 'video' && youtubeEmbed
+            ? `<iframe src="${escapeHtmlRecursos(youtubeEmbed)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+        : `<img src="${escapeHtmlRecursos(post.imagen)}" alt="${escapeHtmlRecursos(post.titulo)}">`;
+    const cta = tipoRaw === 'recurso' && archivoUrl
+        ? `<a class="lumina-post-cta" href="${escapeHtmlRecursos(archivoUrl)}" target="_blank" download="${escapeHtmlRecursos(obtenerNombreArchivoRecursos(archivoUrl) || 'recurso')}" data-i18n="comun.descargar">Descargar</a>`
+        : `<button class="lumina-post-cta" type="button" data-i18n="comun.leer_mas">Leer más</button>`;
     const footerReacciones = `
-            <div class="footer-card">
-                <button class="btn-invisible" data-reaccion-id="${post.id}" data-reaccion-seccion="recursos" data-reaccion-tipo="like" onclick="reaccionar(this, ${post.id}, 'recursos', 'like')">
-                    <span class="material-symbols-outlined">favorite</span> Me gusta
+            <div class="footer-card lumina-post-footer">
+                ${cta}
+                <button class="lumina-like-button" data-reaccion-id="${post.id}" data-reaccion-seccion="recursos" data-reaccion-tipo="like" onclick="reaccionar(this, ${post.id}, 'recursos', 'like')" aria-label="${escapeHtmlRecursos(typeof t === 'function' ? t('comun.me_gusta') : 'Me gusta')}">
+                    <span class="material-symbols-outlined">favorite</span>
+                    <span data-like-count-for="${post.id}">${likes}</span>
                 </button>
             </div>
     `;
 
     return `
-        <article class="card-reciente reciente-slide">
-            <img src="${escapeHtmlRecursos(post.imagen)}" alt="${escapeHtmlRecursos(post.titulo)}">
-            <div class="card-content">
-                <div class="meta-info">
-                    ${etiquetaTipo}
-                    <button class="btn-icon" data-reaccion-id="${post.id}" data-reaccion-seccion="recursos" data-reaccion-tipo="guardado" onclick="reaccionar(this, ${post.id}, 'recursos', 'guardado')">
+        <article class="card-reciente reciente-slide lumina-post-card">
+            <div class="lumina-post-media">
+                ${media}
+            </div>
+            <div class="card-content lumina-post-body">
+                <div class="meta-info lumina-post-topline">
+                    <span class="lumina-post-badge" data-i18n="tipo.${tipoRaw}">${escapeHtmlRecursos(etiquetaTipoRecurso(post.tipo))}</span>
+                    <button class="btn-icon" data-reaccion-id="${post.id}" data-reaccion-seccion="recursos" data-reaccion-tipo="guardado" onclick="reaccionar(this, ${post.id}, 'recursos', 'guardado')" aria-label="${escapeHtmlRecursos(typeof t === 'function' ? t('comun.guardar') : 'Guardar')}">
                         <span class="material-symbols-outlined">bookmark</span>
                     </button>
                 </div>
-                <h4>${escapeHtmlRecursos(post.titulo)}</h4>
-                <div class="autor-info">
+                <h4 class="lumina-post-title">${escapeHtmlRecursos(post.titulo)}</h4>
+                <div class="autor-info lumina-post-author-row">
                     ${renderAvatarAutorRecursos(post.autorFoto, post.autor)}
                     <div>
-                        <p class="nombre-autor">${escapeHtmlRecursos(post.autor)}</p>
-                        <p class="fecha-autor">${escapeHtmlRecursos(post.fecha)}</p>
+                        <p class="nombre-autor lumina-post-author-name">${escapeHtmlRecursos(post.autor)}</p>
+                        <p class="fecha-autor lumina-post-date" data-fecha-iso="${escapeHtmlRecursos(postOriginal.fecha_creacion || '')}" data-fecha-formato="larga">${escapeHtmlRecursos(post.fecha)}</p>
                     </div>
                 </div>
-                <p class="extracto">${escapeHtmlRecursos(descripcionCortaRecursos(post.descripcion))}</p>
-                <p style="color: #2563eb; font-weight: 700;">${escapeHtmlRecursos(post.materia)}</p>
+                <p class="extracto lumina-post-excerpt">${escapeHtmlRecursos(descripcionCortaRecursos(post.descripcion))}</p>
+                <span class="lumina-post-materia">${escapeHtmlRecursos(post.materia)}</span>
                 ${footerReacciones}
+                <div class="lumina-post-completo" hidden>
+                    <span class="lumina-modal-badge" data-i18n="tipo.${tipoRaw}">${escapeHtmlRecursos(etiquetaTipoRecurso(post.tipo))}</span>
+                    <div class="lumina-modal-titulo-row">
+                        <h2 class="lumina-modal-title">${escapeHtmlRecursos(post.titulo)}</h2>
+                        <div class="lumina-modal-acciones">
+                            <button class="btn-icon" data-reaccion-id="${post.id}" data-reaccion-seccion="recursos" data-reaccion-tipo="guardado" onclick="reaccionar(this, ${post.id}, 'recursos', 'guardado')" aria-label="${escapeHtmlRecursos(typeof t === 'function' ? t('comun.guardar') : 'Guardar')}">
+                                <span class="material-symbols-outlined">bookmark</span>
+                            </button>
+                            <button class="lumina-like-button" data-reaccion-id="${post.id}" data-reaccion-seccion="recursos" data-reaccion-tipo="like" onclick="reaccionar(this, ${post.id}, 'recursos', 'like')" aria-label="${escapeHtmlRecursos(typeof t === 'function' ? t('comun.me_gusta') : 'Me gusta')}">
+                                <span class="material-symbols-outlined">favorite</span>
+                                <span data-like-count-for="${post.id}">${likes}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="lumina-modal-author">${escapeHtmlRecursos(typeof t === 'function' ? t('comun.por') : 'Por')} ${escapeHtmlRecursos(post.autor)}</p>
+                    <div class="lumina-modal-media">${media}</div>
+                    <p class="lumina-modal-description">${escapeHtmlRecursos(postOriginal.descripcion || '')}</p>
+                    <span class="lumina-modal-materia">${escapeHtmlRecursos(post.materia)}</span>
+                </div>
             </div>
         </article>
     `;
@@ -212,8 +260,9 @@ async function cargarPostsEnRecursos() {
 
         if (!Array.isArray(posts) || posts.length === 0) {
             contenedorRecientes.innerHTML = `
-                <div style="color: #6b7280;">No hay publicaciones recientes.</div>
+                <div style="color: #6b7280;" data-i18n="recursos.sin_recientes">${typeof t === 'function' ? t('recursos.sin_recientes') : 'No hay publicaciones recientes.'}</div>
             `;
+            if (typeof aplicarTraducciones === 'function') aplicarTraducciones(contenedorRecientes);
             if (viewportRecientes) {
                 requestAnimationFrame(actualizarFlechasRecursosCarousel);
             }
@@ -224,8 +273,9 @@ async function cargarPostsEnRecursos() {
 
         if (postsFiltrados.length === 0) {
             contenedorRecientes.innerHTML = `
-                <div style="color: #6b7280;">No hay publicaciones con tus preferencias activas.</div>
+                <div style="color: #6b7280;" data-i18n="recursos.sin_preferencias">${typeof t === 'function' ? t('recursos.sin_preferencias') : 'No hay publicaciones con tus preferencias activas.'}</div>
             `;
+            if (typeof aplicarTraducciones === 'function') aplicarTraducciones(contenedorRecientes);
             if (viewportRecientes) {
                 requestAnimationFrame(actualizarFlechasRecursosCarousel);
             }
@@ -240,6 +290,13 @@ async function cargarPostsEnRecursos() {
             inicializarReacciones(contenedorRecientes);
         }
 
+        if (typeof activarModalesLumina === 'function') {
+            activarModalesLumina(contenedorRecientes);
+        }
+        if (typeof aplicarTraducciones === 'function') {
+            aplicarTraducciones(contenedorRecientes);
+        }
+
         if (viewportRecientes) {
             viewportRecientes.scrollLeft = 0;
         }
@@ -250,8 +307,9 @@ async function cargarPostsEnRecursos() {
     } catch (error) {
         console.error('Error cargando publicaciones en recursos:', error);
         contenedorRecientes.innerHTML = `
-            <div style="color: #6b7280;">No se pudieron cargar las publicaciones.</div>
+            <div style="color: #6b7280;" data-i18n="materia.no_se_cargaron">${typeof t === 'function' ? t('materia.no_se_cargaron') : 'No se pudieron cargar las publicaciones.'}</div>
         `;
+        if (typeof aplicarTraducciones === 'function') aplicarTraducciones(contenedorRecientes);
         if (viewportRecientes) {
             requestAnimationFrame(actualizarFlechasRecursosCarousel);
         }
@@ -259,6 +317,7 @@ async function cargarPostsEnRecursos() {
 }
 
 document.addEventListener('DOMContentLoaded', cargarPostsEnRecursos);
+document.addEventListener('lumina-idioma-cambiado', cargarPostsEnRecursos);
 document.addEventListener('DOMContentLoaded', () => {
     const viewport = document.getElementById('postsRecientesViewport');
 

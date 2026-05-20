@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <link rel="icon" type="image/png" href="img/logo/Logo Lumina - Sin texto.png">
-    <title>Lumina - Iniciar sesión</title>
+    <title data-i18n-title-key="page.login">Lumina - Iniciar sesión</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,8 +19,8 @@
 
     <link rel="preload" href="css/base.css?v=3" as="style">
     <link rel="stylesheet" href="css/base.css?v=3">
-    <link rel="preload" href="css/styles.css?v=17" as="style">
-    <link rel="stylesheet" href="css/styles.css?v=17">
+    <link rel="preload" href="css/styles.css?v=23" as="style">
+    <link rel="stylesheet" href="css/styles.css?v=23">
 
     <link rel="preload" href="css/navbar.css?v=6" as="style">
     <link rel="stylesheet" href="css/navbar.css?v=6">
@@ -38,7 +38,7 @@
             </div>
 
             <nav class="nav-principal">
-                <a href="index.html">Inicio</a>
+                <a href="index.html" data-i18n="nav.inicio">Inicio</a>
             </nav>
 
         </div>
@@ -49,19 +49,19 @@
       <div class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
         <!-- left side -->
         <div class="flex flex-col justify-center p-8 md:p-14">
-          <span class="mb-3 text-4xl font-bold">Iniciar Sesión</span>
-          <span class="font-light text-gray-400 mb-8"> ¡Bienvenido de vuelta! Por favor ingresa tus datos</span>
+          <span class="mb-3 text-4xl font-bold" data-i18n="login.titulo">Iniciar Sesión</span>
+          <span class="font-light text-gray-400 mb-8" data-i18n="login.bienvenida"> ¡Bienvenido de vuelta! Por favor ingresa tus datos</span>
           
           <!-- Formulario Login -->
           <form action="../backend/login_usuario_be.php" method="POST">
 
             <div class="py-4">
-              <span class="mb-2 text-md">Correo</span>
+              <span class="mb-2 text-md" data-i18n="login.correo">Correo</span>
               <input type="text" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="email" id="email" required/>
             </div>
             
             <div class="py-4">
-              <span class="mb-2 text-md">Contraseña</span>
+              <span class="mb-2 text-md" data-i18n="login.password">Contraseña</span>
               <div class="password-field">
                 <input type="password" name="pass" id="pass" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" required/>
                 <button type="button" class="password-toggle" data-password-toggle="pass" aria-label="Mostrar contraseña" aria-pressed="false">
@@ -73,13 +73,13 @@
             <div class="flex justify-between w-full py-4">
               <div class="mr-24">
                 <input type="checkbox" name="remember_me" id="remember_me" class="mr-2" />
-                <span class="text-md">Mantener sesión iniciada</span>
+                <span class="text-md" data-i18n="login.mantener">Mantener sesión iniciada</span>
               </div>
               <span class="font-bold text-md"></span>
             </div>
             
             <button type="submit" class="w-full bg-black text-white p-2 rounded-lg mb-6 border border-black hover:bg-white hover:text-black hover:border hover:border-gray-300">
-              Entrar
+              <span data-i18n="login.entrar">Entrar</span>
             </button>
 
           </form>
@@ -88,18 +88,18 @@
             <svg class="w-6 h-6 inline mr-2" >
               <use href="./assets.svg#google"></use>
             </svg>
-            Iniciar sesión con Google
+            <span data-i18n="login.google">Iniciar sesión con Google</span>
           </button>
 
           <div class="text-center text-gray-400">
-            ¿No tienes cuenta?
-            <span class="font-bold text-black"> <a href="registro.html">Regístrate aquí</a></span>
+            <span data-i18n="login.sin_cuenta">¿No tienes cuenta?</span>
+            <span class="font-bold text-black"> <a href="registro.html" data-i18n="login.registrate">Regístrate aquí</a></span>
           </div>
         
         </div>
         <!-- {/* right side */} -->
-        <div class="relative">
-          <img src="img/logo/Logo Lumina - Sin texto.png" alt="img" class="w-[300px] h-auto hidden rounded-r-2xl md:block object-contain mt-20 mr-10"/>
+        <div class="relative hidden md:flex items-center justify-center pr-10">
+          <img src="img/logo/Logo Lumina - Sin texto.png" alt="img" class="w-[300px] h-auto rounded-r-2xl object-contain"/>
           <!-- text on image  -->
         </div>
       </div>
@@ -109,19 +109,21 @@
       <section class="contenido-footer">
         <div class="footer-brand">
           <h1>Lumina</h1>
-          <p>Plataforma de difusión digital académica</p>
+          <p data-i18n="footer.tagline">Plataforma de difusión digital académica</p>
         </div>
-        <nav class="footer-links footer-links--guest" aria-label="Enlaces del sitio">
+        <nav class="footer-links footer-links--guest" aria-label="Enlaces del sitio" data-i18n-aria="footer.aria_enlaces">
           <div class="footer-link-group">
-            <a href="index.html">Inicio</a>
-            <a href="login.html">Iniciar Sesión</a>
-            <a href="registro.html">Registrarse</a>
+            <a href="index.html" data-i18n="nav.inicio">Inicio</a>
+            <a href="login.html" data-i18n="nav.iniciar_sesion">Iniciar Sesión</a>
+            <a href="registro.html" data-i18n="nav.registrarse">Registrarse</a>
           </div>
         </nav>
       </section>
-      <p class="copy">© 2026 Lumina: Claridad a la información</p>
+      <p class="copy" data-i18n="footer.copy">© 2026 Lumina: Claridad a la información</p>
     </footer>
 
+    <script src="js/i18n.js?v=10"></script>
+    <script src="js/auth.js?v=9"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="js/password-toggle.js"></script>
     <script src="js/google-login.js"></script>

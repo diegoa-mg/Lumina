@@ -9,12 +9,31 @@ function llaveReaccion(id, seccion, tipo) {
 
 function aplicarEstadoReaccion(boton, activo) {
     const tipo = boton.dataset.reaccionTipo;
+    const id = boton.dataset.reaccionId;
+    const seccion = boton.dataset.reaccionSeccion || 'recursos';
     const clase = CLASE_REACCION[tipo];
 
     if (!clase) return;
 
-    boton.classList.toggle(clase, Boolean(activo));
-    boton.setAttribute('aria-pressed', activo ? 'true' : 'false');
+    // Sincroniza el estado en todas las instancias del mismo boton
+    // (por ejemplo, tarjeta + modal de "Leer mas").
+    document
+        .querySelectorAll(`[data-reaccion-id="${id}"][data-reaccion-tipo="${tipo}"]`)
+        .forEach((b) => {
+            if ((b.dataset.reaccionSeccion || 'recursos') !== seccion) return;
+            b.classList.toggle(clase, Boolean(activo));
+            b.setAttribute('aria-pressed', activo ? 'true' : 'false');
+        });
+}
+
+function actualizarContadorReaccion(elementoId, tipo, valor) {
+    if (tipo !== 'like' || valor === undefined || valor === null) return;
+
+    document
+        .querySelectorAll(`[data-like-count-for="${Number(elementoId)}"]`)
+        .forEach((contador) => {
+            contador.textContent = String(Number(valor) || 0);
+        });
 }
 
 function prepararBotonReaccion(boton) {
@@ -74,6 +93,7 @@ async function reaccionar(boton, id, seccion = 'recursos', tipo = '') {
         }
 
         aplicarEstadoReaccion(boton, resultado.active);
+        actualizarContadorReaccion(elementoId, tipoNormalizado, resultado.counts?.likes);
     } catch (error) {
         console.error('Error en la reaccion:', error);
         alert(error.message || 'No se pudo guardar la reaccion');

@@ -1,6 +1,6 @@
 .calendario-container {
     width: 100%;
-    margin: 2rem 0;
+    margin: 0.6rem 0 2rem;
     display: flex;
     justify-content: center;
 }

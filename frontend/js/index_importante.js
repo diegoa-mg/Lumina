@@ -30,19 +30,11 @@ function escapeHtmlIndex(valor) {
 }
 
 function formatearFechaIndex(fecha) {
+    if (typeof formatearFechaLumina === 'function') return formatearFechaLumina(fecha, 'larga');
     if (!fecha) return '';
-
-    const fechaObj = new Date(fecha.replace(' ', 'T'));
-
-    if (Number.isNaN(fechaObj.getTime())) {
-        return fecha;
-    }
-
-    return fechaObj.toLocaleDateString('es-MX', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-    });
+    const fechaObj = new Date(String(fecha).replace(' ', 'T'));
+    if (Number.isNaN(fechaObj.getTime())) return fecha;
+    return fechaObj.toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 
 function descripcionCortaIndex(texto, limite = 220) {
@@ -50,6 +42,21 @@ function descripcionCortaIndex(texto, limite = 220) {
     return limpio.length > limite
         ? `${limpio.substring(0, limite)}...`
         : limpio;
+}
+
+function obtenerNombreArchivoIndex(ruta) {
+    if (!ruta) return '';
+
+    const nombreArchivo = decodeURIComponent(String(ruta).split('/').pop() || '');
+
+    return nombreArchivo.replace(/^(?:post|aviso|post_editor)(?:_\d+)?_\d+_[a-f0-9]{8}_/i, '');
+}
+
+function obtenerYoutubeEmbedUrlIndex(url) {
+    if (!url) return '';
+
+    const match = String(url).match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w\-]+)/);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : '';
 }
 
 function etiquetaTipoIndex(tipo) {
@@ -123,10 +130,17 @@ function normalizarPostIndex(post) {
         imagen: post.imagen_url || 'img/clases/clase2.webp',
         tipo: post.tipo || 'articulo',
         seccion: post.seccion || 'post',
-        materia: post.materia || 'Materia sin asignar',
+        materia: typeof traducirMateriaLumina === 'function'
+            ? (traducirMateriaLumina(post.materia || '', post.categoria_id) || (typeof t === 'function' ? t('meta.materia_sin_asignar') : 'Materia sin asignar'))
+            : (post.materia || 'Materia sin asignar'),
         fecha: formatearFechaIndex(post.fecha_creacion),
+        fechaIso: post.fecha_creacion || '',
         autor: post.autor || 'Autor desconocido',
-        autorFoto: post.autor_foto || ''
+        autorFoto: post.autor_foto || '',
+        archivoUrl: post.archivo_url || post.noticia_url || '',
+        videoUrl: post.video_url || '',
+        youtubeUrl: post.youtube_url || '',
+        likes: Number(post.likes_count || 0)
     };
 }
 
@@ -137,26 +151,33 @@ function renderPostImportanteIndex(postOriginal) {
         : `<span>${escapeHtmlIndex(etiquetaTipoIndex(post.tipo))}</span>`;
     const materia = post.seccion === 'aviso'
         ? ''
-        : `<p style="color: #2563eb; font-weight: 700;">${escapeHtmlIndex(post.materia)}</p>`;
-
+        : `<span class="lumina-post-materia">${escapeHtmlIndex(post.materia)}</span>`;
+    const youtubeEmbed = obtenerYoutubeEmbedUrlIndex(post.youtubeUrl);
+    const media = post.tipo === 'recurso' && post.archivoUrl
+        ? `<div class="lumina-resource-media">
+                <span class="material-symbols-outlined">description</span>
+                <span>${escapeHtmlIndex(obtenerNombreArchivoIndex(post.archivoUrl) || 'Recurso adjunto')}</span>
+            </div>`
+        : post.tipo === 'video' && post.videoUrl
+            ? `<video src="${escapeHtmlIndex(post.videoUrl)}" controls muted playsinline preload="metadata"></video>`
+        : post.tipo === 'video' && youtubeEmbed
+            ? `<iframe src="${escapeHtmlIndex(youtubeEmbed)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+        : `<img src="${escapeHtmlIndex(post.imagen)}" alt="${escapeHtmlIndex(post.titulo)}">`;
     return `
-        <div class="img-container-big">
-            <img src="${escapeHtmlIndex(post.imagen)}" alt="${escapeHtmlIndex(post.titulo)}">
+        <div class="img-container-big lumina-post-media">
+            ${media}
         </div>
         <div class="info-container-big">
             <div>
                 <div class="meta-info">
                     ${etiquetaTipo}
-                    <button class="btn-icon" data-reaccion-id="${post.id}" data-reaccion-seccion="recursos" data-reaccion-tipo="guardado" onclick="reaccionar(this, ${post.id}, 'recursos', 'guardado')">
-                        <span class="material-symbols-outlined">bookmark</span>
-                    </button>
                 </div>
                 <h3 style="font-size: 2.2rem; margin-bottom: 15px;">${escapeHtmlIndex(post.titulo)}</h3>
                 <div class="autor-info">
                     ${renderAvatarAutorIndex(post.autorFoto, post.autor)}
                     <div>
                         <p style="font-weight: bold; margin: 0;">${escapeHtmlIndex(post.autor)}</p>
-                        <p style="color: #6b7280; font-size: 1.1rem; margin: 0;">${escapeHtmlIndex(post.fecha)}</p>
+                        <p style="color: #6b7280; font-size: 1.1rem; margin: 0;" data-fecha-iso="${escapeHtmlIndex(post.fechaIso)}" data-fecha-formato="larga">${escapeHtmlIndex(post.fecha)}</p>
                     </div>
                 </div>
                 <p style="line-height: 1.6; color: #4b5563;">${escapeHtmlIndex(descripcionCortaIndex(post.descripcion))}</p>
@@ -185,9 +206,10 @@ async function cargarImportanteIndex() {
             postImportanteActualIndex = 0;
             contenedor.innerHTML = `
                 <div class="info-container-big" style="width: 100%;">
-                    <h3>No hay publicaciones importantes</h3>
+                    <h3 data-i18n="inicio.sin_importantes">${typeof t === 'function' ? t('inicio.sin_importantes') : 'No hay publicaciones importantes'}</h3>
                 </div>
             `;
+            if (typeof aplicarTraducciones === 'function') aplicarTraducciones(contenedor);
             actualizarBotonesImportanteIndex();
             return;
         }
@@ -201,9 +223,10 @@ async function cargarImportanteIndex() {
         postImportanteActualIndex = 0;
         contenedor.innerHTML = `
             <div class="info-container-big" style="width: 100%;">
-                <h3>No se pudo cargar la publicacion importante</h3>
+                <h3 data-i18n="inicio.no_importantes">${typeof t === 'function' ? t('inicio.no_importantes') : 'No se pudo cargar la publicación importante'}</h3>
             </div>
         `;
+        if (typeof aplicarTraducciones === 'function') aplicarTraducciones(contenedor);
         actualizarBotonesImportanteIndex();
     }
 }
@@ -247,3 +270,10 @@ function moveImportanteIndex(direction) {
 }
 
 document.addEventListener('DOMContentLoaded', cargarImportanteIndex);
+document.addEventListener('lumina-idioma-cambiado', () => {
+    if (postsImportantesIndex.length > 0) {
+        renderImportanteActualIndex();
+    } else {
+        cargarImportanteIndex();
+    }
+});

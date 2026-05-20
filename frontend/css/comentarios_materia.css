@@ -32,6 +32,7 @@
     display: flex !important;
     align-items: center !important;
     gap: 1rem !important;
+    margin-bottom: 1.6rem !important;
 }
 
 .comentario-form textarea {
