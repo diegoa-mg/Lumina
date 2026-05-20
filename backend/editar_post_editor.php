@@ -92,7 +92,11 @@ if ($seccion === 'aviso') {
     }
 
     $imagen_url = $imagen_row['imagen_url'] ?? null;
-    $resultado_imagen = guardar_imagen_post_base64($imagen, 'aviso_editor_' . $usuario_id);
+    $resultado_imagen = guardar_imagen_post_desde_request(
+        $imagen,
+        $_FILES['image_file'] ?? null,
+        'aviso_editor_' . $usuario_id
+    );
 
     if (is_array($resultado_imagen) && empty($resultado_imagen['success'])) {
         echo json_encode($resultado_imagen);

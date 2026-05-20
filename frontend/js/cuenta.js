@@ -70,6 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
         correo: '',
         password: '********'
     };
+    let modoVisitante = false;
+    const esVisitante = () => modoVisitante;
 
     const mostrarAviso = (mensaje, tipo = 'ok') => {
         let aviso = document.querySelector('.cuenta-aviso');
@@ -266,6 +268,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const mostrarCuentaVisitante = () => {
+        modoVisitante = true;
+        valoresActuales.nombre = 'Visitante';
+        valoresActuales.usuario = 'visitante';
+        valoresActuales.correo = 'Sin cuenta';
+        valoresActuales.password = 'No disponible';
+
+        setCampo(campos.nombre, valoresActuales.nombre);
+        setCampo(campos.usuario, valoresActuales.usuario);
+        setCampo(campos.correo, valoresActuales.correo);
+        setCampo(campos.password, valoresActuales.password);
+        setFotoPerfil('', valoresActuales.nombre);
+        mostrarAviso('Inicia sesión para editar tus datos y guardar actividad.', 'error');
+    };
+
     const cargarCuenta = async () => {
         try {
             const respuesta = await fetch('../backend/obtener_cuenta.php', {
@@ -274,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (respuesta.status === 401) {
                 localStorage.clear();
-                window.location.href = 'login.html';
+                mostrarCuentaVisitante();
                 return;
             }
 
@@ -282,6 +299,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!respuesta.ok || !datos.ok) {
                 throw new Error(datos.mensaje || 'No se pudo cargar la cuenta.');
+            }
+
+            modoVisitante = false;
+            localStorage.setItem('sesion_activa', 'true');
+            if (!localStorage.getItem('user_role')) {
+                localStorage.setItem('user_role', 'Usuario');
+            }
+            if (typeof renderNav === 'function') {
+                renderNav();
             }
 
             valoresActuales.nombre = datos.usuario.nombre;
@@ -306,6 +332,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cargarResumenReacciones = async () => {
         if (!totalLikes && !totalGuardados) return;
+
+        if (esVisitante()) {
+            if (totalLikes) totalLikes.textContent = '0';
+            if (totalGuardados) totalGuardados.textContent = '0';
+            return;
+        }
 
         try {
             const respuesta = await fetch('../backend/obtener_reacciones_usuario.php', {
@@ -430,6 +462,37 @@ document.addEventListener('DOMContentLoaded', () => {
         return canvas.toDataURL('image/webp', 0.9);
     };
 
+    const dataUrlABlob = (dataUrl) => {
+        const partes = dataUrl.split(',');
+        const mime = (partes[0].match(/:(.*?);/) || [])[1] || 'image/webp';
+        const binario = atob(partes[1] || '');
+        const bytes = new Uint8Array(binario.length);
+
+        for (let i = 0; i < binario.length; i += 1) {
+            bytes[i] = binario.charCodeAt(i);
+        }
+
+        return new Blob([bytes], { type: mime });
+    };
+
+    const leerRespuestaJson = async (respuesta) => {
+        const texto = await respuesta.text();
+        let datos = null;
+
+        try {
+            datos = texto ? JSON.parse(texto) : {};
+        } catch (error) {
+            const limpio = texto.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            throw new Error(limpio || 'El servidor no devolvio una respuesta valida.');
+        }
+
+        if (!respuesta.ok) {
+            throw new Error(datos.mensaje || `HTTP ${respuesta.status}`);
+        }
+
+        return datos;
+    };
+
     const guardarFoto = async () => {
         if (!fotoSeleccionada || !fotoBase64) {
             mostrarAviso('Selecciona una imagen primero.', 'error');
@@ -439,19 +502,17 @@ document.addEventListener('DOMContentLoaded', () => {
         btnGuardarFoto.disabled = true;
 
         try {
+            const formData = new FormData();
+            formData.append('image_file', dataUrlABlob(obtenerFotoRecortada()), 'perfil.webp');
+
             const respuesta = await fetch('../backend/actualizar_foto_perfil.php', {
                 method: 'POST',
                 credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    imagen: obtenerFotoRecortada()
-                })
+                body: formData
             });
-            const datos = await respuesta.json();
+            const datos = await leerRespuestaJson(respuesta);
 
-            if (!respuesta.ok || !datos.ok) {
+            if (!datos.ok) {
                 throw new Error(datos.mensaje || 'No se pudo guardar la foto.');
             }
 
@@ -468,6 +529,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.btn-editar[data-campo]').forEach((boton) => {
         boton.dataset.modo = 'editar';
         boton.addEventListener('click', () => {
+            if (esVisitante()) {
+                mostrarAviso('Inicia sesión para editar tus datos.', 'error');
+                return;
+            }
+
             const campo = boton.dataset.campo;
 
             if (boton.dataset.modo === 'confirmar') {
@@ -483,11 +549,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnCerrar) {
         btnCerrar.addEventListener('click', (e) => {
             e.preventDefault();
+            if (esVisitante()) {
+                window.location.href = 'login.html';
+                return;
+            }
             cerrarSesion();
         });
     }
 
-    if (avatarBtn) avatarBtn.addEventListener('click', abrirModalFoto);
+    if (avatarBtn) avatarBtn.addEventListener('click', () => {
+        if (esVisitante()) {
+            mostrarAviso('Inicia sesión para cambiar tu foto.', 'error');
+            return;
+        }
+        abrirModalFoto();
+    });
     if (btnCerrarFoto) btnCerrarFoto.addEventListener('click', cerrarModalFoto);
     if (btnCancelarFoto) btnCancelarFoto.addEventListener('click', cerrarModalFoto);
     if (btnGuardarFoto) btnGuardarFoto.addEventListener('click', guardarFoto);

@@ -79,7 +79,11 @@ if ($seccion === 'post') {
 
 $autor_id = intval($_SESSION['usuario_id']);
 $imagen_url = null;
-$resultado_imagen = guardar_imagen_post_base64($data['imagen'] ?? null, $seccion . '_' . $autor_id);
+$resultado_imagen = guardar_imagen_post_desde_request(
+    $data['imagen'] ?? null,
+    $_FILES['image_file'] ?? null,
+    $seccion . '_' . $autor_id
+);
 
 if (is_array($resultado_imagen) && empty($resultado_imagen['success'])) {
     echo json_encode($resultado_imagen);

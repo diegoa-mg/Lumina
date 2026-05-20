@@ -1,0 +1,13 @@
+AddType image/jpeg .jpg .jpeg
+AddType image/png .png
+AddType image/webp .webp
+AddType video/mp4 .mp4
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpg|jpeg|png|webp|mp4)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+    <FilesMatch "\.mp4$">
+        Header set Accept-Ranges "bytes"
+    </FilesMatch>
+</IfModule>

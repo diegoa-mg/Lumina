@@ -48,6 +48,10 @@ const RESOURCE_EXTENSIONS_PERMITIDAS = [
     'py', 'html', 'css', 'js', 'php', 'java', 'c', 'cpp', 'h',
     'json', 'xml', 'sql', 'md'
 ];
+const RESOURCE_CODE_EXTENSIONS = [
+    'py', 'html', 'css', 'js', 'php', 'java', 'c', 'cpp', 'h',
+    'json', 'xml', 'sql', 'md'
+];
 
 const CONFIG_AVISOS = {
     academico: {
@@ -673,6 +677,19 @@ function convertirABase64(file) {
     });
 }
 
+function obtenerExtensionArchivo(nombreArchivo) {
+    return (nombreArchivo || '').split('.').pop().toLowerCase();
+}
+
+function obtenerNombreSeguroRecurso(file) {
+    const nombre = file?.name || 'recurso.txt';
+    const extension = obtenerExtensionArchivo(nombre);
+
+    return RESOURCE_CODE_EXTENSIONS.includes(extension)
+        ? `${nombre}.txt`
+        : nombre;
+}
+
 function actualizarProgresoVideo(percent, texto = '') {
     const progressContainer = document.getElementById('videoUploadProgressContainer');
     const progressBar = document.getElementById('videoProgressBar');
@@ -691,10 +708,11 @@ function actualizarProgresoVideo(percent, texto = '') {
     }
 }
 
-function enviarPublicacionConArchivo(url, payload, archivo, fieldName = 'video_file') {
+function enviarPublicacionConArchivo(url, payload, archivos = []) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         const formData = new FormData();
+        const archivosNormalizados = Array.isArray(archivos) ? archivos : [archivos];
 
         Object.entries(payload).forEach(([key, value]) => {
             if (value !== undefined && value !== null) {
@@ -702,7 +720,20 @@ function enviarPublicacionConArchivo(url, payload, archivo, fieldName = 'video_f
             }
         });
 
-        formData.append(fieldName, archivo);
+        archivosNormalizados.forEach((archivoInfo) => {
+            if (!archivoInfo) return;
+
+            const archivo = archivoInfo.file || archivoInfo.archivo || archivoInfo;
+            const fieldName = archivoInfo.fieldName || 'video_file';
+
+            if (archivo instanceof File || archivo instanceof Blob) {
+                const nombreArchivo = fieldName === 'resource_file'
+                    ? obtenerNombreSeguroRecurso(archivo)
+                    : archivo.name;
+
+                formData.append(fieldName, archivo, nombreArchivo);
+            }
+        });
 
         xhr.withCredentials = true;
         xhr.open('POST', url, true);
@@ -710,7 +741,7 @@ function enviarPublicacionConArchivo(url, payload, archivo, fieldName = 'video_f
         xhr.upload.onprogress = (event) => {
             if (event.lengthComputable) {
                 const percentComplete = (event.loaded / event.total) * 100;
-                if (fieldName === 'video_file') {
+                if (archivosNormalizados.some((archivoInfo) => archivoInfo?.fieldName === 'video_file')) {
                     actualizarProgresoVideo(percentComplete);
                 }
             }
@@ -748,6 +779,25 @@ function enviarPublicacionConArchivo(url, payload, archivo, fieldName = 'video_f
     });
 }
 
+async function leerRespuestaJson(respuesta) {
+    const texto = await respuesta.text();
+    let json = null;
+
+    try {
+        json = texto ? JSON.parse(texto) : {};
+    } catch (error) {
+        const limpio = texto.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        const detalle = limpio ? `: ${limpio.slice(0, 180)}` : '';
+        throw new Error(`HTTP ${respuesta.status}. El servidor no devolvio JSON${detalle}`);
+    }
+
+    if (!respuesta.ok) {
+        throw new Error(json.error || `HTTP ${respuesta.status}`);
+    }
+
+    return json;
+}
+
 // ============================================
 // CREAR / EDITAR PUBLICACION
 // ============================================
@@ -760,15 +810,15 @@ async function manejarPublicacion(estado) {
 
     try {
         const datos = obtenerCamposActuales();
-        let imagenBase64 = null;
+        const archivos = [];
+        const incluirImagen = archivoSeleccionado && (datos.seccion !== 'aviso' || datos.importante) && datos.tipo !== 'recurso';
 
-        if (archivoSeleccionado && (datos.seccion !== 'aviso' || datos.importante) && datos.tipo !== 'recurso') {
-            imagenBase64 = await convertirABase64(archivoSeleccionado);
+        if (incluirImagen) {
+            archivos.push({ fieldName: 'image_file', file: archivoSeleccionado });
         }
 
         const payload = {
             ...datos,
-            imagen: imagenBase64,
             status: estado
         };
 
@@ -783,9 +833,15 @@ async function manejarPublicacion(estado) {
         let resultado;
 
         if (archivoVideoSeleccionado && datos.tipo === 'video') {
-            resultado = await enviarPublicacionConArchivo(url, payload, archivoVideoSeleccionado);
-        } else if (archivoRecursoSeleccionado && datos.tipo === 'recurso') {
-            resultado = await enviarPublicacionConArchivo(url, payload, archivoRecursoSeleccionado, 'resource_file');
+            archivos.push({ fieldName: 'video_file', file: archivoVideoSeleccionado });
+        }
+
+        if (archivoRecursoSeleccionado && datos.tipo === 'recurso') {
+            archivos.push({ fieldName: 'resource_file', file: archivoRecursoSeleccionado });
+        }
+
+        if (archivos.length > 0) {
+            resultado = await enviarPublicacionConArchivo(url, payload, archivos);
         } else {
             const respuesta = await fetch(url, {
                 method: 'POST',
@@ -796,7 +852,7 @@ async function manejarPublicacion(estado) {
                 body: JSON.stringify(payload)
             });
 
-            resultado = await respuesta.json();
+            resultado = await leerRespuestaJson(respuesta);
         }
 
         if (resultado.success) {

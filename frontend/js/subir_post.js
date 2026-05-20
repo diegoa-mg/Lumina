@@ -13,7 +13,7 @@ function escapeHtml(valor) {
 
 function resolveImageSrc(ruta) {
     if (!ruta) {
-        return 'img/default-post.jpg';
+        return 'img/materias/desarrolloemprendedor.webp';
     }
 
     if (ruta.startsWith('http') || ruta.startsWith('data:') || ruta.startsWith('../')) {

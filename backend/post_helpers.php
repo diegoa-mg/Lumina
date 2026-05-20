@@ -120,7 +120,7 @@ function guardar_recurso_post_archivo($archivo, $prefijo = 'recurso') {
     $formatos_permitidos = [
         'pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx',
         'txt', 'csv', 'zip', 'rar', '7z',
-        'py', 'html', 'css', 'js', 'php', 'java', 'c', 'cpp', 'h',
+        'py', 'html', 'css', 'js', 'java', 'c', 'cpp', 'h',
         'json', 'xml', 'sql', 'md'
     ];
 
@@ -283,6 +283,106 @@ function guardar_imagen_post_base64($imagen, $prefijo = 'post') {
         'success' => true,
         'imagen_url' => 'uploads/posts/' . $nombre_archivo
     ];
+}
+
+function guardar_imagen_post_archivo($archivo, $prefijo = 'post') {
+    if (empty($archivo) || !is_array($archivo)) {
+        return null;
+    }
+
+    $error = intval($archivo['error'] ?? UPLOAD_ERR_NO_FILE);
+
+    if ($error === UPLOAD_ERR_NO_FILE) {
+        return null;
+    }
+
+    if ($error !== UPLOAD_ERR_OK) {
+        $mensajes = [
+            UPLOAD_ERR_INI_SIZE => 'La imagen supera el limite configurado en PHP.',
+            UPLOAD_ERR_FORM_SIZE => 'La imagen supera el limite permitido por el formulario.',
+            UPLOAD_ERR_PARTIAL => 'La imagen se subio incompleta. Intentalo otra vez.',
+            UPLOAD_ERR_NO_TMP_DIR => 'No existe carpeta temporal para subir archivos.',
+            UPLOAD_ERR_CANT_WRITE => 'No se pudo escribir la imagen en el servidor.',
+            UPLOAD_ERR_EXTENSION => 'Una extension de PHP detuvo la subida de la imagen.'
+        ];
+
+        return [
+            'success' => false,
+            'error' => $mensajes[$error] ?? 'Error al subir la imagen.'
+        ];
+    }
+
+    if (!isset($archivo['tmp_name']) || !is_uploaded_file($archivo['tmp_name'])) {
+        return [
+            'success' => false,
+            'error' => 'No se recibio correctamente la imagen.'
+        ];
+    }
+
+    if ($archivo['size'] > 5 * 1024 * 1024) {
+        return [
+            'success' => false,
+            'error' => 'La imagen es demasiado pesada'
+        ];
+    }
+
+    $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+    $formatos_permitidos = ['jpg', 'jpeg', 'png', 'webp'];
+
+    if (!in_array($extension, $formatos_permitidos, true)) {
+        return [
+            'success' => false,
+            'error' => 'Formato de imagen no permitido'
+        ];
+    }
+
+    $mime_permitidos = [
+        'image/jpeg' => true,
+        'image/png' => true,
+        'image/webp' => true
+    ];
+    $mime_detectado = function_exists('mime_content_type') ? mime_content_type($archivo['tmp_name']) : ($archivo['type'] ?? '');
+
+    if (!isset($mime_permitidos[$mime_detectado])) {
+        return [
+            'success' => false,
+            'error' => 'Formato de imagen no permitido'
+        ];
+    }
+
+    $ruta_directorio = __DIR__ . '/../frontend/uploads/posts/';
+
+    if (!is_dir($ruta_directorio) && !mkdir($ruta_directorio, 0777, true)) {
+        return [
+            'success' => false,
+            'error' => 'Error al crear carpeta de imagenes'
+        ];
+    }
+
+    $nombre_archivo = $prefijo . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $extension;
+    $ruta_archivo = $ruta_directorio . $nombre_archivo;
+
+    if (!move_uploaded_file($archivo['tmp_name'], $ruta_archivo)) {
+        return [
+            'success' => false,
+            'error' => 'Error al guardar imagen'
+        ];
+    }
+
+    return [
+        'success' => true,
+        'imagen_url' => 'uploads/posts/' . $nombre_archivo
+    ];
+}
+
+function guardar_imagen_post_desde_request($imagen_base64, $archivo, $prefijo = 'post') {
+    $resultado_archivo = guardar_imagen_post_archivo($archivo, $prefijo);
+
+    if (is_array($resultado_archivo)) {
+        return $resultado_archivo;
+    }
+
+    return guardar_imagen_post_base64($imagen_base64, $prefijo);
 }
 
 function guardar_video_post_archivo($archivo, $prefijo = 'post') {
