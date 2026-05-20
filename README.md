@@ -36,7 +36,6 @@ Plataforma web académica desarrollada para centralizar recursos educativos, art
 
 El proyecto busca resolver uno de los problemas más comunes dentro de las escuelas y universidades:
 
-> La fragmentación de la información académica.
 
 Lumina centraliza publicaciones, recursos, artículos educativos y contenido multimedia en un entorno moderno, organizado y accesible para toda la comunidad estudiantil.
 
