@@ -21,11 +21,22 @@ Plataforma web académica desarrollada para centralizar recursos educativos, art
 <br>
 
 <img src="https://img.shields.io/badge/STATUS-EN%20DESARROLLO-7c3aed?style=for-the-badge">
+
+<img src="https://img.shields.io/badge/HTML5-Frontend-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+
+<img src="https://img.shields.io/badge/CSS3-Styles-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+
+<img src="https://img.shields.io/badge/JavaScript-Frontend-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+
 <img src="https://img.shields.io/badge/PHP-Backend-777BB4?style=for-the-badge&logo=php">
+
 <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql">
+
 <img src="https://img.shields.io/badge/TailwindCSS-UI-38BDF8?style=for-the-badge&logo=tailwindcss">
+
 <img src="https://img.shields.io/badge/Google-OAuth2-EA4335?style=for-the-badge&logo=google">
 
+<img src="https://img.shields.io/badge/Java-POO-orange?style=for-the-badge&logo=openjdk&logoColor=white">
 </div>
 
 ---
