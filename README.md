@@ -3,117 +3,123 @@
 <div align="center">
 
 <a href="https://github.com/diegoa-mg/Lumina">
-  <img src="frontend/img/logo/Logo Lumina (Fondo Negro) Horizontal.png"
-       alt="Logo Lumina"
-       width="650">
+    <img src="frontend/img/logo/Logo Lumina (Fondo Negro) Horizontal.png" 
+         alt="Logo Lumina" 
+         width="650">
 </a>
 
-<div id="user-content-toc">
-  <ul align="center">
-    <summary><h1 style="display: inline-block">Lumina</h1></summary>
-  </ul>
-</div>
+<br><br>
+
+# ✨ Lumina
 
 ### Claridad a la información académica
 
 <p align="center">
-
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-00758F?style=for-the-badge&logo=mysql&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38BDF8?style=for-the-badge&logo=tailwind-css&logoColor=white)
-
+Plataforma web académica desarrollada para centralizar recursos educativos, artículos, videos y contenido escolar en un solo lugar.
 </p>
 
-<p align="center">
-  Plataforma académica enfocada en centralizar información educativa,
-  recursos escolares y comunicación institucional.
-</p>
+<br>
+
+<img src="https://img.shields.io/badge/STATUS-EN%20DESARROLLO-7c3aed?style=for-the-badge">
+<img src="https://img.shields.io/badge/PHP-Backend-777BB4?style=for-the-badge&logo=php">
+<img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql">
+<img src="https://img.shields.io/badge/TailwindCSS-UI-38BDF8?style=for-the-badge&logo=tailwindcss">
+<img src="https://img.shields.io/badge/Google-OAuth2-EA4335?style=for-the-badge&logo=google">
 
 </div>
 
 ---
 
-# 📖 Descripción del Proyecto
+# 📝 Descripción
 
-**Lumina** es una plataforma web académica desarrollada para instituciones educativas con el objetivo de centralizar noticias, recursos escolares, publicaciones académicas y convocatorias en un solo lugar.
+**Lumina** es una plataforma web educativa diseñada para instituciones académicas y estudiantes.
 
-La plataforma busca combatir la fragmentación de la información dentro de la comunidad estudiantil y docente, ofreciendo una experiencia moderna, organizada y accesible.
+El proyecto busca resolver uno de los problemas más comunes dentro de las escuelas y universidades:
 
-Este proyecto está alineado con el:
+> La fragmentación de la información académica.
 
-🎯 **ODS 4 — Educación de Calidad**  
-de la Organización de las Naciones Unidas (ONU).
+Lumina centraliza publicaciones, recursos, artículos educativos y contenido multimedia en un entorno moderno, organizado y accesible para toda la comunidad estudiantil.
 
----
-
-# ✨ Características Principales
-
-## 📚 Sistema Académico
-- Publicaciones académicas.
-- Recursos educativos.
-- Noticias escolares.
-- Organización por materias.
-- Sistema de categorías.
-
-## 👥 Sistema de Roles
-- 👑 Administrador
-- 🛠️ Editor
-- ✍️ Autor
-- 👨‍🎓 Usuario
-
-Cada rol posee permisos específicos dentro de la plataforma.
+El sistema está inspirado en el **ODS 4 — Educación de Calidad** de la ONU, promoviendo un acceso más claro y eficiente a la información académica.
 
 ---
 
-## 📰 Publicaciones Inteligentes
+# 🚀 Funcionalidades Implementadas
 
-- Creación de artículos.
-- Publicaciones tipo video.
-- Publicaciones tipo noticia.
-- Recursos académicos.
+## 👨‍🎓 Usuarios
+- Registro e inicio de sesión.
+- Inicio de sesión con Google OAuth 2.0.
+- Gestión de perfil.
+- Sistema de autenticación segura.
+- Navegación por materias.
+
+---
+
+## 📝 Publicaciones
+- Creación de publicaciones.
+- Edición y eliminación de posts.
 - Sistema de borradores.
 - Envío a revisión.
-- Moderación de contenido.
-- Publicaciones destacadas.
+- Publicación aprobada por editor.
+- Sistema de categorías académicas.
+- Tipos de publicación:
+  - 📄 Artículos
+  - 🎥 Videos de YouTube
+  - 📚 Recursos educativos
 
 ---
 
-## 🔐 Sistema de Autenticación
-
-- Inicio de sesión tradicional.
-- Registro de usuarios.
-- Inicio de sesión con Google OAuth 2.0.
-- Gestión de sesiones.
-- Protección de rutas.
-
----
-
-## ❤️ Interacción Social
-
+## ❤️ Interacción
 - Sistema de likes.
-- Comentarios.
-- Reacciones.
-- Interfaz dinámica y moderna.
+- Guardado de publicaciones.
+- Sistema visual moderno e interactivo.
+- Modales dinámicos para lectura de contenido.
 
 ---
 
-# 🖼️ Vista Previa
+## 🛡️ Panel Administrativo
+- Panel de revisión para editores.
+- Aprobación o rechazo de publicaciones.
+- Edición de posts desde panel de editor.
+- Gestión de estados:
+  - Borrador
+  - Revisión
+  - Publicado
+  - Rechazado
+
+---
+
+# 🖼️ Interfaz del Proyecto
 
 ## 🏠 Página Principal
-_Agrega aquí una captura de pantalla_
+
+<p align="center">
+<img src="frontend/img/readme/inicio.png" width="900">
+</p>
 
 ---
 
-## ✍️ Panel de Autor
-_Agrega aquí una captura de pantalla_
+## ✍️ Panel del Autor
+
+<p align="center">
+<img src="frontend/img/readme/panel-autor.png" width="900">
+</p>
 
 ---
 
-## 🛡️ Dashboard Administrativo
-_Agrega aquí una captura de pantalla_
+## 🛠️ Panel del Editor
+
+<p align="center">
+<img src="frontend/img/readme/panel-editor.png" width="900">
+</p>
+
+---
+
+## 📚 Vista de Materias
+
+<p align="center">
+<img src="frontend/img/readme/materias.png" width="900">
+</p>
 
 ---
 
@@ -121,15 +127,15 @@ _Agrega aquí una captura de pantalla_
 
 | Tecnología | Uso |
 | :--- | :--- |
-| **HTML5** | Estructura principal del sistema |
-| **CSS3** | Estilos globales |
-| **JavaScript** | Interactividad y consumo de datos |
-| **PHP** | Backend y lógica del servidor |
+| **HTML5** | Estructura de la aplicación |
+| **CSS3** | Estilos personalizados |
+| **Tailwind CSS** | Diseño responsivo moderno |
+| **JavaScript** | Interactividad y lógica frontend |
+| **PHP** | Backend y procesamiento |
 | **MySQL** | Base de datos |
-| **Tailwind CSS** | Diseño responsivo y moderno |
-| **Google OAuth** | Inicio de sesión con Google |
-| **Figma** | Diseño UI/UX |
+| **Google OAuth 2.0** | Inicio de sesión con Google |
 | **Git & GitHub** | Control de versiones |
+| **Figma** | Diseño UI/UX |
 
 ---
 
@@ -139,12 +145,9 @@ _Agrega aquí una captura de pantalla_
 Lumina/
 │
 ├── backend/
-│   ├── conexion_bd.php
-│   ├── login.php
-│   ├── registro.php
 │   ├── publicar.php
 │   ├── editar_post.php
-│   ├── obtener_publicaciones.php
+│   ├── login_google.php
 │   └── ...
 │
 ├── frontend/
@@ -152,29 +155,19 @@ Lumina/
 │   ├── js/
 │   ├── img/
 │   ├── uploads/
-│   ├── index.html
-│   ├── dashboard_admin.html
-│   ├── dashboard_autor.html
 │   └── ...
 │
 ├── database/
-│   └── lumina_bd.sql
+│   └── lumina.sql
 │
 └── README.md
+```
 
 ---
 
-# 🚀 Instalación Local
+# 💻 Instalación Local
 
-<div align="center">
-
-### Configura Lumina en tu entorno local fácilmente ⚡
-
-</div>
-
-<br>
-
-## 1️⃣ Clonar el repositorio
+## 1️⃣ Clonar repositorio
 
 ```bash
 git clone https://github.com/diegoa-mg/Lumina.git
@@ -182,61 +175,62 @@ git clone https://github.com/diegoa-mg/Lumina.git
 
 ---
 
-## 2️⃣ Mover el proyecto a XAMPP
+## 2️⃣ Mover proyecto a XAMPP
 
-Coloca la carpeta del proyecto dentro de:
+Mover la carpeta:
 
 ```bash
-xampp/htdocs/
+Lumina
+```
+
+hacia:
+
+```bash
+C:\xampp\htdocs\
 ```
 
 ---
 
-## 3️⃣ Importar Base de Datos
+## 3️⃣ Importar base de datos
 
-1. Abrir **phpMyAdmin**
-2. Crear una base de datos llamada:
+1. Abrir phpMyAdmin.
+2. Crear base de datos:
 
 ```sql
-lumina_bd
+lumina
 ```
 
-3. Importar el archivo:
+3. Importar:
 
 ```bash
-database/lumina_bd.sql
+database/lumina.sql
 ```
 
 ---
 
-## 4️⃣ Ejecutar Apache y MySQL
+## 4️⃣ Configurar conexión
 
-Desde el panel de **XAMPP**:
+Editar:
 
-- Apache ✅
-- MySQL ✅
+```bash
+backend/conexion_bd.php
+```
 
 ---
 
-## 5️⃣ Abrir el proyecto
+## 5️⃣ Ejecutar proyecto
+
+Abrir en navegador:
 
 ```bash
-http://localhost/DIGITAL-UAT/frontend
+http://localhost/Lumina/frontend
 ```
 
 ---
 
 # 🔐 Configuración Login con Google
 
-<div align="center">
-
-### Integra Google OAuth 2.0 en Lumina 🔑
-
-</div>
-
-<br>
-
-## 1️⃣ Crear proyecto en Google Cloud
+## 1️⃣ Crear proyecto en Google Cloud Console
 
 Ir a:
 
@@ -246,218 +240,105 @@ https://console.cloud.google.com/
 
 ---
 
-## 2️⃣ Crear Credenciales OAuth 2.0
+## 2️⃣ Habilitar Google OAuth
 
-Ruta:
+Activar:
+- Google Identity Services
+- OAuth 2.0
 
-```bash
-APIs y servicios → Credenciales → Crear credenciales
-```
+---
 
-Seleccionar:
-
-```bash
-ID de cliente OAuth
-```
+## 3️⃣ Crear credenciales OAuth
 
 Tipo:
-
 ```bash
 Aplicación web
 ```
 
 ---
 
-## 3️⃣ Agregar Orígenes Autorizados
+## 4️⃣ Agregar URIs autorizados
+
+### Origen autorizado
 
 ```bash
 http://localhost
 ```
 
-o
+o dominio real:
 
 ```bash
-http://localhost/DIGITAL-UAT
+https://lumina-cia.com
 ```
 
 ---
 
-## 4️⃣ Agregar URI de Redirección
+### URI de redirección
 
 ```bash
-http://localhost/DIGITAL-UAT/frontend
+http://localhost/Lumina/backend/google_callback.php
+```
+
+o:
+
+```bash
+https://lumina-cia.com/backend/google_callback.php
 ```
 
 ---
 
-## 5️⃣ Copiar el CLIENT_ID
+## 5️⃣ Configurar credenciales
 
-Agregarlo en:
-
-```bash
-frontend/js/google-login.js
-```
-
-y también en:
+Editar:
 
 ```bash
 backend/config.php
 ```
 
----
-
-## 6️⃣ Verificar funcionamiento
-
-Al iniciar sesión aparecerá:
-
-✅ Botón “Continuar con Google”
+```php
+define('GOOGLE_CLIENT_ID', 'TU_CLIENT_ID');
+define('GOOGLE_CLIENT_SECRET', 'TU_CLIENT_SECRET');
+```
 
 ---
 
-# 📌 Funcionalidades Implementadas
+# 🌟 Funcionalidades Futuras
 
-<div align="center">
-
-### Sistema académico moderno y dinámico 📚
-
-</div>
-
-<br>
-
-## 🔐 Autenticación
-- Inicio de sesión tradicional.
-- Registro de usuarios.
-- Login con Google OAuth 2.0.
-- Gestión segura de sesiones.
-- Protección de rutas privadas.
-
----
-
-## 👥 Sistema de Roles
-- 👑 Administrador
-- 🛠️ Editor
-- ✍️ Autor
-- 👨‍🎓 Usuario estándar
-
-Cada rol posee permisos específicos dentro de la plataforma.
-
----
-
-## 📰 Gestión de Publicaciones
-- Crear publicaciones.
-- Editar publicaciones.
-- Eliminar publicaciones.
-- Guardar borradores.
-- Enviar a revisión.
-- Aprobar o rechazar contenido.
-- Organización por materias.
-
----
-
-## 🎥 Tipos de Contenido
-- 📄 Artículos
-- 🎥 Videos
-- 📰 Noticias
-- 📚 Recursos académicos
-
----
-
-## ❤️ Interacción Social
-- Sistema de comentarios.
-- Likes y reacciones.
-- Interfaz dinámica y moderna.
-
----
-
-## 🎨 Diseño UI/UX
-- Diseño responsivo.
-- Adaptado a móviles.
-- Interfaz moderna.
-- Experiencia optimizada.
-
----
-
-# 🔮 Funcionalidades Futuras
-
-<div align="center">
-
-### Próximas mejoras planeadas para Lumina 🚀
-
-</div>
-
-<br>
-
-- 📱 Aplicación móvil oficial.
 - 🔔 Notificaciones en tiempo real.
-- 📂 Subida de archivos PDF.
-- 🎥 Subida de videos locales.
-- 📊 Estadísticas de publicaciones.
-- 🤖 Recomendaciones académicas con IA.
-- 🌙 Modo oscuro.
-- 💬 Sistema de mensajería interna.
-- 🏆 Sistema de logros.
-- 📚 Biblioteca digital integrada.
-- 📈 Dashboard analítico avanzado.
+- 📱 Aplicación móvil.
+- 🤖 Recomendaciones inteligentes.
+- 📊 Estadísticas de interacción.
+- 🧠 Integración con IA educativa.
 
 ---
 
-# 👥 Equipo de Desarrollo
+# 👨‍💻 Equipo de Desarrollo
 
-<div align="center">
+## Ingeniería de Software 2E
 
-## Ingeniería de Software 2E 💻
-
-</div>
-
-<br>
-
-| Integrante | Rol | Contacto |
-| :--- | :--- | :--- |
-| **Alpizar Orozco Miguel Ángel** | Desarrollador | _Pendiente_ |
-| **Carmona Medina Ernesto** | Desarrollador | _Pendiente_ |
-| **Espitia Cárdenas Francisco Jared** | Desarrollador | _Pendiente_ |
-| **Morales Gutiérrez Diego Alejandro** | Desarrollador Backend | _Pendiente_ |
-| **Ramírez Vázquez Luis Fernando** | Desarrollador Frontend / Backend | _Pendiente_ |
+| Integrante | Contacto |
+| :--- | :--- |
+| **Miguel Ángel Alpizar Orozco** | - |
+| **Ernesto Carmona Medina** | - |
+| **Francisco Jared Espitia Cárdenas** | - |
+| **Diego Alejandro Morales Gutiérrez** | [GitHub](https://github.com/diegoa-mg) |
+| **Luis Fernando Ramírez Vázquez** | [GitHub](https://github.com/FerRamirez-dev) |
 
 ---
 
-# ⭐ Apoya el Proyecto
+# ❤️ Apoya el Proyecto
 
-<div align="center">
+Si te gustó Lumina:
 
-### Si te gustó Lumina, apóyanos 🌟
-
-</div>
-
-<br>
-
-- ⭐ Dale una estrella al repositorio.
-- 🍴 Haz fork del proyecto.
-- 🛠️ Contribuye con mejoras.
-- 🐛 Reporta bugs o errores.
-- 📢 Comparte el proyecto.
-- 💡 Propón nuevas funcionalidades.
+⭐ Dale estrella al repositorio  
+🍴 Haz un fork  
+🛠️ Contribuye al proyecto  
+📢 Comparte el proyecto  
 
 ---
 
-# 📜 Licencia
+# 📄 Licencia
 
-<div align="center">
+Este proyecto fue desarrollado con fines académicos y educativos.
 
-### Proyecto desarrollado con fines educativos 🎓
-
-</div>
-
-<br>
-
-© 2026 **Lumina** — Todos los derechos reservados.
-
-El uso, modificación y distribución del proyecto debe respetar los créditos correspondientes al equipo de desarrollo.
-
----
-
-<div align="center">
-
-## 🌟 Lumina — Claridad a la información académica
-
-</div>
+© 2026 Lumina — Claridad a la información.
