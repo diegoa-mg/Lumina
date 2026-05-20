@@ -71,6 +71,20 @@ if ($campo === 'correo' || $campo === 'usuario') {
 }
 
 if ($campo === 'password') {
+    if (strlen($valor) < 8
+        || !preg_match('/[A-Z]/', $valor)
+        || !preg_match('/[a-z]/', $valor)
+        || !preg_match('/\d/', $valor)
+        || !preg_match('/[\W_]/', $valor)
+    ) {
+        http_response_code(400);
+        echo json_encode([
+            'ok' => false,
+            'mensaje' => 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.'
+        ]);
+        exit;
+    }
+
     $valor = password_hash($valor, PASSWORD_DEFAULT);
 }
 
