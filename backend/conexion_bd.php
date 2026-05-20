@@ -10,7 +10,9 @@ $conexion = new mysqli(
 );
 
 if ($conexion->connect_error) {
-    die("Error de conexion: " . $conexion->connect_error);
+    error_log('Lumina DB error: ' . $conexion->connect_error);
+    http_response_code(500);
+    die('No se pudo conectar con la base de datos.');
 }
 
 $conexion->set_charset('utf8mb4');
