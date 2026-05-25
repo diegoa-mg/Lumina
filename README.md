@@ -104,7 +104,7 @@ El sistema está inspirado en el **ODS 4 — Educación de Calidad** de la ONU, 
 ## 🏠 Página Principal
 
 <p align="center">
-<img src="frontend/img/readme/inicio.png" width="900">
+<img width="1600" height="1000" alt="panel-autor" src="https://github.com/user-attachments/assets/28705c1a-1bb6-4be7-92a6-523668716628" />
 </p>
 
 ---
@@ -112,7 +112,8 @@ El sistema está inspirado en el **ODS 4 — Educación de Calidad** de la ONU, 
 ## ✍️ Panel del Autor
 
 <p align="center">
-<img src="frontend/img/readme/panel-autor.png" width="900">
+<img width="1600" height="1000" alt="WhatsApp Image 2026-05-20 at 8 29 11 PM" src="https://github.com/user-attachments/assets/b51bf67b-2dde-4b52-83bf-dbd7ba2a367c" />
+
 </p>
 
 ---
@@ -120,7 +121,8 @@ El sistema está inspirado en el **ODS 4 — Educación de Calidad** de la ONU, 
 ## 🛠️ Panel del Editor
 
 <p align="center">
-<img src="frontend/img/readme/panel-editor.png" width="900">
+<img width="1600" height="1000" alt="panel-editor" src="https://github.com/user-attachments/assets/2fd8e302-762f-467f-a389-f977f1be3d9a" />
+
 </p>
 
 ---
@@ -128,7 +130,8 @@ El sistema está inspirado en el **ODS 4 — Educación de Calidad** de la ONU, 
 ## 📚 Vista de Materias
 
 <p align="center">
-<img src="frontend/img/readme/materias.png" width="900">
+<img width="1600" height="1000" alt="materias" src="https://github.com/user-attachments/assets/594afe5f-f47c-4389-bb4c-2142f32d1de4" />
+
 </p>
 
 ---
