@@ -20,7 +20,7 @@ Plataforma web académica desarrollada para centralizar recursos educativos, art
 
 <br>
 
-<img src="https://img.shields.io/badge/STATUS-EN%20DESARROLLO-7c3aed?style=for-the-badge">
+<img src="https://img.shields.io/badge/STATUS-FINALIZADO-32CD32d?style=for-the-badge">
 
 <img src="https://img.shields.io/badge/HTML5-Frontend-E34F26?style=for-the-badge&logo=html5&logoColor=white">
 
