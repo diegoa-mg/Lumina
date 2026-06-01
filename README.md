@@ -332,7 +332,7 @@ define('GOOGLE_CLIENT_SECRET', 'TU_CLIENT_SECRET');
 | Integrante | Contacto |
 | :--- | :--- |
 | **Miguel Ángel Alpizar Orozco** | [GitHub](https://github.com/MigueSsj) |
-| **Ernesto Carmona Medina** | [GitHub](https://github.com/ecarmona2u) |
+| **Ernesto Carmona Medina** | [GitHub](https://github.com/accithecat) |
 | **Francisco Jared Espitia Cárdenas** | [GitHub](https://github.com/fespitia01) |
 | **Diego Alejandro Morales Gutiérrez** | [GitHub](https://github.com/diegoa-mg) |
 | **Luis Fernando Ramírez Vázquez** | [GitHub](https://github.com/FerRamirez-dev) |
