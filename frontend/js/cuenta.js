@@ -299,6 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const cerrarSesion = async () => {
+        const confirmar = confirm(typeof t === 'function' ? t('alert.confirmar_cerrar_sesion') : '¿Estás seguro de que deseas cerrar sesión?');
+        if (!confirmar) return;
         try {
             await fetch('../backend/cerrar_sesion.php', {
                 method: 'POST',

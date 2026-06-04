@@ -17,6 +17,8 @@ if (strtolower($rolSesion) !== 'administrador') {
     exit;
 }
 
+$busqueda = isset($_GET['busqueda']) ? trim($_GET['busqueda']) : '';
+
 $sql = "
     SELECT
         usuarios.id,
@@ -31,7 +33,14 @@ $sql = "
     JOIN roles ON usuarios.rol_id = roles.id
     LEFT JOIN autor_categoria ON autor_categoria.autor_id = usuarios.id
     LEFT JOIN categorias ON categorias.id = autor_categoria.categoria_id
-    GROUP BY usuarios.id, usuarios.nombre, usuarios.usuarios, usuarios.correo, roles.nombre, usuarios.foto_url
+";
+
+if (!empty($busqueda)) {
+    $busquedaSegura = $conexion->real_escape_string($busqueda);
+    $sql .= " WHERE usuarios.nombre LIKE '%$busquedaSegura%' OR usuarios.usuarios LIKE '%$busquedaSegura%' OR usuarios.correo LIKE '%$busquedaSegura%'";
+}
+
+$sql .= " GROUP BY usuarios.id, usuarios.nombre, usuarios.usuarios, usuarios.correo, roles.nombre, usuarios.foto_url
     ORDER BY usuarios.nombre ASC
 ";
 $resultado = $conexion->query($sql);

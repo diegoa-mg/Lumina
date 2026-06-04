@@ -401,12 +401,18 @@
                 </aside>
 
                 <section id="section-usuarios" class="admin-management-section flex-1">
-                    <div class="admin-section-header flex justify-between items-center mb-6 h-12">
+                    <div class="admin-section-header flex justify-between items-center mb-6 h-auto gap-4 flex-wrap">
                         <h2 class="text-2xl font-semibold text-gray-700" data-i18n="admin.gestion_usuarios">Gestión de usuarios</h2>
-                        <button id="btn-abrir-agregar" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-base font-medium transition shadow-sm">
-                            <span class="material-symbols-outlined">person_add</span>
-                            <span data-i18n="admin.agregar_usuario">Agregar usuario</span>
-                        </button>
+                        <div class="flex items-center gap-4 flex-wrap">
+                            <div class="relative">
+                                <span class="search-icon material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                                <input id="buscar-usuarios" type="search" placeholder="Buscar usuarios..." data-i18n-placeholder="admin.buscar_usuarios" class="pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64">
+                            </div>
+                            <button id="btn-abrir-agregar" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-base font-medium transition shadow-sm">
+                                <span class="material-symbols-outlined">person_add</span>
+                                <span data-i18n="admin.agregar_usuario">Agregar usuario</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="admin-table-scroll bg-white rounded-3xl shadow-sm tabla-contenedor-fix">
@@ -1073,7 +1079,13 @@
 
         async function fetchUsuarios() {
             try {
-                const response = await fetch('../backend/obtener_usuarios.php');
+                const busquedaInput = document.getElementById('buscar-usuarios');
+                const busqueda = busquedaInput ? busquedaInput.value.trim() : '';
+                const url = new URL('../backend/obtener_usuarios.php', window.location.href);
+                if (busqueda) {
+                    url.searchParams.set('busqueda', busqueda);
+                }
+                const response = await fetch(url.toString(), { credentials: 'same-origin' });
                 const data = await response.json();
                 if (!data.ok) {
                     throw new Error(data.mensaje || 'Error al cargar usuarios.');
@@ -1299,6 +1311,18 @@
                 document.querySelectorAll('.role-dropdown').forEach(d => d.classList.remove('show'));
             }
         });
+
+        // Event listener for search input
+        const buscarUsuariosInput = document.getElementById('buscar-usuarios');
+        if (buscarUsuariosInput) {
+            let debounceTimer;
+            buscarUsuariosInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    fetchUsuarios();
+                }, 300); // 300ms delay to avoid too many requests
+            });
+        }
 
         fetchRoles().then(() => {
             fetchUsuarios();

@@ -57,14 +57,18 @@
 
             <div class="py-4">
               <span class="mb-2 text-md" data-i18n="login.correo">Correo</span>
-              <input type="text" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="email" id="email" required/>
+              <div class="relative flex items-center">
+                <span class="material-symbols-outlined absolute left-4 text-gray-500 text-xl">mail</span>
+                <input type="text" class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg placeholder:font-light placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" name="email" id="email" required/>
+              </div>
             </div>
             
             <div class="py-4">
               <span class="mb-2 text-md" data-i18n="login.password">Contraseña</span>
-              <div class="password-field">
-                <input type="password" name="pass" id="pass" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" required/>
-                <button type="button" class="password-toggle" data-password-toggle="pass" aria-label="Mostrar contraseña" aria-pressed="false">
+              <div class="password-field relative flex items-center">
+                <span class="material-symbols-outlined absolute left-4 text-gray-500 text-xl">lock</span>
+                <input type="password" name="pass" id="pass" class="w-full pl-12 pr-14 py-3 border border-gray-300 rounded-lg placeholder:font-light placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" required/>
+                <button type="button" class="password-toggle absolute right-4" data-password-toggle="pass" aria-label="Mostrar contraseña" aria-pressed="false">
                   <span class="material-symbols-outlined">visibility</span>
                 </button>
               </div>
@@ -78,13 +82,13 @@
               <span class="font-bold text-md"></span>
             </div>
             
-            <button type="submit" class="w-full bg-black text-white p-2 rounded-lg mb-6 border border-black hover:bg-white hover:text-black hover:border hover:border-gray-300">
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg mb-6 font-medium hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
               <span data-i18n="login.entrar">Entrar</span>
             </button>
 
           </form>
 
-          <button id="google-signin-button" type="button" class="w-full bg-black text-white p-2 rounded-lg mb-6 border border-black hover:bg-white hover:text-black hover:border hover:border-gray-300">
+          <button id="google-signin-button" type="button" class="w-full bg-white text-gray-800 py-3 rounded-lg mb-6 border border-gray-300 hover:bg-gray-50 transition-all shadow-sm">
             <svg class="w-6 h-6 inline mr-2" >
               <use href="./assets.svg#google"></use>
             </svg>
