@@ -1119,6 +1119,11 @@
                 return;
             }
 
+            // Ordenar alfabéticamente por nombre
+            usuarios = [...usuarios].sort((a, b) =>
+                (a.nombre || '').localeCompare(b.nombre || '', 'es', { sensitivity: 'base' })
+            );
+
             usuarios.forEach((usuario) => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-gray-50 transition';
@@ -1194,12 +1199,24 @@
                 const accionesTd = document.createElement('td');
                 accionesTd.className = 'px-8 py-5 text-center space-x-2';
                 const editarBtn = document.createElement('button');
-                editarBtn.className = 'bg-blue-600 text-white px-5 py-2 rounded-lg text-base font-medium hover:bg-blue-700 transition';
-                editarBtn.textContent = typeof t === 'function' ? t('comun.editar') : 'Editar';
+                editarBtn.className = 'bg-blue-600 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-blue-700 transition inline-flex items-center gap-1.5';
+                const editIcon = document.createElement('span');
+                editIcon.className = 'material-symbols-outlined';
+                editIcon.style.fontSize = '17px';
+                editIcon.textContent = 'edit';
+                const editText = document.createElement('span');
+                editText.textContent = typeof t === 'function' ? t('comun.editar') : 'Editar';
+                editarBtn.append(editIcon, editText);
                 editarBtn.onclick = () => abrirModalEdicionUsuario(usuario.id, usuario.nombre, usuario.usuario, usuario.correo, getRoleIdByName(usuario.rol));
                 const eliminarBtn = document.createElement('button');
-                eliminarBtn.className = 'bg-red-500 text-white px-5 py-2 rounded-lg text-base font-medium hover:bg-red-600 transition';
-                eliminarBtn.textContent = typeof t === 'function' ? t('comun.eliminar') : 'Eliminar';
+                eliminarBtn.className = 'bg-red-500 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-red-600 transition inline-flex items-center gap-1.5';
+                const deleteIcon = document.createElement('span');
+                deleteIcon.className = 'material-symbols-outlined';
+                deleteIcon.style.fontSize = '17px';
+                deleteIcon.textContent = 'delete';
+                const deleteText = document.createElement('span');
+                deleteText.textContent = typeof t === 'function' ? t('comun.eliminar') : 'Eliminar';
+                eliminarBtn.append(deleteIcon, deleteText);
                 eliminarBtn.onclick = () => eliminarUsuario(usuario.id, usuario.nombre);
                 accionesTd.append(editarBtn, eliminarBtn);
 
