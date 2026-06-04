@@ -57,33 +57,39 @@
 
             <div class="py-4">
               <span class="mb-2 text-md" data-i18n="registro.nombre">Nombre</span>
-              
-              <input type="text" name="nombre" id="name" required
-              class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
+              <div class="relative flex items-center">
+                <span class="material-symbols-outlined absolute left-4 text-gray-500 text-xl">person</span>
+                <input type="text" name="nombre" id="name" required
+                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg placeholder:font-light placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"/>
+              </div>
             </div>
 
             <div class="py-4">
               <span class="mb-2 text-md" data-i18n="registro.usuario">Nombre de usuario</span>
-              
-              <input type="text" name="usuario" id="username" required
-              class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
+              <div class="relative flex items-center">
+                <span class="material-symbols-outlined absolute left-4 text-gray-500 text-xl">badge</span>
+                <input type="text" name="usuario" id="username" required
+                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg placeholder:font-light placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"/>
+              </div>
             </div>
 
             <div class="py-4">
               <span class="mb-2 text-md" data-i18n="login.correo">Correo</span>
-              
-              <input type="email" name="correo" id="email" required autocomplete="email"
-              class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
+              <div class="relative flex items-center">
+                <span class="material-symbols-outlined absolute left-4 text-gray-500 text-xl">mail</span>
+                <input type="email" name="correo" id="email" required autocomplete="email"
+                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg placeholder:font-light placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"/>
+              </div>
               <p class="text-gray-500 text-sm mt-2">Usa un correo válido, debe contener @ y un dominio.</p>
             </div>
 
             <div class="py-4">
               <span class="mb-2 text-md" data-i18n="login.password">Contraseña</span>
-              
-              <div class="password-field">
+              <div class="password-field relative flex items-center">
+                <span class="material-symbols-outlined absolute left-4 text-gray-500 text-xl">lock</span>
                 <input type="password" name="password" id="pass" minlength="8" required autocomplete="new-password"
-                class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
-                <button type="button" class="password-toggle" data-password-toggle="pass" aria-label="Mostrar contraseña" aria-pressed="false">
+                class="w-full pl-12 pr-14 py-3 border border-gray-300 rounded-lg placeholder:font-light placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"/>
+                <button type="button" class="password-toggle absolute right-4" data-password-toggle="pass" aria-label="Mostrar contraseña" aria-pressed="false">
                   <span class="material-symbols-outlined">visibility</span>
                 </button>
               </div>
@@ -92,7 +98,7 @@
 
             
             <button type="submit"
-            class="w-full bg-black text-white p-2 rounded-lg mb-6 border border-black hover:bg-white hover:text-black hover:border hover:border-gray-300">
+            class="w-full bg-blue-600 text-white py-3 rounded-lg mb-6 font-medium hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
               <span data-i18n="registro.btn">Registrar</span>
             </button>
 
