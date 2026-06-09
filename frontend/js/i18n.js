@@ -37,6 +37,7 @@ const LUMINA_TRANSLATIONS = {
         'footer.materia6': 'Sistemas Digitales',
         'footer.materia7': 'Inglés',
         'footer.materia8': 'Orientación y Tutoría',
+        'footer.about_us': 'About Us',
         'footer.copy': '© 2026 Lumina: Claridad a la información',
 
         /* ---------------- Títulos de página ---------------- */
@@ -53,6 +54,7 @@ const LUMINA_TRANSLATIONS = {
         'page.dashboard_autor': 'Lumina - Panel Autor',
         'page.dashboard_editor': 'Lumina - Panel Editor',
         'page.dashboard_admin': 'Lumina - Panel Admin',
+        'page.about_us': 'Lumina - About Us',
 
         /* ---------------- Comunes ---------------- */
         'comun.leer_mas': 'Leer más',
@@ -450,6 +452,7 @@ const LUMINA_TRANSLATIONS = {
         'footer.materia6': 'Digital Systems',
         'footer.materia7': 'English',
         'footer.materia8': 'Guidance and Tutoring',
+        'footer.about_us': 'About Us',
         'footer.copy': '© 2026 Lumina: Clarity for information',
 
         /* ---------------- Page Titles ---------------- */
@@ -466,6 +469,7 @@ const LUMINA_TRANSLATIONS = {
         'page.dashboard_autor': 'Lumina - Author Panel',
         'page.dashboard_editor': 'Lumina - Editor Panel',
         'page.dashboard_admin': 'Lumina - Admin Panel',
+        'page.about_us': 'Lumina - About Us',
 
         /* ---------------- Comunes ---------------- */
         'comun.leer_mas': 'Read more',

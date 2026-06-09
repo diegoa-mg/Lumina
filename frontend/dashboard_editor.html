@@ -66,6 +66,16 @@
 
             </div>
 
+            <section id="seccionPublicadosAdmin" class="editor-admin-section d-none">
+                <div class="bloque-header">
+                    <h2 data-i18n="dash.publicados">Publicados</h2>
+                    <p>Posts y Avisos publicados.</p>
+                </div>
+                <div id="contenedorPublicadosAdmin" class="space-y-6">
+
+                </div>
+            </section>
+
             <div id="modalAdmin" class="modal-overlay" style="display: none;">
                 <input type="file" id="fileInputEditor" hidden accept="image/*">
                 <input type="file" id="videoFileInputEditor" hidden accept=".mp4,video/mp4">
@@ -259,6 +269,7 @@
                     <a href="materia2.php" data-i18n="footer.materia2">Servicios de Internet</a>
                     <a href="materia3.php" data-i18n="footer.materia3">Ciclo de Vida</a>
                     <a href="materia4.php" data-i18n="footer.materia4">Métodos Numéricos</a>
+                    <a href="about.html" data-i18n="footer.about_us">About Us</a>
                 </div>
                 <div class="footer-link-group">
                     <a href="materia5.php" data-i18n="footer.materia5">Desarrollo Emprendedor</a>
@@ -315,6 +326,178 @@
         return horas > 0
             ? `${horas}:${String(minutos).padStart(2, '0')}:${String(restantes).padStart(2, '0')}`
             : `${minutos}:${String(restantes).padStart(2, '0')}`;
+    }
+
+    function usuarioEsAdministradorEditor() {
+        const rol = typeof getUserRole === 'function'
+            ? getUserRole()
+            : localStorage.getItem('user_role');
+
+        return rol === 'Administrador';
+    }
+
+    function formatearTipoEditor(tipo) {
+        const tipoNormalizado = String(tipo || 'articulo').toLowerCase();
+        const fallback = {
+            articulo: 'ArtÃ­culo',
+            video: 'Video',
+            recurso: 'Recurso',
+            noticia: 'Noticia'
+        };
+
+        return typeof t === 'function'
+            ? t(`tipo.${tipoNormalizado}`, fallback[tipoNormalizado] || fallback.articulo)
+            : (fallback[tipoNormalizado] || fallback.articulo);
+    }
+
+    function renderMediaPublicadaEditor(post) {
+        const esAviso = (post.seccion || 'post') === 'aviso' || Number(post.categoria_id) === 9;
+        const tipo = String(post.tipo || 'articulo').toLowerCase();
+        const tipoAviso = post.tipo_aviso || 'academico';
+        const iconoAviso = tipoAviso === 'plataforma' ? 'language' : 'school';
+        const colorAviso = tipoAviso === 'plataforma' ? '#0f3ab5' : '#f75555';
+        const imagen = resolveEditorImageSrc(post.imagen_url || 'img/materias/desarrolloemprendedor.webp');
+        const videoUrl = post.video_url || '';
+        const youtubeUrl = post.youtube_url || '';
+        const archivoUrl = post.archivo_url || post.noticia_url || '';
+
+        if (esAviso && (Number(post.importante) !== 1 || !post.imagen_url)) {
+            return `<div class="w-full h-72 rounded-xl mb-5 flex items-center justify-center" style="background-color:${colorAviso};">
+                <span class="material-symbols-outlined" style="color:#fff;font-size:6rem;">${iconoAviso}</span>
+            </div>`;
+        }
+
+        if (!esAviso && tipo === 'video' && videoUrl) {
+            return `<video class="editor-card-media" src="${escapeHtmlEditor(resolveEditorImageSrc(videoUrl))}" controls muted playsinline preload="metadata"></video>`;
+        }
+
+        if (!esAviso && tipo === 'video' && youtubeUrl) {
+            const embedUrl = obtenerYoutubeEmbedUrlEditor(youtubeUrl);
+            if (embedUrl) {
+                return `<iframe class="editor-card-media" src="${escapeHtmlEditor(embedUrl)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            }
+        }
+
+        if (!esAviso && tipo === 'recurso') {
+            const nombreArchivo = obtenerNombreDesdeRutaEditor(archivoUrl) || 'Recurso adjunto';
+            return `<div class="editor-card-media resource-card-media">
+                <span class="material-symbols-outlined">description</span>
+                <p>${escapeHtmlEditor(nombreArchivo)}</p>
+            </div>`;
+        }
+
+        return `<img src="${escapeHtmlEditor(imagen)}" class="w-full h-72 object-cover rounded-xl mb-5" alt="${escapeHtmlEditor(post.titulo || 'PublicaciÃ³n')}">`;
+    }
+
+    function renderTarjetaPublicadaAdmin(post) {
+        const esAviso = (post.seccion || 'post') === 'aviso' || Number(post.categoria_id) === 9;
+        const tipo = String(post.tipo || 'articulo').toLowerCase();
+        const materia = post.materia || (typeof t === 'function' ? t('meta.sin_materia') : 'Sin materia');
+        const autor = post.autor || 'Autor desconocido';
+
+        const metaInfo = esAviso
+            ? `<span class="editor-card-meta-item">
+                   <span class="material-symbols-outlined">priority_high</span>
+                   <span data-i18n="meta.urgente">Urgente:</span> <span data-i18n="${Number(post.urgente) === 1 ? 'comun.si' : 'comun.no'}">${Number(post.urgente) === 1 ? 'SÃ­' : 'No'}</span>
+               </span>
+               <span class="editor-card-meta-item">
+                   <span class="material-symbols-outlined">push_pin</span>
+                   <span data-i18n="meta.importante">Importante:</span> <span data-i18n="${Number(post.importante) === 1 ? 'comun.si' : 'comun.no'}">${Number(post.importante) === 1 ? 'SÃ­' : 'No'}</span>
+               </span>`
+            : `<span class="editor-card-meta-item">
+                   <span class="material-symbols-outlined">school</span>
+                   ${escapeHtmlEditor(materia)}
+               </span>
+               <span class="editor-card-meta-item capitalize">
+                   <span class="material-symbols-outlined">sell</span>
+                   <span data-i18n="tipo.${tipo}">${escapeHtmlEditor(formatearTipoEditor(tipo))}</span>
+               </span>`;
+
+        return `
+            <div class="bg-white rounded-2xl shadow p-6">
+                ${renderMediaPublicadaEditor(post)}
+
+                <div class="header-card-autor">
+                    <span class="etiqueta-publicado" data-i18n="estado.publicado">Publicado</span>
+                </div>
+
+                <h2 class="text-3xl font-bold mb-3">
+                    ${escapeHtmlEditor(post.titulo || '')}
+                </h2>
+
+                <div class="editor-card-meta">
+                    <span class="editor-card-meta-item">
+                        <span class="material-symbols-outlined">person</span>
+                        ${escapeHtmlEditor(autor)}
+                    </span>
+                    ${metaInfo}
+                    <span class="editor-card-meta-item">
+                        <span class="material-symbols-outlined">calendar_today</span>
+                        <span data-fecha-iso="${escapeHtmlEditor(post.fecha_creacion || '')}" data-fecha-formato="corta-mes">${formatearFecha(post.fecha_creacion)}</span>
+                    </span>
+                </div>
+
+                <p class="text-gray-600 mb-0">
+                    ${escapeHtmlEditor(post.descripcion || '')}
+                </p>
+            </div>
+        `;
+    }
+
+    async function cargarPublicadosAdmin() {
+        const seccion = document.getElementById('seccionPublicadosAdmin');
+        const contenedor = document.getElementById('contenedorPublicadosAdmin');
+
+        if (!seccion || !contenedor) return;
+
+        if (!usuarioEsAdministradorEditor()) {
+            seccion.classList.add('d-none');
+            contenedor.innerHTML = '';
+            return;
+        }
+
+        seccion.classList.remove('d-none');
+        contenedor.innerHTML = `
+            <div class="bg-white p-8 rounded-2xl shadow flex items-center gap-3">
+                <span class="material-symbols-outlined animate-spin text-[#2643d4]">progress_activity</span>
+                <h2 class="text-2xl font-bold text-gray-500" data-i18n="comun.cargando">Cargando postsâ€¦</h2>
+            </div>
+        `;
+
+        try {
+            const respuesta = await fetch('../backend/obtener_publicaciones.php', {
+                credentials: 'include'
+            });
+            const posts = await respuesta.json();
+            const publicados = Array.isArray(posts)
+                ? posts.filter((post) => post.status === undefined || post.status === 'publicado')
+                : [];
+
+            if (publicados.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="bg-white p-8 rounded-2xl shadow">
+                        <h2 class="text-2xl font-bold text-gray-500" data-i18n="dash.sin_publicados">${typeof t === 'function' ? t('dash.sin_publicados') : 'AÃºn no hay posts publicados.'}</h2>
+                    </div>
+                `;
+            } else {
+                contenedor.innerHTML = publicados
+                    .map(renderTarjetaPublicadaAdmin)
+                    .join('');
+            }
+
+            if (typeof aplicarTraducciones === 'function') {
+                aplicarTraducciones(seccion);
+            }
+        } catch (error) {
+            console.error(error);
+            contenedor.innerHTML = `
+                <div class="bg-white p-8 rounded-2xl shadow">
+                    <h2 class="text-2xl font-bold text-red-500">
+                        Error al cargar los posts publicados. Intenta recargar la pÃ¡gina.
+                    </h2>
+                </div>
+            `;
+        }
     }
 
     async function cargarPostsRevision() {
@@ -537,6 +720,7 @@
                 alert('✅ Post aprobado');
 
                 cargarPostsRevision();
+                cargarPublicadosAdmin();
 
             } else {
 
@@ -594,6 +778,7 @@
                 alert('❌ Post rechazado');
 
                 cargarPostsRevision();
+                cargarPublicadosAdmin();
 
             } else {
 
@@ -1160,6 +1345,7 @@
                 alert('✅ Cambios guardados');
                 cerrarModal();
                 cargarPostsRevision();
+                cargarPublicadosAdmin();
             } else {
                 alert('❌ Error: ' + resultado.error);
             }
@@ -1172,13 +1358,17 @@
 
     document.addEventListener(
         'DOMContentLoaded',
-        cargarPostsRevision
+        () => {
+            cargarPostsRevision();
+            cargarPublicadosAdmin();
+        }
     );
 
     document.addEventListener(
         'lumina-idioma-cambiado',
         () => {
             cargarPostsRevision();
+            cargarPublicadosAdmin();
             actualizarPreviewVideoEditor();
         }
     );

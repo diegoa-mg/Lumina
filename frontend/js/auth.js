@@ -245,6 +245,7 @@ function renderFooter() {
             <a href="index.html">${tt('nav.inicio', 'Inicio')}</a>
             <a href="login.html">${tt('nav.iniciar_sesion', 'Iniciar Sesión')}</a>
             <a href="registro.html">${tt('nav.registrarse', 'Registrarse')}</a>
+            <a href="about.html">${tt('footer.about_us', 'About Us')}</a>
         </div>
     `;
 }

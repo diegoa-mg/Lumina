@@ -465,6 +465,39 @@
     overflow-wrap: anywhere;
 }
 
+.editor-admin-section {
+    margin-top: clamp(5rem, 8vw, 10rem);
+}
+
+.editor-admin-section .bloque-header {
+    margin-bottom: 2rem;
+}
+
+.editor-admin-section .bloque-header h2 {
+    font-family: var(--fuente-principal);
+    font-size: clamp(2.4rem, 3vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 0 0 0.6rem;
+}
+
+.editor-admin-section .bloque-header p {
+    color: #5f6877;
+    font-size: 1.6rem;
+    margin: 0;
+}
+
+.etiqueta-publicado {
+    background-color: #dcfce7;
+    border-radius: 0.6rem;
+    color: #166534;
+    display: inline-flex;
+    font-size: 1.1rem;
+    font-weight: 800;
+    padding: 0.3rem 1rem;
+    text-transform: uppercase;
+}
+
 /* Apariencia de las tarjetas de los post */
 /* Contenedor de la lista de tarjetas */
 .contenedor-tarjetas {
