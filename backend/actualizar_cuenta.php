@@ -3,6 +3,7 @@ session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 include 'conexion_bd.php';
+require_once __DIR__ . '/correo_verificacion_helpers.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401);
@@ -17,6 +18,7 @@ $datos = json_decode(file_get_contents('php://input'), true);
 $campo = $datos['campo'] ?? '';
 $valor = trim($datos['valor'] ?? '');
 $usuario_id = (int) $_SESSION['usuario_id'];
+asegurar_columna_email_verificado($conexion);
 
 if ($valor === '') {
     http_response_code(400);
@@ -104,7 +106,9 @@ if ($campo === 'password') {
 }
 
 $columna = $columnasPermitidas[$campo];
-$sql = "UPDATE usuarios SET $columna = ? WHERE id = ?";
+$sql = $campo === 'correo'
+    ? "UPDATE usuarios SET $columna = ?, email_verificado = 0 WHERE id = ?"
+    : "UPDATE usuarios SET $columna = ? WHERE id = ?";
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param('si', $valor, $usuario_id);
 

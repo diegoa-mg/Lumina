@@ -18,27 +18,42 @@ if ($remember) {
 session_start();
 include 'conexion_bd.php';
 
-$correo = $_POST['email'];
-$password = $_POST['pass'];
+$correo = trim($_POST['email'] ?? '');
+$password = $_POST['pass'] ?? '';
 
-$validar_login = mysqli_query($conexion, "SELECT usuarios.id, usuarios.usuarios, usuarios.password, usuarios.rol_id, roles.nombre AS rol_nombre FROM usuarios JOIN roles ON usuarios.rol_id = roles.id WHERE usuarios.correo='$correo'");
+$stmt = $conexion->prepare(
+    'SELECT usuarios.id, usuarios.usuarios, usuarios.password, usuarios.rol_id, roles.nombre AS rol_nombre
+     FROM usuarios
+     JOIN roles ON usuarios.rol_id = roles.id
+     WHERE usuarios.correo = ?
+     LIMIT 1'
+);
 
-if(mysqli_num_rows($validar_login) > 0){
-    $usuario = mysqli_fetch_assoc($validar_login);
-    
-    if(password_verify($password, $usuario['password'])){
-        $_SESSION['usuario_id'] = $usuario['id']; 
-        $_SESSION['usuario'] = $usuario['usuarios'];
-        $_SESSION['rol_id'] = $usuario['rol_id'];
-        $_SESSION['rol'] = $usuario['rol_nombre'];
-        
-        echo '<script>
-            localStorage.setItem("sesion_activa", "true");
-            localStorage.setItem("user_role", "' . $usuario['rol_nombre'] . '");
-            window.location.href = "../frontend/index.html";
-        </script>';
-        exit;
+if ($stmt) {
+    $stmt->bind_param('s', $correo);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    if ($resultado && $resultado->num_rows > 0) {
+        $usuario = $resultado->fetch_assoc();
+
+        if (password_verify($password, $usuario['password'])) {
+            $_SESSION['usuario_id'] = $usuario['id'];
+            $_SESSION['usuario'] = $usuario['usuarios'];
+            $_SESSION['rol_id'] = $usuario['rol_id'];
+            $_SESSION['rol'] = $usuario['rol_nombre'];
+
+            echo '<script>
+                localStorage.setItem("sesion_activa", "true");
+                localStorage.setItem("user_role", "' . htmlspecialchars($usuario['rol_nombre'], ENT_QUOTES, 'UTF-8') . '");
+                window.location.href = "../frontend/index.html";
+            </script>';
+            exit;
+        }
     }
+
+    $stmt->close();
 }
-echo '<script>alert("Correo o contraseña incorrectos"); window.location.href="../frontend/login.html";</script>';
+
+echo '<script>alert("Correo o contrasena incorrectos"); window.location.href="../frontend/login.html";</script>';
 ?>

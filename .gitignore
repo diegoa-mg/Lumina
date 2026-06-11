@@ -12,6 +12,7 @@ Thumbs.db
 # Ignorar logs de error de PHP
 error_log
 php_errors.log
+backend/mail_debug.log
 
 # Ignorar archivos subidos desde la app
 frontend/uploads/posts/*

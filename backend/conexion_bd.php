@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/config.php';
 
+mysqli_report(MYSQLI_REPORT_OFF);
+
 $conexion = new mysqli(
     DB_HOST,
     DB_USER,

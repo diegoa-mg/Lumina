@@ -123,6 +123,7 @@
                         <label data-i18n="cuenta.correo">Correo</label>
                         <div class="dato-inline">
                             <input class="campo-falso campo-cuenta" id="cuenta-correo" data-campo="correo" type="email" value="Cargando..." disabled>
+                            <button type="button" class="btn-verificar-correo" id="btn-verificar-correo">Verificando...</button>
                             <button type="button" class="btn-editar" data-campo="correo" data-i18n="comun.editar">Editar</button>
                             <button type="button" class="btn-cancelar-edicion d-none" data-campo="correo">Cancelar</button>
                         </div>
@@ -190,6 +191,32 @@
                         <button type="button" class="btn-guardar-foto" id="btn-guardar-foto" data-i18n="cuenta.guardar_foto">Guardar foto</button>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="correo-modal-overlay" id="modal-verificar-correo">
+            <div class="correo-modal">
+                <button type="button" class="correo-modal-close" id="btn-cerrar-verificar-correo">&times;</button>
+                <h2>Verificar correo</h2>
+                <p id="correo-verificacion-desc">
+                    Te enviaremos un codigo de 6 digitos a tu correo actual.
+                </p>
+                <div id="correo-verificacion-error" class="correo-verificacion-error"></div>
+                <input
+                    type="text"
+                    id="codigo-verificacion-correo"
+                    maxlength="6"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    placeholder="Codigo de verificacion"
+                    class="codigo-verificacion-input"
+                >
+                <button type="button" class="btn-correo-primary" id="btn-confirmar-verificar-correo">
+                    Confirmar codigo
+                </button>
+                <button type="button" class="btn-correo-secondary" id="btn-reenviar-verificar-correo">
+                    Reenviar codigo
+                </button>
             </div>
         </div>
 

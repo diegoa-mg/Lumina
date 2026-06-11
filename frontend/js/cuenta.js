@@ -24,10 +24,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCropReset = document.getElementById('btn-crop-reset');
     const totalLikes = document.getElementById('cuenta-total-likes');
     const totalGuardados = document.getElementById('cuenta-total-guardados');
+    const btnVerificarCorreo = document.getElementById('btn-verificar-correo');
+    const modalVerificarCorreo = document.getElementById('modal-verificar-correo');
+    const btnCerrarVerificarCorreo = document.getElementById('btn-cerrar-verificar-correo');
+    const btnConfirmarVerificarCorreo = document.getElementById('btn-confirmar-verificar-correo');
+    const btnReenviarVerificarCorreo = document.getElementById('btn-reenviar-verificar-correo');
+    const codigoVerificacionCorreo = document.getElementById('codigo-verificacion-correo');
+    const errorVerificacionCorreo = document.getElementById('correo-verificacion-error');
+    const descVerificacionCorreo = document.getElementById('correo-verificacion-desc');
 
     let fotoSeleccionada = null;
     let fotoBase64 = null;
     let cropperFoto = null;
+    let emailVerificado = false;
     const PREF_KEY = 'lumina_preferencias_contenido';
     const PREF_DEFAULTS = {
         materias: {
@@ -97,6 +106,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2600);
     };
 
+    const leerJsonSeguroCuenta = async (respuesta) => {
+        const texto = await respuesta.text();
+
+        try {
+            return texto ? JSON.parse(texto) : {};
+        } catch (error) {
+            const limpio = texto
+                .replace(/<br\s*\/?>/gi, ' ')
+                .replace(/<[^>]*>/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            return {
+                ok: false,
+                success: false,
+                error: limpio || 'El servidor no devolvio una respuesta JSON valida.',
+                mensaje: limpio || 'El servidor no devolvio una respuesta JSON valida.'
+            };
+        }
+    };
+
     const cargarPreferencias = () => {
         try {
             const guardadas = JSON.parse(localStorage.getItem(PREF_KEY) || '{}');
@@ -164,6 +194,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const setCampo = (campo, valor) => {
         if (!campo) return;
         campo.value = valor || 'Sin dato';
+    };
+
+    const actualizarBotonVerificacionCorreo = () => {
+        if (!btnVerificarCorreo) return;
+
+        btnVerificarCorreo.classList.toggle('d-none', emailVerificado || esVisitante());
+        btnVerificarCorreo.classList.toggle('verificado', emailVerificado);
+        btnVerificarCorreo.classList.toggle('pendiente', !emailVerificado);
+        btnVerificarCorreo.textContent = 'Verificar correo';
+        btnVerificarCorreo.disabled = emailVerificado || esVisitante();
     };
 
     const obtenerIniciales = (nombre) => {
@@ -289,6 +329,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             valoresActuales[campo] = campo === 'password' ? '********' : valor;
+            if (campo === 'correo') {
+                emailVerificado = false;
+                actualizarBotonVerificacionCorreo();
+            }
             desactivarEdicion(campo, boton);
             mostrarAviso(datos.mensaje || 'Informacion actualizada correctamente.', 'ok');
         } catch (error) {
@@ -312,18 +356,125 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const abrirModalVerificarCorreo = async () => {
+        if (emailVerificado) {
+            mostrarAviso('Tu correo ya esta verificado.', 'ok');
+            return;
+        }
+
+        if (!modalVerificarCorreo) return;
+
+        modalVerificarCorreo.classList.add('visible');
+        if (errorVerificacionCorreo) errorVerificacionCorreo.textContent = '';
+        if (codigoVerificacionCorreo) {
+            codigoVerificacionCorreo.value = '';
+            codigoVerificacionCorreo.focus();
+        }
+        if (descVerificacionCorreo) {
+            descVerificacionCorreo.textContent = `Te enviaremos un codigo de 6 digitos a ${valoresActuales.correo}.`;
+        }
+
+        await solicitarCodigoVerificacionCorreo();
+    };
+
+    const cerrarModalVerificarCorreo = () => {
+        modalVerificarCorreo?.classList.remove('visible');
+        if (errorVerificacionCorreo) errorVerificacionCorreo.textContent = '';
+        if (codigoVerificacionCorreo) codigoVerificacionCorreo.value = '';
+    };
+
+    const solicitarCodigoVerificacionCorreo = async () => {
+        if (!btnVerificarCorreo) return;
+
+        btnVerificarCorreo.disabled = true;
+        if (btnReenviarVerificarCorreo) btnReenviarVerificarCorreo.disabled = true;
+        if (errorVerificacionCorreo) errorVerificacionCorreo.textContent = '';
+
+        try {
+            const respuesta = await fetch('../backend/solicitar_verificacion_cuenta.php', {
+                method: 'POST',
+                credentials: 'same-origin'
+            });
+            const datos = await leerJsonSeguroCuenta(respuesta);
+
+            if (!respuesta.ok || !datos.success) {
+                throw new Error(datos.error || datos.mensaje || 'No se pudo enviar el codigo.');
+            }
+
+            if (datos.verificado) {
+                emailVerificado = true;
+                actualizarBotonVerificacionCorreo();
+                cerrarModalVerificarCorreo();
+                mostrarAviso(datos.mensaje || 'Tu correo ya esta verificado.', 'ok');
+                return;
+            }
+
+            mostrarAviso(datos.debug ? 'Codigo generado. Revisa backend/mail_debug.log.' : 'Codigo enviado. Revisa tu correo.', 'ok');
+        } catch (error) {
+            if (errorVerificacionCorreo) errorVerificacionCorreo.textContent = error.message;
+            mostrarAviso(error.message, 'error');
+        } finally {
+            actualizarBotonVerificacionCorreo();
+            if (btnReenviarVerificarCorreo) btnReenviarVerificarCorreo.disabled = false;
+        }
+    };
+
+    const confirmarCodigoVerificacionCorreo = async () => {
+        const codigo = codigoVerificacionCorreo?.value.trim() || '';
+        if (errorVerificacionCorreo) errorVerificacionCorreo.textContent = '';
+
+        if (!/^\d{6}$/.test(codigo)) {
+            if (errorVerificacionCorreo) errorVerificacionCorreo.textContent = 'Ingresa el codigo de 6 digitos.';
+            return;
+        }
+
+        if (btnConfirmarVerificarCorreo) {
+            btnConfirmarVerificarCorreo.disabled = true;
+            btnConfirmarVerificarCorreo.textContent = 'Confirmando...';
+        }
+
+        try {
+            const respuesta = await fetch('../backend/confirmar_verificacion_cuenta.php', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ codigo })
+            });
+            const datos = await leerJsonSeguroCuenta(respuesta);
+
+            if (!respuesta.ok || !datos.success) {
+                throw new Error(datos.error || datos.mensaje || 'No se pudo confirmar el codigo.');
+            }
+
+            emailVerificado = true;
+            actualizarBotonVerificacionCorreo();
+            cerrarModalVerificarCorreo();
+            mostrarAviso(datos.mensaje || 'Correo verificado correctamente.', 'ok');
+        } catch (error) {
+            if (errorVerificacionCorreo) errorVerificacionCorreo.textContent = error.message;
+            mostrarAviso(error.message, 'error');
+        } finally {
+            if (btnConfirmarVerificarCorreo) {
+                btnConfirmarVerificarCorreo.disabled = false;
+                btnConfirmarVerificarCorreo.textContent = 'Confirmar codigo';
+            }
+        }
+    };
+
     const mostrarCuentaVisitante = () => {
         modoVisitante = true;
         valoresActuales.nombre = 'Visitante';
         valoresActuales.usuario = 'visitante';
         valoresActuales.correo = 'Sin cuenta';
         valoresActuales.password = 'No disponible';
+        emailVerificado = false;
 
         setCampo(campos.nombre, valoresActuales.nombre);
         setCampo(campos.usuario, valoresActuales.usuario);
         setCampo(campos.correo, valoresActuales.correo);
         setCampo(campos.password, valoresActuales.password);
         setFotoPerfil('', valoresActuales.nombre);
+        actualizarBotonVerificacionCorreo();
         mostrarAviso('Inicia sesión para editar tus datos y guardar actividad.', 'error');
     };
 
@@ -358,17 +509,21 @@ document.addEventListener('DOMContentLoaded', () => {
             valoresActuales.usuario = datos.usuario.usuario;
             valoresActuales.correo = datos.usuario.correo;
             valoresActuales.password = datos.usuario.tiene_password ? '********' : 'Sin contrasena';
+            emailVerificado = datos.usuario.email_verificado === true;
 
             setCampo(campos.nombre, valoresActuales.nombre);
             setCampo(campos.usuario, valoresActuales.usuario);
             setCampo(campos.correo, valoresActuales.correo);
             setCampo(campos.password, valoresActuales.password);
             setFotoPerfil(datos.usuario.foto_url, valoresActuales.nombre);
+            actualizarBotonVerificacionCorreo();
         } catch (error) {
             setCampo(campos.nombre, 'Error al cargar datos');
             setCampo(campos.usuario, 'Error al cargar datos');
             setCampo(campos.correo, 'Error al cargar datos');
             setCampo(campos.password, 'Error');
+            emailVerificado = false;
+            actualizarBotonVerificacionCorreo();
             mostrarAviso(error.message, 'error');
             console.error(error);
         }
@@ -600,6 +755,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    if (btnVerificarCorreo) btnVerificarCorreo.addEventListener('click', abrirModalVerificarCorreo);
+    if (btnCerrarVerificarCorreo) btnCerrarVerificarCorreo.addEventListener('click', cerrarModalVerificarCorreo);
+    if (btnConfirmarVerificarCorreo) btnConfirmarVerificarCorreo.addEventListener('click', confirmarCodigoVerificacionCorreo);
+    if (btnReenviarVerificarCorreo) btnReenviarVerificarCorreo.addEventListener('click', solicitarCodigoVerificacionCorreo);
+    if (codigoVerificacionCorreo) {
+        codigoVerificacionCorreo.addEventListener('input', () => {
+            codigoVerificacionCorreo.value = codigoVerificacionCorreo.value.replace(/\D/g, '').slice(0, 6);
+        });
+    }
+    if (modalVerificarCorreo) {
+        modalVerificarCorreo.addEventListener('click', (event) => {
+            if (event.target === modalVerificarCorreo) cerrarModalVerificarCorreo();
+        });
+    }
+
     const btnCerrar = document.getElementById('btn-cerrar-cuenta');
     if (btnCerrar) {
         btnCerrar.addEventListener('click', (e) => {
@@ -640,6 +810,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     renderizarPreferencias();
+    actualizarBotonVerificacionCorreo();
     cargarCuenta();
     cargarResumenReacciones();
 });
